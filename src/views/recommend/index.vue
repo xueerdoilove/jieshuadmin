@@ -99,7 +99,7 @@ export default {
     showedit(id) {
       this.list.forEach(item => {
         if (item.id == id) {
-          localStorage.setItem("editbaseconfig", JSON.stringify(item));
+          localStorage.setItem("editrecommend", JSON.stringify(item));
           return;
         }
       });

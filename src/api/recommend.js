@@ -15,3 +15,28 @@ export function getrecommendbookciplist(params) {
     params
   })
 }
+
+export function delrecommendbookcip(params) {
+  return request({
+    url: '/recommendbookcip/'+params.id,
+    method: 'delete',
+  })
+}
+
+
+export function addrecommendbookcip(data) {
+  return request({
+    url: '/recommendlist/'+data.id+'/recommendbookcip',
+    method: 'post',
+    data
+  })
+}
+
+
+export function putrecommendlist(data) {
+  return request({
+    url: '/recommendbookcip/'+data.id,
+    method: 'put',
+    data
+  })
+}

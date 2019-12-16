@@ -7,3 +7,11 @@ export function getbookList(params) {
     params
   })
 }
+
+export function bookcipsearch(params) {
+  return request({
+    url: '/bookcipsearch',
+    method: 'get',
+    params
+  })
+}
