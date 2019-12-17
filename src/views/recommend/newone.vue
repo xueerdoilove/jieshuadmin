@@ -23,15 +23,14 @@
       </el-form-item>
 
       <el-form-item>
-        <el-button type="primary" @click="onSubmit('form')">修改</el-button>
+        <el-button type="primary" @click="onSubmit('form')">新建</el-button>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-// doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
-import { putrecommendlist } from "@/api/recommend";
+import { postrecommendlist } from "@/api/recommend";
 export default {
   name: "newone",
   data() {
@@ -39,7 +38,7 @@ export default {
       newone: {
         id: "",
         name: "",
-        introduction: 0,
+        introduction: '',
         startTime: "",
         endTime: "",
         timeRange: ""
@@ -65,16 +64,13 @@ export default {
   },
   props: {},
   created() {
-    var a = JSON.parse(localStorage.getItem("editrecommend"));
-    a.timeRange = [a.startTime, a.endTime];
-    this.newone = a;
   },
   computed: {},
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          putrecommendlist(this.newone).then(res => {
+          postrecommendlist(this.newone).then(res => {
             this.$emit("hideedit");
           });
         } else {

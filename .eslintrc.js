@@ -52,6 +52,21 @@ module.exports = {
       'before': true,
       'after': true
     }],
+    'vue/html-self-closing':0,
+    'vue/require-default-prop':0,
+    'vue/prop-name-casing':0,
+    'vue/require-prop-types':0,
+    'vue/attributes-order':0,
+    'vue/html-indent':0,
+    'vue/order-in-components':0,
+    'vue/no-unused-components':0,
+    'vue/v-bind-style':0,
+    'vue/attribute-hyphenation':0,
+    'vue/no-multi-spaces':0,
+    'vue/name-property-casing':0,
+    'vue/html-closing-bracket-spacing':0,
+    'vue/html-closing-bracket-newline':0,
+    'vue/mustache-interpolation-spacing':0,
     'handle-callback-err': [0, '^(err|error)$'],
     'indent': [0, 0, {
       'SwitchCase': 1

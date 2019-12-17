@@ -10,13 +10,13 @@
       <el-col :span="5" class="coupon_item">
         <span>书名</span>
       </el-col>
-      <el-col :span="8" class="coupon_item">
+      <el-col :span="7" class="coupon_item">
         <span>介绍</span>
       </el-col>
       <el-col :span="4" class="coupon_item">
         <span>推荐理由</span>
       </el-col>
-      <el-col :span="3" class="coupon_item" style="text-align:center;">
+      <el-col :span="4" class="coupon_item" style="text-align:center;">
         <el-button type="primary" @click="addone()" style="margin-top:20px;">加一本书</el-button>
       </el-col>
     </el-row>
@@ -50,15 +50,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="7">
         <el-input type="textarea" style="height:120px" :value="bookData.introduction"></el-input>
       </el-col>
-      <el-col :span="4" style="text-align:center;padding-top:40px;">
-        {{bookData.reason}}
-      </el-col>
+      <el-col :span="4" style="text-align:center;padding-top:40px;">{{bookData.reason}}</el-col>
 
-      <el-col :span="3" style="text-align:center">
-        <el-button @click="removethis(bookData.id)">删除</el-button>
+      <el-col :span="4" style="text-align:center">
+        <el-button @click="removethis(bookData.id)" style="margin-bottom:20px;">删除</el-button>
+        <el-button @click="putthis(bookData.id)">修改推荐理由</el-button>
       </el-col>
     </el-row>
     <div v-show="list.length==0" style="line-height:100px;text-align:center;">书单没有书籍</div>
@@ -125,7 +124,8 @@
 import {
   getrecommendbookciplist,
   delrecommendbookcip,
-  addrecommendbookcip
+  addrecommendbookcip,
+  putrecommendbookcip
 } from "@/api/recommend";
 import { bookcipsearch } from "@/api/book";
 export default {
@@ -156,6 +156,24 @@ export default {
       }).then(res => {
         this.list = res.items;
       });
+    },
+    putthis(id) {
+      this.$prompt("请输入推荐理由", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        inputPattern: /^[\u4E00-\u9FA5][\u4e00-\u9fa5A-Za-z0-9]*$/,
+        inputErrorMessage: "请输入推荐理由"
+      })
+        .then(({ value }) => {
+          putrecommendbookcip({
+            id: id,
+            reason: value
+          }).then(res => {
+            this.$message("修改成功!");
+            this.getbookciplist();
+          });
+        })
+        .catch(() => {});
     },
     removethis(id) {
       this.$confirm("确定删除本书吗?", "提示", {
@@ -207,7 +225,7 @@ export default {
             }).then(res => {
               this.$message("添加成功!");
               this.show_add = false;
-              this.getbookciplist()
+              this.getbookciplist();
             });
           })
           .catch(() => {});

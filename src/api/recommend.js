@@ -22,7 +22,13 @@ export function delrecommendbookcip(params) {
     method: 'delete',
   })
 }
-
+export function putrecommendbookcip(data) {
+  return request({
+    url: '/recommendbookcip/'+data.id,
+    method: 'put',
+    data
+  })
+}
 
 export function addrecommendbookcip(data) {
   return request({
@@ -35,8 +41,24 @@ export function addrecommendbookcip(data) {
 
 export function putrecommendlist(data) {
   return request({
-    url: '/recommendbookcip/'+data.id,
+    url: '/recommendlist/'+data.id,
     method: 'put',
     data
+  })
+}
+
+export function postrecommendlist(data) {
+  return request({
+    url: '/recommendlist',
+    method: 'post',
+    data
+  })
+}
+
+export function delrecommendlist(id) {
+  return request({
+    url: '/recommendlist/'+id,
+    method: 'delete',
+    
   })
 }
