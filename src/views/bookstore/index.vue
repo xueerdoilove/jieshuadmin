@@ -28,7 +28,7 @@
     </el-dialog>
 
     <el-dialog title="实体店详情" :visible.sync="show_detail">
-      <storedetail v-if="show_detail" :state="state" :new_one="detail" @hidedetail= 'hidedetail'/>
+      <storedetail v-if="show_detail" :state="state" :new_one="detail" @hidedetail='hidedetail'/>
     </el-dialog>
 
     <el-dialog title="实体店推广码" :visible.sync="show_sharecode">
@@ -91,7 +91,7 @@ export default {
         this.$message.error('请输入分享码');
         return
       }
-      this.$confirm('确定设置次实体店的分享码吗?只能设置一次不支持修改哦', '提示', {
+      this.$confirm('确定设置此实体店的分享码吗?只能设置一次不支持修改哦', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -133,10 +133,11 @@ export default {
       
     },
     getstore(data){
-      getstorebyid(data).then(res =>{
-          this.detail = res.item
-          this.show_detail = true;
-      })
+      this.$router.push({ name: "storedetail", params: { idd: data.id } });
+      // getstorebyid(data).then(res =>{
+      //     this.detail = res.item
+      //     this.show_detail = true;
+      // })
     },
     hidedetail(){
       this.show_detail = false;

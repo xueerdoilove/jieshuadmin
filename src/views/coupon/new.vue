@@ -69,7 +69,7 @@
       </el-form-item>
 
       <el-form-item label="限借阅" prop="upperLimit">
-        <el-input style="width:80px;margin-right:10px;" v-model="newcoupon.upperLimit"></el-input>(分)以内书籍使用
+        <el-input style="width:80px;margin-right:10px;" v-model="newcoupon.upperLimit"></el-input>(元)以内书籍使用
       </el-form-item>
       <el-form-item label="简介" prop="introduction">
         <el-input class="riqi" type="textarea" v-model="newcoupon.introduction"></el-input>
@@ -120,7 +120,7 @@ export default {
         endDate: "",
         timeRange: "",
         lowerLimit: "1",
-        upperLimit: "10000",
+        upperLimit: "100",
         validDays: 10,
         couponCnt: "1",
         couponType: "0",
@@ -176,7 +176,7 @@ export default {
   },
   created(){
     this.storelist = JSON.parse(localStorage.getItem('storelist'))
-    this.newcoupon.bookStoreId = this.bookStoreId || 0
+    this.newcoupon.bookStoreId = this.bookStoreId>0?this.bookStoreId:0
   },
   computed: {},
   methods: {
@@ -229,12 +229,12 @@ export default {
         if (valid) {
           var formData = new FormData()
           for(var key in this.newcoupon){
-            if(key=='picture'){
+            if(key=='picture' || key == 'upperLimit'){
               continue
             }
             formData.append( key,this.newcoupon[key])
           }
-
+          formData.append( 'upperLimit',this.newcoupon['upperLimit']*100)
           formData.append('picture',convertBase64UrlToBlob(this.newcoupon['picture']),'fmt.jpg')
 
           //图片格式转化

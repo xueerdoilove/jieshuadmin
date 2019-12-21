@@ -59,7 +59,7 @@ export function getzhiding() {
 
 export function putzhiding(data) {
   return request({
-    url: '/ontopcoupon/'+data.id,
+    url: '/coupon/'+data.id+'/ontop',
     method: 'put',
     data
   })
@@ -67,7 +67,7 @@ export function putzhiding(data) {
 
 export function deletezhiding(data) {
   return request({
-    url: '/ontopcoupon/'+data.id,
+    url: '/coupon/'+data.id+'/ontop',
     method: 'delete',
   })
 }

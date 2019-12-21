@@ -1,8 +1,8 @@
 <template>
   <div class="shop-block" >
-    <div class="shop-left-img" >
+    <!-- <div class="shop-left-img" >
         <img class="image" :src="shitidianData.imgurl" />
-    </div>
+    </div> -->
     <div class="shop-left" >
         <div class="shop-name">
             <div class="shop-location-img">

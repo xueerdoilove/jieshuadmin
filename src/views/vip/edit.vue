@@ -10,7 +10,7 @@
       </el-form-item>
 
       <el-form-item label="购买金额" prop="cost">
-        <el-input class="riqi" v-model="newvip.cost"></el-input>(分)
+        <el-input class="riqi" v-model="newvip.cost"></el-input>(元)
       </el-form-item>
 
       <el-form-item label="介绍" prop="description">
@@ -62,13 +62,16 @@ export default {
   },
   created(){
     this.newvip = JSON.parse(localStorage.getItem('onevip'))
+    this.newvip.cost = this.newvip.cost/100
   },
   computed: {},
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          putvip(this.newvip.id,this.newvip).then(res =>{
+          var a = JSON.parse(JSON.stringify(this.newvip))
+          a.cost = a.cost*100
+          putvip(this.newvip.id,a).then(res =>{
             this.$message({
               type: "info",
               message: "修改成功"

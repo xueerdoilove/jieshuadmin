@@ -52,6 +52,7 @@ module.exports = {
       'before': true,
       'after': true
     }],
+    'vue/html-quotes':0,
     'vue/html-self-closing':0,
     'vue/require-default-prop':0,
     'vue/prop-name-casing':0,

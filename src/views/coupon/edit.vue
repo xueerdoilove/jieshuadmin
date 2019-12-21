@@ -57,7 +57,7 @@
       </el-form-item>
 
       <el-form-item label="限借阅" prop="upperLimit">
-        <el-input style="width:80px;margin-right:10px;" v-model="newcoupon.upperLimit"></el-input>(分)以内书籍使用
+        <el-input style="width:80px;margin-right:10px;" v-model="newcoupon.upperLimit"></el-input>(元)以内书籍使用
       </el-form-item>
       <el-form-item label="简介" prop="introduction">
         <el-input class="riqi" type="textarea" v-model="newcoupon.introduction"></el-input>
@@ -168,6 +168,7 @@ export default {
       a.startTime =''
       a.endTime = ''
     }
+    a.upperLimit = a.upperLimit/100
     a.obtainType = a.obtainType+''
     a.couponType = a.couponType+''
     this.newcoupon = a
@@ -213,11 +214,13 @@ export default {
         if (valid) {
           var formData = new FormData()
           for(var key in this.newcoupon){
-            if(key=='picture'){
+            if(key=='picture' || key == 'upperLimit'){
               continue
             }
             formData.append( key,this.newcoupon[key])
           }
+          formData.append( 'upperLimit',this.newcoupon['upperLimit']*100)
+
           if(this.imglist.length>0){
             formData.append('picture',convertBase64UrlToBlob(this.newcoupon['picture']),'fmt.jpg')
 

@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="配置值" prop="configValue">
-        <el-input class="riqi" style="width:100px;margin-right:10px;" type="number" v-model="newone.configValue"></el-input>金额以(分)为单位。时间以(天)为单位或以现有描述为准
+        <el-input class="riqi" style="width:100px;margin-right:10px;" type="number" v-model="newone.configValue"></el-input>{{danwei}}
       </el-form-item>
 
       <el-form-item>
@@ -34,7 +34,9 @@ export default {
         name: "",
         configValue: 0,
         description: "",
+        seq:0,
       },
+      danwei:'',
       rules: {
         name: [
           { required: true, message: "请输入基础配置名称", trigger: "blur" },
@@ -55,13 +57,27 @@ export default {
   created(){
     var a = JSON.parse(localStorage.getItem('editbaseconfig'))
     this.newone = a
+    if(this.newone.seq==1){
+      this.danwei = '元'
+      this.newone.configValue = this.newone.configValue/100
+    }else if(this.newone.seq==2){
+      this.danwei = '%'
+    }else if(this.newone.seq==3){
+      this.danwei = '分钟'
+    }else if(this.newone.seq ==4){
+      this.danwei = '天'
+    }
   },
   computed: {},
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          putbaseconfig(this.newone.id,this.newone).then(res =>{
+          var a = JSON.parse(JSON.stringify(this.newone))
+          if(a.seq==1){// 邮费设置
+            a.configValue = a.configValue*100
+          }
+          putbaseconfig(this.newone.id,a).then(res =>{
             this.$emit('hideedit');
           })
         } else {

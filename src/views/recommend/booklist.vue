@@ -161,7 +161,7 @@ export default {
       this.$prompt("请输入推荐理由", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
-        inputPattern: /^[\u4E00-\u9FA5][\u4e00-\u9fa5A-Za-z0-9]*$/,
+        inputPattern: /^[\u4E00-\u9FA5][\u4e00-\u9fa5A-Za-z0-9]*/,
         inputErrorMessage: "请输入推荐理由"
       })
         .then(({ value }) => {
@@ -214,14 +214,18 @@ export default {
         this.$prompt("请输入推荐理由", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
-          inputPattern: /^[\u4E00-\u9FA5][\u4e00-\u9fa5A-Za-z0-9]*$/,
+          inputPattern: /^[\u4E00-\u9FA5][\u4e00-\u9fa5A-Za-z0-9]*/,
           inputErrorMessage: "请输入推荐理由"
         })
           .then(({ value }) => {
             addrecommendbookcip({
               id: shudanid,
-              bookCipId: this.bookid,
-              reason: value
+              recommendBookCipList: [
+                {
+                  bookCipId: this.bookid,
+                  reason: value
+                }
+              ]
             }).then(res => {
               this.$message("添加成功!");
               this.show_add = false;

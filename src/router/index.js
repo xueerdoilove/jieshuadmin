@@ -122,7 +122,7 @@ export const constantRoutes = [{
       meta: {
         title: '书单列表'
       }
-    },{
+    }, {
       path: 'booklist',
       name: 'booklist',
       component: () => import('@/views/recommend/booklist'),
@@ -149,6 +149,14 @@ export const constantRoutes = [{
       meta: {
         title: '书店列表'
       }
+    }, {
+      path: 'storedetail',
+      name: 'storedetail',
+      component: () => import('@/views/bookstore/storedetail'),
+      meta: {
+        title: '书店详情'
+      },
+      hidden: true
     }],
 
   },

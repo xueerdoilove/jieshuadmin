@@ -13,42 +13,41 @@
       </el-col>
     </el-row>
     <el-row class="coupon_item">
-      <el-col :span="2">
-        <span>书单名</span>
-      </el-col>
-      <el-col :span="4">
-        <span>开始时间</span>
-      </el-col>
-      <el-col :span="4">
-        <span>结束时间</span>
-      </el-col>
-      <el-col :span="6">
-        <span>介绍</span>
-      </el-col>
-      <el-col :span="3">
+      <el-col :span="3" style="text-align:center;">
         <span>封面图</span>
       </el-col>
-      <el-col :span="5">
+      <el-col :span="2" style="text-align:center;">
+        <span>书单名</span>
+      </el-col>
+      <el-col :span="4" style="text-align:center;">
+        <span>开始-结束时间</span>
+      </el-col>
+      <el-col :span="6" >
+        <span>介绍</span>
+      </el-col>
+      <el-col :span="9" style="text-align:center;">
         <span>操作</span>
       </el-col>
     </el-row>
-    <el-row class="coupon_item" v-for="item in list" v-bind:key="item.id">
+    <el-row class="coupon_item img_item" v-for="item in list" v-bind:key="item.id">
+      <el-col :span="3" >
+        <div class="fmt">
+          <img class="fmt1" :src="item.path[0]" v-if="item.path[0]" alt="">
+          <img class="fmt2" :src="item.path[1]" v-if="item.path[1]" alt="">
+          <img class="fmt3" :src="item.path[2]" v-if="item.path[2]" alt="">
+          &nbsp;
+        </div>
+      </el-col>
       <el-col :span="2">
         <span>{{item.name}}</span>
       </el-col>
-      <el-col :span="4">
-        <span>{{item.startTime}}</span>
-      </el-col>
-      <el-col :span="4">
-        <span>{{item.endTime}}</span>
+      <el-col :span="4" style="text-align:center;">
+        <span>{{item.startTime | timerd}} <br><br>至<br><br>{{item.endTime | timerd}}</span>
       </el-col>
       <el-col :span="6">
-        <span>{{item.introduction}}</span>
+        <textarea >{{item.introduction}}</textarea>
       </el-col>
-      <el-col :span="3" style="overflow:hidden">
-        <span>{{item.path[0]}}</span>
-      </el-col>
-      <el-col :span="5" style="padding-top:20px;">
+      <el-col :span="9" style="padding-top:70px;text-align:center">
         <el-button @click="showedit(item.id)">编辑</el-button>
         <el-button @click="delone(item.id)">删除</el-button>
         <el-button @click="showshudan(item.id)">查看书单</el-button>
@@ -94,6 +93,11 @@ export default {
     Editbaseconfig,
     booklist,
     Newone
+  },
+  filters:{
+    timerd(time){
+      return time.replace('.0','')
+    }
   },
   computed: {},
   methods: {
@@ -172,5 +176,50 @@ export default {
   height: 80px;
   flex-direction: column;
   justify-content: center;
+}
+.coupon_item textarea {
+  margin-top: 5px;
+  height: 170px;
+  width: 100%;
+  border:1px solid #aaa;
+}
+.img_item{
+  height: 180px;
+  border-bottom: 1px solid #eee;
+  clear: both;
+}
+.img_item span {
+  display: inline-flex;
+  height: 180px;
+  flex-direction: column;
+  justify-content: center;
+}
+.fmt{
+  position: relative;
+  width: 100%;
+}
+.fmt1{
+  position: absolute;
+  z-index: 10;
+  left: 1px;
+  top: 3px;
+  width: 100px;
+  height: 140px;
+}
+.fmt2{
+  position: absolute;
+  z-index: 8;
+  left: 18px;
+  top: 18px;
+  width: 100px;
+  height: 140px;
+}
+.fmt3{
+  position: absolute;
+  z-index: 6;
+  left: 33px;
+  top: 33px;
+  width: 100px;
+  height: 140px;
 }
 </style>

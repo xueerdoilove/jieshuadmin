@@ -5,7 +5,7 @@
         <!-- <el-radio-group v-model="state" @change="changetiaojian" style="margin-top:10px;">
           <el-radio :label="1">正常</el-radio>
           <el-radio :label="0">删除的</el-radio>
-        </el-radio-group>&nbsp; -->
+        </el-radio-group>&nbsp;-->
       </el-col>
       <el-col :span="4">
         <!-- <el-button type="primary" @click="shownew">{{show_new?'-收起':'+新增'}}</el-button> -->
@@ -15,10 +15,10 @@
       <el-col :span="2">
         <span>排序</span>
       </el-col>
-      <el-col  :span="4">
+      <el-col :span="4">
         <span>配置名</span>
       </el-col>
-      <el-col  :span="4">
+      <el-col :span="4">
         <span>配置值</span>
       </el-col>
       <el-col :span="6">
@@ -35,11 +35,11 @@
       <el-col :span="2">
         <span>{{item.seq}}</span>
       </el-col>
-      <el-col  :span="4">
+      <el-col :span="4">
         <span>{{item.name}}</span>
       </el-col>
-      <el-col  :span="4">
-        <span>{{item.configValue}}</span>
+      <el-col :span="4">
+        <span>{{item.configValue | zhanshi(item.seq)}}</span>
       </el-col>
       <el-col :span="6">
         <span>{{item.description}}</span>
@@ -87,6 +87,19 @@ export default {
   components: {
     Editbaseconfig
   },
+  filters: {
+    zhanshi(value, seq) {
+      if (seq == 1) {
+        return value/100+'元'
+      } else if (seq == 2) {
+        return value+'%'
+      } else if (seq == 3) {
+        return value+'分钟'
+      } else if (seq == 4) {
+        return value+'天'
+      }
+    }
+  },
   computed: {},
   methods: {
     // 弹出优惠券编辑
@@ -108,7 +121,7 @@ export default {
       this.mgetbaseconfiglist();
     },
     mgetbaseconfiglist() {
-      getbaseconfiglist({state:this.state}).then(res => {
+      getbaseconfiglist({ state: this.state }).then(res => {
         this.baseconfiglist = res.items;
       });
     }

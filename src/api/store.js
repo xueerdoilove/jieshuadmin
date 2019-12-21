@@ -64,3 +64,49 @@ export function getprovcity(params) {
   })
 }
 
+//api/bookstore/{bookStoreId}/resource?state=1&sk=xx&so=xx&page=1&pageSize=2
+export function getresource(params) {
+  return request({
+    url: '/bookstore/'+params.id+'/resource',
+    method: 'get',
+    params
+  })
+}
+// /api/resource/{id} 删除图片
+export function delresource(params) {
+  return request({
+    url: '/resource/'+params.id,
+    method: 'delete',
+    params
+  })
+}
+// 上传书店封面图
+export function postpictrue(id,data) {
+  return request({
+    url: '/bookstore/'+id+'/resource',
+    method: 'post',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
+// 获取书店图书数量 bookstore/2/bookcnt?id=2
+export function getbookcnt(params) {
+  return request({
+    url: '/bookstore/'+params.id+'/bookcnt',
+    method: 'get',
+    params
+  })
+}
+
+// 获取书店的书列表 bookcipbystore?bookStoreId=2&page=1&pageSize=200
+export function getbookcipbystore(params) {
+  return request({
+    url: '/bookcipbystore',
+    method: 'get',
+    params
+  })
+}
