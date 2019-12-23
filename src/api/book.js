@@ -15,3 +15,12 @@ export function bookcipsearch(params) {
     params
   })
 }
+
+
+export function bookcipbystore(params) {
+  return request({
+    url: '/bookcipbystore',
+    method: 'get',
+    params
+  })
+}

@@ -11,7 +11,7 @@ export default {
 </script>
 <style >
 #app{
-  min-width: 1280px;
+  min-width: 1300px;
 }
 .el-button--primary {
   color: #FFF!important;

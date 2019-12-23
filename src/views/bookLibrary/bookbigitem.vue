@@ -1,5 +1,21 @@
 <template>
   <div class="book-item">
+    <div class="caozuo">
+      <div class="c_flex">
+        <div class="c_yuandian">
+          <el-checkbox>选择</el-checkbox>
+        </div>
+        <div class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
+      </div>
+      <div class="x_kucun">
+        库存:
+        <span style="color:#1F7872">{{bookData.totalCnt}}</span>
+      </div>
+      <div class="x_kucun">
+        借阅次数:
+        <span style="color:#1F7872">{{bookData.borrowCnt}}</span>
+      </div>
+    </div>
     <div class="book-img">
       <img class="image" :src="bookData.portrait" />
     </div>
@@ -14,6 +30,7 @@
           <div class="book-stars-f">{{bookData.doubanScore}}</div>
         </div>
         <div class="book-auth">{{bookData.author}}</div>
+        <div class="book-auth">ISBN:{{bookData.isbn}}</div>
         <div class="book-price">
           <div class="book-icon-yuan" style="margin-left:0;">
             <img class="image" src="../../assets/fei.png" />
@@ -41,6 +58,18 @@ export default {
       // required: true
     }
   },
+  filters: {
+    state(num) {
+      //下架(0),未上架(1),上架(2))
+      if (num == 0) {
+        return "下架中";
+      } else if (num == 1) {
+        return "待上架";
+      } else {
+        return "上架中";
+      }
+    }
+  },
   computed: {},
   methods: {}
 };
@@ -53,14 +82,66 @@ export default {
   border-bottom: 1px solid #eee;
   overflow: hidden;
 }
-
+.caozuo {
+  position: relative;
+  min-width: 120px;
+  float: left;
+  height: 140px;
+  border-right: 1px solid #aaa;
+}
+.c_flex {
+  display: flex;
+  display: -webkit-flex; /* Safari */
+  justify-content: space-around;
+}
+.c_yuandian {
+  height: 100px;
+  box-sizing: border-box;
+  padding-top: 40px;
+}
+.c_xsxx {
+  height: 100px;
+  writing-mode: vertical-lr;
+  writing-mode: tb-lr;
+}
+.state {
+  width: 20px;
+  background-color: #1f7872;
+  border-radius: 10px;
+  color: #fff;
+  position: absolute;
+  top: 70px;
+  right: -10px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  text-align: center;
+  padding: 2px 0;
+}
+.color0{
+  background-color: #D13F31;
+}
+.color1{
+  background-color: #E6A050;
+}
+.color2{
+  background-color: #1f7872;
+}
+.c_shudian {
+  height: 100px;
+  writing-mode: vertical-lr;
+  writing-mode: tb-lr;
+}
+.x_kucun {
+  font-size: 14px;
+  margin-top: 10px;
+}
 .book-img {
   border-radius: 7px;
   box-shadow: 0 5px 5px #aaa;
-  width: 80px;
-  height: 112px;
+  width: 100px;
+  height: 140px;
   float: left;
-  margin-left: 12px;
+  margin-left: 20px;
   overflow: hidden;
 }
 .book-img .image {
@@ -73,6 +154,7 @@ export default {
   box-sizing: border-box;
   padding-left: 10px;
   float: left;
+  width: 280px;
 }
 
 .book-right-d {
@@ -88,12 +170,9 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-bottom: 5px;
-  height: 30px;
 }
 .book-right-left {
   max-width: 500px;
-  height: 85px;
   float: left;
 }
 .book-right-right {
@@ -144,6 +223,9 @@ export default {
   color: #888;
   font-size: 18px;
   margin-top: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .book-price {
