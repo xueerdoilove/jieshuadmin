@@ -257,7 +257,10 @@ export default {
         this.picture = "";
         this.imglist1 = [];
         this.getresource();
-        this.$message("添加成功");
+        this.$message({
+          message: '添加成功!',
+          type: 'success'
+        });
       });
     },
     showaddimg() {
@@ -271,7 +274,10 @@ export default {
       }).then(() => {
         delresource({ id: id }).then(res => {
           this.getresource();
-          this.$message("删除成功");
+          this.$message({
+            message: '删除成功!',
+            type: 'success'
+          });
         });
       });
     },

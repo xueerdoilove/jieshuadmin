@@ -151,7 +151,10 @@ export default {
       })
         .then(() => {
           deletecoupon({ id: id }).then(res => {
-            this.$message("优惠券删除成功");
+            this.$message({
+              message: '优惠券删除成功!',
+              type: 'success'
+            });
             this.mgetcouponList();
           });
         })
@@ -170,7 +173,7 @@ export default {
             onTop: value
           }).then(res => {
             this.$message({
-              type: "info",
+              type: "success",
               message: "置顶成功"
             });
           });
@@ -188,7 +191,7 @@ export default {
             id: id
           }).then(res => {
             this.$message({
-              type: "info",
+              type: "success",
               message: "取消置顶成功"
             });
             this.mgetcouponList();

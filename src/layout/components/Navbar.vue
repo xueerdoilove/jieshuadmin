@@ -150,7 +150,10 @@ export default {
       }
       resetname({ name: this.user.name }).then(res => {
         this.$store.dispatch("user/getInfo");
-        this.$message("保存成功");
+        this.$message({
+          message: '保存成功',
+          type: 'success'
+        });
       });
     },
     onSubmit(formName) {

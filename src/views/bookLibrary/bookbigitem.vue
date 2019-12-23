@@ -3,7 +3,8 @@
     <div class="caozuo">
       <div class="c_flex">
         <div class="c_yuandian">
-          <el-checkbox>选择</el-checkbox>
+          <el-checkbox v-show="bookData.state!=2" v-model="bookData.selected" @change="danxuanhandler">选择</el-checkbox>
+          <el-button v-show="bookData.state==2" @click="xiajia(bookData.id)">下架</el-button>
         </div>
         <div class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
       </div>
@@ -16,10 +17,10 @@
         <span style="color:#1F7872">{{bookData.borrowCnt}}</span>
       </div>
     </div>
-    <div class="book-img">
+    <div class="book-img" @click="gotodetail(bookData.id)">
       <img class="image" :src="bookData.portrait" />
     </div>
-    <div class="book-right-c">
+    <div class="book-right-c" @click="gotodetail(bookData.id)">
       <div class="book-name">{{bookData.name || bookData.bookCipName}}</div>
       <div class="book-right-left">
         <div class="book-stars">
@@ -47,6 +48,8 @@
 </template>
 
 <script>
+import { delbook } from "@/api/book";
+
 export default {
   name: "bookbigitem",
   data() {
@@ -71,7 +74,30 @@ export default {
     }
   },
   computed: {},
-  methods: {}
+  methods: {
+    gotodetail(id){
+      this.$router.push({ name: "bookdetail", params: { bookid:id } });
+    },
+    danxuanhandler(){
+      this.$emit('danxuan')
+    },
+    xiajia(id){
+      this.$confirm("确定下架此本书吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() =>{
+        delbook(id).then(res =>{
+          this.$message({
+            message: '下架成功',
+            type: 'success'
+          });
+          this.$emit('getbooklist')
+        })
+      })
+      
+    }
+  }
 };
 </script>
 

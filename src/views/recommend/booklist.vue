@@ -169,7 +169,10 @@ export default {
             id: id,
             reason: value
           }).then(res => {
-            this.$message("修改成功!");
+            this.$message({
+              type: "success",
+              message: "修改成功!"
+            });
             this.getbookciplist();
           });
         })
@@ -183,7 +186,10 @@ export default {
       })
         .then(() => {
           delrecommendbookcip({ id: id }).then(res => {
-            this.$message("删除成功");
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
             this.getbookciplist();
           });
         })
@@ -227,7 +233,10 @@ export default {
                 }
               ]
             }).then(res => {
-              this.$message("添加成功!");
+              this.$message({
+                type: "success",
+                message: "添加成功!"
+              });
               this.show_add = false;
               this.getbookciplist();
             });

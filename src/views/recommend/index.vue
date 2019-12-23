@@ -132,7 +132,10 @@ export default {
       })
         .then(() => {
           delrecommendlist(id).then(res => {
-            this.$message("删除成功");
+            this.$message({
+              type: "success",
+              message: "删除成功!"
+            });
             this.mgetlist()
           });
         })

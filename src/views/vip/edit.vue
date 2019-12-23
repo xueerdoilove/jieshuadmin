@@ -73,7 +73,7 @@ export default {
           a.cost = a.cost*100
           putvip(this.newvip.id,a).then(res =>{
             this.$message({
-              type: "info",
+              type: "success",
               message: "修改成功"
             });
             this.$emit('hideedit');

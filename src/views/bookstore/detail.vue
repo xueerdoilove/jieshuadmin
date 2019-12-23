@@ -127,7 +127,10 @@ export default {
         type: 'warning'
       }).then(() => {
         deletestore({id:this.new_one.id}).then(res =>{
-          this.$message('书店停业成功!');
+          this.$message({
+            message: '书店停业成功!',
+            type: 'success'
+          });
           this.$emit('hidedetail');
         })
       }).catch(() => {
@@ -140,7 +143,10 @@ export default {
         if (valid) {
 
           putstore(this.new_one).then(res =>{
-            this.$message('修改书店成功!');
+            this.$message({
+              message: '修改书店成功!',
+              type: 'success'
+            });
             this.$emit('hidedetail');
           })
         } else {

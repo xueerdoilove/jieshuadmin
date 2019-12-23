@@ -44,7 +44,7 @@ export const constantRoutes = [{
   {
     path: '/',
     component: Layout,
-    name: 'adf',
+    name: 'index',
     redirect: '/pachong',
     meta: {
       title: '书库管理',
@@ -61,11 +61,29 @@ export const constantRoutes = [{
       {
         path: 'bookLibrary',
         name: 'bookLibrary',
+        redirect: 'booklist',
         component: () => import('@/views/bookLibrary/index'),
         meta: {
           title: '书库信息'
-        }
+        },
+        children: [{
+          path: 'bookdetail',
+          name: 'bookdetail',
+          component: () => import('@/views/bookLibrary/bookdetail'),
+          meta: {
+            title: '图书详情'
+          },
+          hidden:true
+        }, {
+          path: 'booklist',
+          name: 'booklist',
+          component: () => import('@/views/bookLibrary/booklist'),
+          meta: {
+            title: '图书列表'
+          },
+        }]
       }
+
     ]
   },
   {

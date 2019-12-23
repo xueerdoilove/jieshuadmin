@@ -97,7 +97,7 @@ export default {
             id: id
           }).then(res => {
             this.$message({
-              type: "info",
+              type: "success",
               message: "处理成功"
             });
             this.mgetextrabooklist();
@@ -117,7 +117,7 @@ export default {
             id: id
           }).then(res => {
             this.$message({
-              type: "info",
+              type: "success",
               message: "忽略此处理,成功!"
             });
             this.mgetextrabooklist();
