@@ -12,20 +12,10 @@
         </el-select>
       </el-col>
       <el-col :span="15" :offset="1">
-        <el-form label-width="80px" v-show="searchtype==0">
-          <el-form-item label="状态:">
-            <el-radio-group v-model="state" @change="zhuangtai">
-              <el-radio :label="2">上架中</el-radio>
-              <el-radio :label="1">待上架</el-radio>
-              <el-radio :label="0">已下架</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
-
         <el-input
-          placeholder="请输入图书名称/作者/isbn"
+          placeholder="请输入线上图书名称/作者/isbn"
           v-model="searchvalue"
-          v-show="searchtype==1"
+          v-show="searchtype==2"
           class="input-with-select"
         >
           <el-select
@@ -44,13 +34,23 @@
 
         <el-autocomplete
           class="input-with-select"
-          v-show="searchtype==2"
+          v-show="searchtype==3"
           v-model="storeitem"
           :fetch-suggestions="querySearchAsync"
           placeholder="请输入门店名"
           @select="searchbookbystore"
           value-key="name"
         ></el-autocomplete>
+
+        <el-form label-width="80px" v-show="searchtype!=2">
+          <el-form-item label="状态:">
+            <el-radio-group v-model="state" @change="zhuangtai">
+              <el-radio :label="2">上架中</el-radio>
+              <el-radio :label="1">待上架</el-radio>
+              <el-radio :label="0">已下架</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
       </el-col>
       <el-col :span="4" style="text-align:right">
         <el-button type="primary">+新增</el-button>
@@ -108,9 +108,10 @@ export default {
 
       searchtype: 0,
       searchtypelist: [
-        { id: 0, name: "状态" },
-        { id: 1, name: "书名/作者/isbn" },
-        { id: 2, name: "门店" }
+        { id: 0, name: "全部书目" },
+        { id: 2, name: "全部书目 搜索" },
+        { id: 1, name: "线上书目" },
+        { id: 3, name: "线下书目" }
       ],
 
       checkedall: false,
@@ -158,10 +159,10 @@ export default {
           bookCipIdList: this.bookidlist
         }).then(res => {
           this.$message({
-            message: '上架成功',
-            type: 'success'
+            message: "上架成功",
+            type: "success"
           });
-          this.changepage(this.page)
+          this.changepage(this.page);
         });
       });
     },
@@ -227,9 +228,16 @@ export default {
         getstoreList({
           page: 1,
           pageSize: 100,
+          type: "1",
           state: 2
         }).then(res => {
-          this.storelist = res.items;
+          var aa = [];
+          res.items.forEach(item => {
+            if (item.storeType == 1) {
+              aa.push(item);
+            }
+          });
+          this.storelist = aa;
           var restaurants = this.storelist;
           var results = queryString
             ? restaurants.filter(this.createStateFilter(queryString))
@@ -252,7 +260,6 @@ export default {
       };
     },
     searchbookbystore(item) {
-      console.log(item, "adfa");
       this.page = 1;
       this.storeid = item.id;
       this.getbookbystore();
@@ -273,6 +280,7 @@ export default {
       });
       bookcipbystore({
         bookStoreId: this.storeid,
+        state: this.state,
         page: this.page,
         pageSize: this.pageSize
       })
@@ -288,6 +296,7 @@ export default {
     tianjiazhuangt(arr) {
       arr.forEach(book => {
         book.selected = false;
+        book.storeid = this.storeid
       });
       return arr;
     },
@@ -315,16 +324,20 @@ export default {
         });
     },
     zhuangtai(e) {
-      this.page = 1;
-      this.getbooklist();
+      this.changepage(1);
     },
     changepage(e) {
       this.page = e;
-      if (this.searchtype == 0) {
+      if (this.searchtype == 0) {// 全部数目
+        this.storeid = 0
         this.getbooklist();
-      } else if (this.searchtype == 2) {
+      } else if (this.searchtype == 1) {// 线上数目
+        this.storeid = 1
         this.getbookbystore();
-      } else {
+      } else if (this.searchtype == 3) {// 线下数目
+        this.getbookbystore();
+      } else {// 全部数目搜索
+        this.storeid = 0
         this.searchbookbykeyword();
       }
     }

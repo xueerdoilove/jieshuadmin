@@ -149,6 +149,7 @@ export default {
         return;
       }
       resetname({ name: this.user.name }).then(res => {
+        localStorage.setItem('username',this.user.name)
         this.$store.dispatch("user/getInfo");
         this.$message({
           message: '保存成功',

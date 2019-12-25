@@ -5,7 +5,6 @@ import { resetRouter } from '@/router'
 const state = {
   token: getToken(),
   name: '',
-  avatar: '',
 }
 
 const mutations = {
@@ -14,9 +13,6 @@ const mutations = {
   },
   SET_NAME: (state, name) => {
     state.name = name
-  },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
   },
 }
 
@@ -30,6 +26,7 @@ const actions = {
         commit('SET_TOKEN', item.token)
         setToken(item.token)
         localStorage.setItem('roleset',item.roleSet.join(','))
+        localStorage.setItem('username',item.name)
         resolve()
       }).catch(error => {
         reject(error)
@@ -40,31 +37,21 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo().then(response => {
-        const { item } = response
-        console.log(response)
-        if (!item) {
-          reject('Verification failed, please Login again.')
-        }
-
-        const { name, portrait } = item
-        // 0 未绑定 1 绑定 2 普通管理 3 门店 4最高
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', portrait)
-        if(localStorage.getItem('roleset').search('2')!='-1'){
-          mybookstore().then(res => {
-            const { item } = res
-            const {  bookStoreId } = item
-            localStorage.setItem('bookStoreId',bookStoreId)
-          })
-        }else{
-          localStorage.removeItem('bookStoreId')
-        }
-        
-        resolve(item)
-      }).catch(error => {
-        reject(error)
-      })
+      var username = localStorage.getItem('username')
+      commit('SET_NAME', username)
+      // 0 未绑定 1 绑定 2 普通管理 3 门店 4最高
+      if(localStorage.getItem('roleset').search('2')!='-1'){
+        mybookstore().then(res => {
+          const { item } = res
+          const {  bookStoreId } = item
+          localStorage.setItem('bookStoreId',bookStoreId)
+          localStorage.setItem('bookStoredata',JSON.stringify(item))
+        })
+      }else{
+        localStorage.removeItem('bookStoreId')
+        localStorage.removeItem('bookStoredata')
+      }
+      resolve(username)
     })
   },
   // user logout
@@ -73,7 +60,6 @@ const actions = {
       // logout(state.token).then(() => {
         localStorage.clear()
         commit('SET_NAME', '')
-        commit('SET_AVATAR', '')
         commit('SET_TOKEN', '')
         removeToken()
         resetRouter()

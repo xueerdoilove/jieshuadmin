@@ -7,7 +7,7 @@ var ce = 'https://91huidu.com/' // 正式域名
 Config.restUrls = {
   // 获取用户id token
   'userlogin': ce + 'book/api/user',
-  // 查询用户信息
+  // 查询我的门店
   'userdata': ce + 'book/api/myprofile',
 
 

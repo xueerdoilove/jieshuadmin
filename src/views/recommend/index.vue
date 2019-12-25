@@ -107,7 +107,7 @@ export default {
     },
     // 弹出本周书单
     showshudan(id) {
-      this.$router.push({ name: "booklist", params: { idd: id } });
+      this.$router.push({ name: "onerecommend", params: { idd: id } });
     },
     // 弹出优惠券编辑
     showedit(id) {

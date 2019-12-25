@@ -141,8 +141,8 @@ export const constantRoutes = [{
         title: '书单列表'
       }
     }, {
-      path: 'booklist',
-      name: 'booklist',
+      path: 'onerecommend',
+      name: 'onerecommend',
       component: () => import('@/views/recommend/booklist'),
       meta: {
         title: '书籍列表'

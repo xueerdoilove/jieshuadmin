@@ -4,7 +4,7 @@
       <div class="c_flex">
         <div class="c_yuandian">
           <el-checkbox v-show="bookData.state!=2" v-model="bookData.selected" @change="danxuanhandler">选择</el-checkbox>
-          <el-button v-show="bookData.state==2" @click="xiajia(bookData.id)">下架</el-button>
+          <el-button v-show="bookData.state==2&&bookData.bookCipStoreId" @click="xiajia(bookData.bookCipStoreId)">下架</el-button>
         </div>
         <div class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
       </div>
@@ -17,10 +17,10 @@
         <span style="color:#1F7872">{{bookData.borrowCnt}}</span>
       </div>
     </div>
-    <div class="book-img" @click="gotodetail(bookData.id)">
+    <div class="book-img" @click="gotodetail(bookData.id,bookData.storeid)">
       <img class="image" :src="bookData.portrait" />
     </div>
-    <div class="book-right-c" @click="gotodetail(bookData.id)">
+    <div class="book-right-c" >
       <div class="book-name">{{bookData.name || bookData.bookCipName}}</div>
       <div class="book-right-left">
         <div class="book-stars">
@@ -30,7 +30,7 @@
           </div>
           <div class="book-stars-f">{{bookData.doubanScore}}</div>
         </div>
-        <div class="book-auth">{{bookData.author}}</div>
+        <div class="book-auth">作者:{{bookData.author}}</div>
         <div class="book-auth">ISBN:{{bookData.isbn}}</div>
         <div class="book-price">
           <div class="book-icon-yuan" style="margin-left:0;">
@@ -75,8 +75,8 @@ export default {
   },
   computed: {},
   methods: {
-    gotodetail(id){
-      this.$router.push({ name: "bookdetail", params: { bookid:id } });
+    gotodetail(id,storeid){
+      this.$router.push({ name: "bookdetail", params: { bookid:id ,storeid:storeid} });
     },
     danxuanhandler(){
       this.$emit('danxuan')
@@ -169,6 +169,7 @@ export default {
   float: left;
   margin-left: 20px;
   overflow: hidden;
+  cursor: pointer;
 }
 .book-img .image {
   float: left;

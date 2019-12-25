@@ -84,7 +84,8 @@
     <div class="detailcart" style="width:1200px;margin:20px auto 0;">
       <el-row class="book_div">
         <el-col :span="12" v-for="book in booklist" v-bind:key="book.id">
-          <bookbigitem :bookData="book" />
+          <bookbigitem :bookData="book"  @getbooklist="changepage(page)"/>
+          
         </el-col>
       </el-row>
       <el-pagination
@@ -108,7 +109,7 @@
             <el-col :span="12">
               <img :src="img.path" @click="openinnewwindow(img.path)" alt />
             </el-col>
-            <el-col :span="12">
+            <el-col :span="12" style="text-align:right">
               <el-button @click="delthisimg(img.id)">删除</el-button>
             </el-col>
           </el-row>
@@ -288,6 +289,9 @@ export default {
         page: this.page,
         pageSize: this.pageSize
       }).then(res => {
+        res.items.forEach(item =>{
+          item.storeid = this.shudanid
+        })
         this.booklist = res.items;
         this.totalItems = res.totalItems;
       });

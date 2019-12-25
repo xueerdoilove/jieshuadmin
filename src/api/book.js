@@ -7,10 +7,19 @@ export function getbookList(params) {
     params
   })
 }
+
+// 查询单本书的详情
+export function getonebook(id) {
+  return request({
+    url: '/bookcip/'+id,
+    method: 'get',
+    
+  })
+}
 // 下架图书
 export function delbook(id) {
   return request({
-    url: '/bookcip/'+id,
+    url: '/bookcipstore/'+id,
     method: 'delete',
   })
 }
@@ -37,5 +46,14 @@ export function bookcipbystore(params) {
     url: '/bookcipbystore',
     method: 'get',
     params
+  })
+}
+
+// 查询书的 具体编号列表 bookcip/{id}/bookstore/{id}/book
+
+export function getbookqrcodelist(params) {
+  return request({
+    url: '/bookcip/'+params.bookid+'/bookstore/'+params.bookstoreid+'/book',
+    method: 'get',
   })
 }
