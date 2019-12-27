@@ -166,6 +166,7 @@ export default {
   named: "书店详情",
   data() {
     return {
+      state:'',
       shudanid: "",
       show_detail: false,
       detail: {},
@@ -194,6 +195,7 @@ export default {
       this.$router.go(-1);
       return;
     }
+    this.state = this.$route.params.state;
     this.getstore();
     this.getresource();
     this.getbookcnt();

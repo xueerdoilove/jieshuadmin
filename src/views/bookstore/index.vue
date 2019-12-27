@@ -38,6 +38,9 @@
            <div id="qrcode"></div>
          </div>
          <div v-show="!store_sharecode"> 
+           <div>
+             实体店的分享码只能设置一次不支持修改,请确认好再提交
+           </div>
            <span>分享码</span><el-input style="width:300px;margin-left:30px;" placeholder="请填写二维码" v-model="new_sharecode"></el-input>
            <br>
            <br>
@@ -133,7 +136,7 @@ export default {
       
     },
     getstore(data){
-      this.$router.push({ name: "storedetail", params: { idd: data.id } });
+      this.$router.push({ name: "storedetail", params: { idd: data.id ,state:this.state} });
       // getstorebyid(data).then(res =>{
       //     this.detail = res.item
       //     this.show_detail = true;

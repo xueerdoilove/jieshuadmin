@@ -58,7 +58,8 @@
 
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form1')">确定修改</el-button>
-        <el-button type="primary" v-show="state!=0" @click="deleteone()">停业</el-button>
+        <el-button type="primary" v-show="state==2" @click="deleteone()">停业</el-button>
+        <el-button type="primary" v-show="state!=2" @click="putone()">开业</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -66,7 +67,7 @@
 
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
-import { putstore ,getprovcity ,deletestore} from '@/api/store'
+import { putstore ,getprovcity ,deletestore ,putone} from '@/api/store'
 
 export default {
   name: "newstore",
@@ -129,6 +130,24 @@ export default {
         deletestore({id:this.new_one.id}).then(res =>{
           this.$message({
             message: '书店停业成功!',
+            type: 'success'
+          });
+          this.$emit('hidedetail');
+        })
+      }).catch(() => {
+                 
+      });
+      
+    },
+    putone(){
+      this.$confirm('确定开业书店吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        putone({id:this.new_one.id}).then(res =>{
+          this.$message({
+            message: '书店开业成功!',
             type: 'success'
           });
           this.$emit('hidedetail');

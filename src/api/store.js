@@ -110,3 +110,11 @@ export function getbookcipbystore(params) {
     params
   })
 }
+
+// 开业 putone
+export function putone(params) {
+  return request({
+    url: '/bookstore/'+params.id+'/active',
+    method: 'put',
+  })
+}
