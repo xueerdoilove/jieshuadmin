@@ -45,7 +45,7 @@
         <span>{{item.startTime | timerd}} <br><br>至<br><br>{{item.endTime | timerd}}</span>
       </el-col>
       <el-col :span="6">
-        <textarea >{{item.introduction}}</textarea>
+        <div class="intro">{{item.introduction}}</div>
       </el-col>
       <el-col :span="9" style="padding-top:70px;text-align:center">
         <el-button @click="showedit(item.id)">编辑</el-button>
@@ -180,16 +180,19 @@ export default {
   flex-direction: column;
   justify-content: center;
 }
-.coupon_item textarea {
-  margin-top: 5px;
-  height: 170px;
-  width: 100%;
-  border:1px solid #aaa;
-}
 .img_item{
   height: 180px;
   border-bottom: 1px solid #eee;
   clear: both;
+}
+.intro{
+  margin-top: 5px;
+  height: 170px;
+  box-sizing: border-box;
+  padding:5px;
+  overflow-y: auto;
+  border:1px solid #ccc;
+  border-radius: 5px;
 }
 .img_item span {
   display: inline-flex;

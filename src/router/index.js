@@ -30,12 +30,12 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [{
+export const constantRoutes = [
+  {
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
   },
-
   {
     path: '/404',
     component: () => import('@/views/404'),
@@ -249,6 +249,25 @@ export const constantRoutes = [{
       component: () => import('@/views/system/index'),
       meta: {
         title: '基本配置列表'
+      }
+    }],
+
+  },
+  {
+    path: '/usercontrol',
+    name: 'usercontrol',
+    component: Layout,
+    redirect: 'userlist',
+    meta: {
+      title: '用户管理',
+      icon: 'form'
+    },
+    children: [{
+      path: 'userlist',
+      name: 'userlist',
+      component: () => import('@/views/user/index'),
+      meta: {
+        title: '管理员列表'
       }
     }],
 

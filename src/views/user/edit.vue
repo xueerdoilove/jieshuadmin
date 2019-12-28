@@ -78,10 +78,6 @@ export default {
             a.configValue = a.configValue*100
           }
           putbaseconfig(this.newone.id,a).then(res =>{
-            this.$message({
-              type: "success",
-              message: "修改成功!"
-            });
             this.$emit('hideedit');
           })
         } else {

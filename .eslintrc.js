@@ -52,6 +52,7 @@ module.exports = {
       'before': true,
       'after': true
     }],
+    'vue/no-textarea-mustache':0,
     'vue/html-quotes':0,
     'vue/html-self-closing':0,
     'vue/require-default-prop':0,

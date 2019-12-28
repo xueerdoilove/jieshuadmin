@@ -47,3 +47,23 @@ export function resetpassword(data) {
     data
   })
 }
+
+
+// 获取管理员列表 getuserlist
+
+export function getuserlist() {
+  return request({
+    url: '/getuserlist',
+    method: 'get'
+  })
+}
+
+// 创建管理员 useradd
+
+export function useradd(data) {
+  return request({
+    url: '/useradd',
+    method: 'post',
+    data
+  })
+}
