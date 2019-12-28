@@ -107,8 +107,8 @@ export default {
     };
   },
   mounted() {
-    this.bookid = this.$route.params.bookid;
-    this.storeid = this.$route.params.storeid;
+    this.bookid = this.$route.query.bookid;
+    this.storeid = this.$route.query.storeid;
 
     if (!this.bookid) {
       this.$router.go(-1);

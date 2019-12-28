@@ -136,7 +136,7 @@ export default {
       
     },
     getstore(data){
-      this.$router.push({ name: "storedetail", params: { idd: data.id ,state:this.state} });
+      this.$router.push({ name: "storedetail", query: { idd: data.id ,state:this.state} });
       // getstorebyid(data).then(res =>{
       //     this.detail = res.item
       //     this.show_detail = true;

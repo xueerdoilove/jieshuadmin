@@ -9,7 +9,7 @@
         &nbsp;
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="shownew">+新增管理员</el-button>
+        <!-- <el-button type="primary" @click="shownew">+新增管理员</el-button> -->
       </el-col>
     </el-row>
     <el-row class="coupon_item">
@@ -26,7 +26,7 @@
         <span>操作</span>
       </el-col>
     </el-row>
-    <el-row class="coupon_item" v-for="item in userlist" v-bind:key="item.id">
+    <el-row class="coupon_item" v-for="item in usermenulist" v-bind:key="item.id">
       <el-col :span="4">
         <span>{{item.name}}</span>
       </el-col>
@@ -37,7 +37,7 @@
         <span>{{item.gender | gender }}</span>
       </el-col>
       <el-col :span="6" style="padding-top:20px;">
-        <el-button @click="gotoquanxian(item.id)">权限管理</el-button>
+        <el-button >权限管理</el-button>
       </el-col>
     </el-row>
     <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
@@ -52,7 +52,7 @@
         ></el-pagination>
       </el-col>
     </el-row>
-    <div v-show="userlist.length==0" style="line-height:100px;text-align:center;">没有查到相应条件下的管理员列表</div>
+    <div v-show="usermenulist.length==0" style="line-height:100px;text-align:center;">没有查到相应条件下的管理员列表</div>
 
     <el-dialog title="新增管理员" :visible.sync="show_new">
       <newuser v-if="show_new" @hidenew="hidenew" />
@@ -61,15 +61,15 @@
 </template>
 
 <script>
-import { getuserlist } from "@/api/user";
+import { usermenu } from "@/api/user";
 import Newuser from "./newone";
 export default {
-  named: "优惠券",
+  named: "管理员权限",
   data() {
     return {
       show_edit: false,
       show_new: false,
-      userlist: [],
+      usermenulist: [],
       page: 1,
       pageSize: 5,
       state: 1,
@@ -80,7 +80,10 @@ export default {
     };
   },
   mounted() {
-    this.getuserlist();
+    console.log(this.$route)
+    this.userid = this.$route.query.userid;
+
+    this.getusermenu();
   },
   components: { Newuser },
   filters: {
@@ -100,43 +103,26 @@ export default {
     shownew() {
       this.show_new = true;
     },
-    // 弹出优惠券编辑
-    showedit(id) {
-      this.userlist.forEach(item => {
-        if (item.id == id) {
-          localStorage.setItem("oneuser", JSON.stringify(item));
-          return;
-        }
-      });
-      this.show_edit = true;
-    },
-    // 去权限页面
-    gotoquanxian(userid){
-      this.$router.push({ name: "permissions", query: { userid: userid } });
-    },
+    
     hideedit() {
       this.show_edit = false;
-      this.getuserlist();
+      this.getusermenu();
     },
     hidenew() {
       this.show_new = false;
-      this.getuserlist();
+      this.getusermenu();
     },
     changepage(e) {
       this.page = e;
-      this.getuserlist();
+      this.getusermenu();
     },
-    getuserlist() {
+    getusermenu() {
       //useradd?userType=1&state=1&sk=x&so=x&page=1&pageSize=10
-      getuserlist({
-        userType: 1,
-        page: this.page,
-        pageSize: this.pageSize,
-        state:1
+      usermenu({
+        id: this.userid,
       }).then(res => {
         if (res) {
-          this.userlist = res.items;
-          this.totalItems = res.totalItems;
+          this.usermenulist = res.items;
         }
       });
     }

@@ -190,12 +190,12 @@ export default {
     Bookbigitem
   },
   mounted() {
-    this.shudanid = this.$route.params.idd;
+    this.shudanid = this.$route.query.idd;
     if (!this.shudanid) {
       this.$router.go(-1);
       return;
     }
-    this.state = this.$route.params.state;
+    this.state = this.$route.query.state;
     this.getstore();
     this.getresource();
     this.getbookcnt();

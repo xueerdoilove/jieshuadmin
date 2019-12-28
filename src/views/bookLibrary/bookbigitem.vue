@@ -76,7 +76,7 @@ export default {
   computed: {},
   methods: {
     gotodetail(id,storeid){
-      this.$router.push({ name: "bookdetail", params: { bookid:id ,storeid:storeid} });
+      this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid} });
     },
     danxuanhandler(){
       this.$emit('danxuan')

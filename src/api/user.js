@@ -49,12 +49,13 @@ export function resetpassword(data) {
 }
 
 
-// 获取管理员列表 getuserlist
+// 获取管理员列表  useradd?userType=1&state=1&sk=x&so=x&page=1&pageSize=10
 
-export function getuserlist() {
+export function getuserlist(params) {
   return request({
-    url: '/getuserlist',
-    method: 'get'
+    url: '/useradd',
+    method: 'get',
+    params
   })
 }
 
@@ -65,5 +66,14 @@ export function useradd(data) {
     url: '/useradd',
     method: 'post',
     data
+  })
+}
+
+
+// 用户权限菜单 user/{userId}/menu
+export function usermenu(params) {
+  return request({
+    url: '/user/'+params.id+'/menu',
+    method: 'get',
   })
 }

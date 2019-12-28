@@ -269,6 +269,14 @@ export const constantRoutes = [
       meta: {
         title: '管理员列表'
       }
+    },{
+      path: 'permissions',
+      name: 'permissions',
+      component: () => import('@/views/user/permissions'),
+      meta: {
+        title: '管理员权限'
+      },
+      hidden: true
     }],
 
   },

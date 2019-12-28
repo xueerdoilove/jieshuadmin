@@ -146,7 +146,7 @@ export default {
   computed: {},
   methods: {
     getbookciplist() {
-      var shudanid = this.$route.params.idd;
+      var shudanid = this.$route.query.idd;
       if (!shudanid) {
         this.$router.go(-1);
         return;
@@ -212,7 +212,7 @@ export default {
       });
     },
     addbooktorecommend() {
-      var shudanid = this.$route.params.idd;
+      var shudanid = this.$route.query.idd;
       if (this.bookid == 0) {
         this.$message("请搜素并选择一本书,在进行提交");
         return;
