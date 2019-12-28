@@ -75,6 +75,10 @@ export default {
       this.$refs[formName].validate(valid => {
         if (valid) {
           putrecommendlist(this.newone).then(res => {
+            this.$message({
+              type: "success",
+              message: "修改成功!"
+            });
             this.$emit("hideedit");
           });
         } else {
