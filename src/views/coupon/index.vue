@@ -28,16 +28,16 @@
       </el-col>
     </el-row>
     <el-row class="coupon_item">
-      <el-col style="text-align:center;" :span="4">
+      <el-col style="text-align:center;" :span="7">
         <span>封面图</span>
       </el-col>
-      <el-col style="text-align:center;" :span="4">
+      <el-col style="text-align:center;" :span="3">
         <span>起止时间/有效时长</span>
       </el-col>
       <el-col :span="4">
         <span>优惠券名</span>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
         <span>介绍</span>
       </el-col>
       <el-col :span="6">
@@ -45,16 +45,17 @@
       </el-col>
     </el-row>
     <el-row class="coupon_item" v-for="item in couponlist" v-bind:key="item.id">
-      <el-col style="text-align:center;" :span="4">
+      <el-col style="text-align:center;" :span="7">
         <img style="height:70px;float:left;margin-top:5px;" :src="item.picture" />
       </el-col>
-      <el-col style="text-align:center;" :span="4">
-        <span>{{item.startDate?item.startDate+ ' 到 ' +item.endDate :item.validDays+'天'}}</span>
+      <el-col style="text-align:center;" :span="3">
+        <span v-if="item.startDate">{{item.startDate}}<br>到<br>{{item.endDate}}</span>
+        <span v-if="!item.startDate">{{item.validDays+'天'}}</span>
       </el-col>
       <el-col :span="4">
         <span>{{item.name}}</span>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
         <span>{{item.introduction}}</span>
       </el-col>
       <el-col :span="6" style="padding-top:20px;">

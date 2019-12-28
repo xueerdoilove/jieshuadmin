@@ -1,6 +1,7 @@
 <template>
   <div class="container">
     <div class="bookdetail">
+      <!-- 书详情 -->
       <div class="book-item">
         <div class="book-img">
           <img class="image" :src="bookData.portrait" @click="gotoimg(bookData.portrait)" />
@@ -36,9 +37,10 @@
           </div>
         </div>
         <div class="book-right-caozuo">
-          <el-button type="primary">编辑</el-button>
+          <el-button type="primary" @click="bianjibook">编辑</el-button>
         </div>
       </div>
+      <!-- 书价格&操作 -->
       <div class="priceandcaozuo">
         <div class="book-price">
           <div class="book-icon-yuan" style="margin-left:0;">
@@ -60,12 +62,12 @@
           >{{bookData.state | state}}</span>
         </div>
       </div>
-
+      <!-- 介绍 -->
       <div class="jieshao">
         <div class="js-title">内容简介</div>
         <div class="js-content" v-html="bookData.introduction"></div>
       </div>
-
+      <!-- 具体书的列表 -->
       <div class="jieshao" v-show="bookqrcodelist.length>0">
         <div class="js-title">库存信息</div>
         <div class="js-content">
@@ -84,6 +86,13 @@
           </el-row>
         </div>
       </div>
+
+      <!-- 修改书的详情 -->
+      <el-dialog title="修改书目详情" :visible.sync="show_edit">
+        <editbook v-if="show_edit" :bookData="bookData"  @hideedit='hideedit'/>
+      </el-dialog>
+      
+      
     </div>
   </div>
 </template>
@@ -95,6 +104,8 @@ import {
   delbook,
   getbookqrcodelist
 } from "@/api/book";
+
+import editbook from './editbook'
 export default {
   name: "bookdetail",
   data() {
@@ -103,8 +114,14 @@ export default {
       bookData: {},
       loading: "",
       storeid: "",
-      bookqrcodelist: [] // 具体编号的书
+      bookqrcodelist: [] ,// 具体编号的书
+
+      show_edit:false,// 修改书详情
+
     };
+  },
+  components:{
+    editbook
   },
   mounted() {
     this.bookid = this.$route.query.bookid;
@@ -158,7 +175,14 @@ export default {
         this.loading.close();
       });
     },
-
+    // 显示修改书
+    bianjibook(){
+      this.show_edit = true;
+    },
+    hideedit(){
+      this.show_edit = false;
+      this.getonebook()
+    },
     gotoimg(url) {
       window.open(url);
     },

@@ -53,7 +53,7 @@
         </el-form>
       </el-col>
       <el-col :span="4" style="text-align:right">
-        <el-button type="primary">+新增</el-button>
+        <el-button type="primary" @click="shownew">+新增</el-button>
       </el-col>
     </el-row>
 
@@ -87,6 +87,12 @@
     <el-row class="tiaojian_item" v-show="totalItems==0">
       <el-col :span="20" :offset="2" style="text-align:center;">没有书籍</el-col>
     </el-row>
+
+
+    <!-- 新增书目 -->
+      <el-dialog title="新增书目" :visible.sync="show_new">
+        <newbook     @hidenew='hidenew'/>
+      </el-dialog>
   </div>
 </template>
 
@@ -95,15 +101,19 @@ import {
   getbookList,
   bookcipsearch,
   bookcipbystore,
-  putbookonline
+  putbookonline,
+  postbookcip
 } from "@/api/book";
 import Bookbigitem from "./bookbigitem";
+import newbook from "./newbook";
 import { getstoreList } from "@/api/store";
 
 export default {
   named: "书库信息",
   data() {
     return {
+      show_new:false,
+
       loading: "",
 
       searchtype: 0,
@@ -131,7 +141,8 @@ export default {
     };
   },
   components: {
-    Bookbigitem
+    Bookbigitem,
+    newbook
   },
   computed: {
     bookidlist() {
@@ -211,7 +222,9 @@ export default {
         state: this.state,
         name: this.searchvalue,
         page: this.page,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        sk:'time',
+        so:'desc',
       })
         .then(res => {
           this.booklist = this.tianjiazhuangt(res.items);
@@ -282,7 +295,9 @@ export default {
         bookStoreId: this.storeid,
         state: this.state,
         page: this.page,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        sk:'time',
+        so:'desc',
       })
         .then(res => {
           this.booklist = this.tianjiazhuangt(res.items);
@@ -312,7 +327,9 @@ export default {
       getbookList({
         state: this.state,
         page: this.page,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        sk:'time',
+        so:'desc',
       })
         .then(res => {
           this.booklist = this.tianjiazhuangt(res.items);
@@ -325,6 +342,15 @@ export default {
     },
     zhuangtai(e) {
       this.changepage(1);
+    },
+    shownew(){
+      this.show_new = true
+    },
+    hidenew(){
+      this.state = 1
+      this.searchtype = 0
+      this.show_new = false;
+      this.changepage(1)
     },
     changepage(e) {
       this.page = e;

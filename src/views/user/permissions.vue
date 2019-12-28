@@ -80,7 +80,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.$route)
     this.userid = this.$route.query.userid;
 
     this.getusermenu();

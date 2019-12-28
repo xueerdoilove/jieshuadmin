@@ -73,7 +73,6 @@
           action=""
           :on-remove="handleRemove"
           :on-change="handleChange"
-          :file-list="imglist"
           :multiple="false"
           :limit="1"
           list-type="picture"
@@ -82,7 +81,7 @@
           <span style="margin-left:20px;" slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb,宽700px,高100px</span>
         </el-upload>
         <input style="display:none;" type="text" v-model="newcoupon.picture" />
-        <img style="width:200px;" :src="newcoupon.picture" v-if="imglist.length==0"/>
+        <img style="width:200px;" :src="newcoupon.picture" v-if="newcoupon.picture.length<1000"/>
       </el-form-item>
 
       <el-form-item>
@@ -150,7 +149,6 @@ export default {
           { required: true, message: "请选择一个图片", trigger: "change" }
         ]
       },
-      imglist:[],
     };
   },
   props: {
@@ -221,7 +219,7 @@ export default {
           }
           formData.append( 'upperLimit',this.newcoupon['upperLimit']*100)
 
-          if(this.imglist.length>0){
+          if(this.newcoupon['picture'].length>1000){
             formData.append('picture',convertBase64UrlToBlob(this.newcoupon['picture']),'fmt.jpg')
 
             //图片格式转化

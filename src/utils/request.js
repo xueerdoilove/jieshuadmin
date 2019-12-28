@@ -70,12 +70,21 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    console.log(error) // for debug
+    console.log(typeof error)
+    if((''+error).search('403')!='-1'){
+      Message({
+        message: '无权操作,请切换账号',
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }else if((''+error).search('401')!='-1'){
+      Message({
+        message: '登陆过期,请重新登录',
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )

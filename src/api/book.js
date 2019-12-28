@@ -57,3 +57,31 @@ export function getbookqrcodelist(params) {
     method: 'get',
   })
 }
+// 修改书 putbookcip
+
+export function putbookcip(id,data) {
+  return request({
+    url: '/bookcip/'+id,
+    method: 'put',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
+
+// 新建postbookcip
+export function postbookcip(data) {
+  return request({
+    url: '/bookcip',
+    method: 'post',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
