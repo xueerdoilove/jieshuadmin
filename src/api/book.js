@@ -40,10 +40,25 @@ export function bookcipsearch(params) {
   })
 }
 
-
+// 上架 门店图书 api/bookcipstore/{bookcipstoreId}
+export function putbookcipstore( bookcipstoreId ) {
+  return request({
+    url: '/bookcipstore/'+bookcipstoreId,
+    method: 'put',
+  })
+}
+// bookstore/{id}/bookcip/{id} 查询 书店的库存
+export function getbookstorekucun(params) {
+  return request({
+    url: '/bookstore/'+params.bookstoreid+'/bookcip/'+params.bookid,
+    method: 'get',
+    params
+  })
+}
+// 查询书店里面的书目
 export function bookcipbystore(params) {
   return request({
-    url: '/bookcipbystore',
+    url: '/bookstore/'+params.bookStoreId+'/bookcip',
     method: 'get',
     params
   })

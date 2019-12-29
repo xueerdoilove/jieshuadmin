@@ -37,7 +37,7 @@
         <span>{{item.gender | gender }}</span>
       </el-col>
       <el-col :span="6" style="padding-top:20px;">
-        <el-button @click="gotoquanxian(item.id)">权限管理</el-button>
+        <el-button @click="gotoquanxian(item.id,item.name)">权限管理</el-button>
       </el-col>
     </el-row>
     <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
@@ -111,8 +111,8 @@ export default {
       this.show_edit = true;
     },
     // 去权限页面
-    gotoquanxian(userid){
-      this.$router.push({ name: "permissions", query: { userid: userid } });
+    gotoquanxian(userid,name){
+      this.$router.push({ name: "permissions", query: { userid: userid ,username:name} });
     },
     hideedit() {
       this.show_edit = false;
@@ -127,7 +127,7 @@ export default {
       this.getuserlist();
     },
     getuserlist() {
-      //useradd?userType=1&state=1&sk=x&so=x&page=1&pageSize=10
+      //useradd?userType=1&state=1&sk=x&so=x&page=1&pageSize=10 usertype 1 管理员 0 普通用户
       getuserlist({
         userType: 1,
         page: this.page,

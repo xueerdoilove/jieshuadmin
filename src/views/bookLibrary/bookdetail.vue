@@ -27,8 +27,9 @@
               <div class="book-stars-f">{{bookData.doubanScore}}</div>
             </div>
             <div class="book-auth">
-              库存:
-              <span style="color:#d13f32">{{bookData.totalCnt}}</span> &nbsp;&nbsp;&nbsp;借出总次数:
+              数量:
+              <span style="color:#d13f32">{{bookData.totalCnt}}</span> &nbsp;&nbsp;&nbsp;库存:
+              <span style="color:#d13f32">{{kucun}}</span>&nbsp;&nbsp;&nbsp;借出总次数:
               <span style="color:#d13f32">{{bookData.borrowCnt}}</span>
             </div>
             <div class="book-auth"></div>
@@ -59,7 +60,7 @@
           <span
             class="sxj"
             :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}"
-          >{{bookData.state | state}}</span>
+          >{{bookData.state | state(storeid)}}</span>
         </div>
       </div>
       <!-- 介绍 -->
@@ -102,7 +103,8 @@ import {
   getonebook,
   putbookonline,
   delbook,
-  getbookqrcodelist
+  getbookqrcodelist,
+  getbookstorekucun
 } from "@/api/book";
 
 import editbook from './editbook'
@@ -114,6 +116,8 @@ export default {
       bookData: {},
       loading: "",
       storeid: "",
+      bookstateinstore:-1,// -1 书店的书 没有状态 0 下架 1 上架
+      kucun:0,
       bookqrcodelist: [] ,// 具体编号的书
 
       show_edit:false,// 修改书详情
@@ -126,25 +130,31 @@ export default {
   mounted() {
     this.bookid = this.$route.query.bookid;
     this.storeid = this.$route.query.storeid;
+    this.bookstateinstore = this.$route.query.bookstateinstore==undefined?-1: this.$route.query.bookstateinstore
 
     if (!this.bookid) {
       this.$router.go(-1);
       return;
     }
     if (this.storeid != 0) {
-      this.getbookqrcodelist();
+      this.getbookqrcodelist();// 查询本店的书的 状态列表
+      this.getbookstorekucun();// 查询本店的书的库存
     }
     this.getonebook();
   },
   filters: {
-    state(num) {
+    state(num,storeid) {
       //下架(0),未上架(1),上架(2))
+      var shudianz = ''
+      if(storeid!=0){
+        shudianz = '(书店中的状态)'
+      }
       if (num == 0) {
-        return "下架中";
+        return "下架中"+shudianz;
       } else if (num == 1) {
-        return "待上架";
+        return "待上架"+shudianz;
       } else {
-        return "上架中";
+        return "上架中"+shudianz;
       }
     },
     shustate(num) {
@@ -171,9 +181,25 @@ export default {
         background: "rgba(0, 0, 0, 0.3)"
       });
       getonebook(this.bookid).then(res => {
+        if(this.storeid!=0){
+          if(this.bookstateinstore==0){
+            res.item.state = 0
+          }else{
+            res.item.state = 2
+          }
+        }
         this.bookData = res.item;
         this.loading.close();
       });
+    },
+    // 获取库存
+    getbookstorekucun(){
+      getbookstorekucun({
+        bookstoreid:this.storeid,
+        bookid:this.bookid
+      }).then(res =>{
+        this.kucun = res.item.bookCnt
+      })
     },
     // 显示修改书
     bianjibook(){
@@ -224,7 +250,6 @@ export default {
         bookid: this.bookid,
         bookstoreid: this.storeid
       }).then(res => {
-        console.log(res);
         this.bookqrcodelist = res.items;
       });
     }

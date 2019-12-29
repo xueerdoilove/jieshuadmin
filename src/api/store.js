@@ -102,10 +102,10 @@ export function getbookcnt(params) {
   })
 }
 
-// 获取书店的书列表 bookcipbystore?bookStoreId=2&page=1&pageSize=200
+// 查询书店里面的书目
 export function getbookcipbystore(params) {
   return request({
-    url: '/bookcipbystore',
+    url: '/bookstore/'+params.bookStoreId+'/bookcip',
     method: 'get',
     params
   })

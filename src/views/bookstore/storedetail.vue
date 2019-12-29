@@ -82,21 +82,32 @@
     </div>
 
     <div class="detailcart" style="width:1200px;margin:20px auto 0;">
+      <div style="line-height:80px;">
+        <el-form label-width="80px" >
+          <el-form-item label="状态:">
+            <el-radio-group v-model="bookstate" @change="changepage(1)">
+              <el-radio :label="1">上架中</el-radio>
+              <el-radio :label="0">已下架</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+      </div>
       <el-row class="book_div">
         <el-col :span="12" v-for="book in booklist" v-bind:key="book.id">
-          <bookbigitem :bookData="book"  @getbooklist="changepage(page)"/>
-          
+          <bookbigitem :bookData="book" @getbooklist="changepage(page)" />
         </el-col>
       </el-row>
-      <el-pagination
-        v-show="totalItems>=pageSize"
-        background
-        :total="totalItems"
-        :page-size="pageSize"
-        :current-page="page"
-        @current-change="changepage"
-        layout="prev, pager, next"
-      ></el-pagination>
+      <div style="text-align:center;margin-top:20px;">
+        <el-pagination
+          v-show="totalItems>=pageSize"
+          background
+          :total="totalItems"
+          :page-size="pageSize"
+          :current-page="page"
+          @current-change="changepage"
+          layout="prev, pager, next"
+        ></el-pagination>
+      </div>
     </div>
     <el-dialog title="实体店详情" :visible.sync="show_detail">
       <storedetail v-if="show_detail" :state="state" :new_one="detail" @hidedetail="hidedetail" />
@@ -161,12 +172,12 @@ import {
   getbookcipbystore
 } from "@/api/store";
 import Storedetail from "./detail";
-import Bookbigitem from '../bookLibrary/bookbigitem'
+import Bookbigitem from "../bookLibrary/bookbigitem";
 export default {
   named: "书店详情",
   data() {
     return {
-      state:'',
+      state: "",
       shudanid: "",
       show_detail: false,
       detail: {},
@@ -177,10 +188,11 @@ export default {
       imglist1: [],
       picture: "",
 
-      booklist:[],
+      booklist: [],
       page: 1,
       sk: "time",
       so: "asc",
+      bookstate: 1,
       pageSize: 10,
       totalItems: 0
     };
@@ -198,7 +210,7 @@ export default {
     this.state = this.$route.query.state;
     this.getstore();
     this.getresource();
-    this.getbookcnt();
+    this.getbookcnt(); // 书店所以书的数量
     this.getbookcipbystore();
   },
   methods: {
@@ -261,8 +273,8 @@ export default {
         this.imglist1 = [];
         this.getresource();
         this.$message({
-          message: '添加成功!',
-          type: 'success'
+          message: "添加成功!",
+          type: "success"
         });
       });
     },
@@ -278,8 +290,8 @@ export default {
         delresource({ id: id }).then(res => {
           this.getresource();
           this.$message({
-            message: '删除成功!',
-            type: 'success'
+            message: "删除成功!",
+            type: "success"
           });
         });
       });
@@ -289,11 +301,14 @@ export default {
       getbookcipbystore({
         bookStoreId: this.shudanid,
         page: this.page,
-        pageSize: this.pageSize
+        pageSize: this.pageSize,
+        state: this.bookstate
       }).then(res => {
-        res.items.forEach(item =>{
-          item.storeid = this.shudanid
-        })
+        res.items.forEach(item => {
+          item.storeid = this.shudanid;
+          item.state = this.bookstate
+          item.mendianshu = true// 门店书目的标记
+        });
         this.booklist = res.items;
         this.totalItems = res.totalItems;
       });

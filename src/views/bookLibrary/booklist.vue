@@ -2,7 +2,7 @@
   <div class="container">
     <el-row class="tianjian_tou">
       <el-col :span="4">
-        <el-select class="riqi" v-model="searchtype" @change="changepage(1)">
+        <el-select class="riqi" style="margin-bottom:20px;" v-model="searchtype" @change="changepage(1)">
           <el-option
             v-for="searchdtype in searchtypelist"
             :key="searchdtype.id"
@@ -42,11 +42,20 @@
           value-key="name"
         ></el-autocomplete>
 
-        <el-form label-width="80px" v-show="searchtype!=2">
+        <el-form label-width="80px" v-show="searchtype==0">
           <el-form-item label="状态:">
             <el-radio-group v-model="state" @change="zhuangtai">
               <el-radio :label="2">上架中</el-radio>
               <el-radio :label="1">待上架</el-radio>
+              <el-radio :label="0">已下架</el-radio>
+            </el-radio-group>
+          </el-form-item>
+        </el-form>
+
+        <el-form label-width="80px" v-show="searchtype==1 || searchtype==3">
+          <el-form-item label="状态:">
+            <el-radio-group v-model="bookStorestate" @change="zhuangtai">
+              <el-radio :label="1">上架中</el-radio>
               <el-radio :label="0">已下架</el-radio>
             </el-radio-group>
           </el-form-item>
@@ -102,7 +111,8 @@ import {
   bookcipsearch,
   bookcipbystore,
   putbookonline,
-  postbookcip
+  postbookcip,
+  
 } from "@/api/book";
 import Bookbigitem from "./bookbigitem";
 import newbook from "./newbook";
@@ -127,6 +137,7 @@ export default {
       checkedall: false,
       booklist: [],
       state: 2, //下架(0),未上架(1),上架(2)）
+      bookStorestate:1,// 1 上架中 0 下架中 书店的书目状态
       count: -1, // -1 无,
       page: 1,
       pageSize: 10,
@@ -285,9 +296,15 @@ export default {
       this.storeid = item.id;
       this.getbookbystore();
     },
+    
     // 根据书店id查询书列表
     getbookbystore() {
-      if (this.storeid == 0) {
+      if (this.storeid == 0 ) {// 如果是根据门店查询并且 storeid ==0 那就返回空
+        this.booklist = [];
+        this.totalItems = 0;
+        return;
+      }
+      if(this.storeid == this.onlinestoreid&& this.searchtype==3){// 
         this.booklist = [];
         this.totalItems = 0;
         return;
@@ -301,14 +318,15 @@ export default {
       });
       bookcipbystore({
         bookStoreId: this.storeid,
-        state: this.state,
+        state: this.bookStorestate,
         page: this.page,
         pageSize: this.pageSize,
         sk:'time',
         so:'desc',
       })
         .then(res => {
-          this.booklist = this.tianjiazhuangt(res.items);
+
+          this.booklist = this.tianjiazhuangt(res.items,this.bookStorestate);
           this.totalItems = res.totalItems;
           this.loading.close();
         })
@@ -316,11 +334,22 @@ export default {
           this.loading.close();
         });
     },
-    tianjiazhuangt(arr) {
-      arr.forEach(book => {
-        book.selected = false;
-        book.storeid = this.storeid
-      });
+    tianjiazhuangt(arr,bookStorestate) {
+      if(bookStorestate == undefined){
+        arr.forEach(book => {
+          book.selected = false;
+          book.storeid = this.storeid
+        });
+      }else{
+        arr.forEach(book => {
+          book.selected = false;
+          book.storeid = this.storeid
+          book.state = bookStorestate
+          book.mendianshu = true
+        });
+      }
+
+      
       return arr;
     },
     // 根据状态 查询书列表

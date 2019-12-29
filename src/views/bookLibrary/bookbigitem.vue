@@ -3,13 +3,15 @@
     <div class="caozuo">
       <div class="c_flex">
         <div class="c_yuandian">
-          <el-checkbox v-show="bookData.state!=2" v-model="bookData.selected" @change="danxuanhandler">选择</el-checkbox>
-          <el-button v-show="bookData.state==2&&bookData.bookCipStoreId" @click="xiajia(bookData.bookCipStoreId)">下架</el-button>
+          <el-checkbox v-show="bookData.state!=2&&!bookData.bookCipStoreId" v-model="bookData.selected" @change="danxuanhandler">选择</el-checkbox>
+          <el-button v-show="bookData.state==2&&bookData.bookCipStoreId || bookData.state==1&&bookData.bookCipStoreId" @click="xiajia(bookData.bookCipStoreId)">下架</el-button>
+          <el-button v-show="bookData.state==0&&bookData.bookCipStoreId" @click="shangjia(bookData.bookCipStoreId)">上架</el-button>
         </div>
-        <div class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
+        <div v-if="!bookData.mendianshu" class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
+        <div v-if="bookData.mendianshu" class="state" :class="{'color0':+bookData.state==0,'color2':+bookData.state==1}" >{{bookData.state | state1}}</div>
       </div>
       <div class="x_kucun">
-        库存:
+        数量:
         <span style="color:#1F7872">{{bookData.totalCnt}}</span>
       </div>
       <div class="x_kucun">
@@ -48,7 +50,7 @@
 </template>
 
 <script>
-import { delbook } from "@/api/book";
+import { delbook , putbookcipstore} from "@/api/book";
 
 export default {
   name: "bookbigitem",
@@ -71,15 +73,43 @@ export default {
       } else {
         return "上架中";
       }
-    }
+    },
+    state1(num) {
+      //下架(0), 上架(1))
+      if (num == 0) {
+        return "下架中";
+      } else if (num == 1) {
+        return "上架中";
+      }
+    },
   },
   computed: {},
   methods: {
     gotodetail(id,storeid){
-      this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid} });
+      if(this.bookData.mendianshu){
+        this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid ,bookstateinstore:this.bookData.state} });
+      }else{
+        this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid } });
+      }
     },
     danxuanhandler(){
       this.$emit('danxuan')
+    },
+    shangjia(id){
+      this.$confirm("确定上架此本书吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() =>{
+        // 上架书店的书
+        putbookcipstore(id).then(res =>{
+          this.$message({
+              message: "上架成功",
+              type: "success"
+            });
+            this.$emit('getbooklist')
+        })
+      })
     },
     xiajia(id){
       this.$confirm("确定下架此本书吗?", "提示", {
