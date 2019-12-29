@@ -118,3 +118,12 @@ export function putone(params) {
     method: 'put',
   })
 }
+
+// 查询线上的仓库id repositorystore
+
+export function getrepositorystore(params) {
+  return request({
+    url: '/repositorystore' ,
+    method: 'get',
+  })
+}

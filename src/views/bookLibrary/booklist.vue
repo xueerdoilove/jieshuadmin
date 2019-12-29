@@ -106,7 +106,7 @@ import {
 } from "@/api/book";
 import Bookbigitem from "./bookbigitem";
 import newbook from "./newbook";
-import { getstoreList } from "@/api/store";
+import { getstoreList , getrepositorystore} from "@/api/store";
 
 export default {
   named: "书库信息",
@@ -133,6 +133,7 @@ export default {
 
       searchvalue: "", // 搜索书的关键字
 
+      onlinestoreid:1,// 线上仓库id
       storeid: 0,
       storelist: [],
       storeitem: "",
@@ -157,8 +158,15 @@ export default {
   },
   mounted() {
     this.changepage();
+    this.getrepositorystore()
   },
   methods: {
+    // 查询线上仓库id
+    getrepositorystore(){
+      getrepositorystore().then(res =>{
+        this.onlinestoreid = res.item.id
+      })
+    },
     //批量上架
     piliangshangjia() {
       this.$confirm("确定上架已勾选的书吗?", "提示", {
@@ -358,7 +366,7 @@ export default {
         this.storeid = 0
         this.getbooklist();
       } else if (this.searchtype == 1) {// 线上数目
-        this.storeid = 1
+        this.storeid =  this.onlinestoreid
         this.getbookbystore();
       } else if (this.searchtype == 3) {// 线下数目
         this.getbookbystore();
