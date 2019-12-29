@@ -84,6 +84,12 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+    }else{
+      Message({
+        message: '请求超时,请刷新页面',
+        type: 'error',
+        duration: 5 * 1000
+      })
     }
     return Promise.reject(error)
   }

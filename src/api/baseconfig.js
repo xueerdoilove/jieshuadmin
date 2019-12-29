@@ -47,3 +47,10 @@ export function delmenu(data) {
     method: 'delete',
   })
 }
+
+export function delmenuall(data) {
+  return request({
+    url: '/user/'+data.userid+'/menu',
+    method: 'delete',
+  })
+}

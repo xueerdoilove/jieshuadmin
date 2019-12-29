@@ -19,8 +19,11 @@
       <el-col :span="6">
         <span>电话</span>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
         <span>性别</span>
+      </el-col>
+      <el-col :span="4">
+        <span>级别</span>
       </el-col>
       <el-col :span="6">
         <span>操作</span>
@@ -33,15 +36,18 @@
       <el-col :span="6">
         <span>{{item.phone}}</span>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="4">
         <span>{{item.gender | gender }}</span>
       </el-col>
+      <el-col :span="4">
+        <span>{{item.bookStoreName | bookStoreName}}</span>
+      </el-col>
       <el-col :span="6" style="padding-top:20px;">
-        <el-button @click="gotoquanxian(item.id,item.name)">权限管理</el-button>
+        <el-button @click="gotoquanxian(item.id,item.name,item.bookStoreId,item.bookStoreName)">权限管理</el-button>
       </el-col>
     </el-row>
     <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
-      <el-col :span="20" :offset="2" style="text-align:center;">
+      <el-col :span="20" :offset="2" style="text-align:center;margin-top:20px;">
         <el-pagination
           background
           :total="totalItems"
@@ -92,6 +98,13 @@ export default {
       } else if (value == 0) {
         return "未知";
       }
+    },
+    bookStoreName(name){
+      if(name){
+        return name + '店员'
+      }else{
+        return '管理员'
+      }
     }
   },
   computed: {},
@@ -111,8 +124,8 @@ export default {
       this.show_edit = true;
     },
     // 去权限页面
-    gotoquanxian(userid,name){
-      this.$router.push({ name: "permissions", query: { userid: userid ,username:name} });
+    gotoquanxian(userid,name,storeid,bookStoreName){
+      this.$router.push({ name: "permissions", query: { userid: userid ,username:name ,storeid:storeid ,bookStoreName} });
     },
     hideedit() {
       this.show_edit = false;
