@@ -20,6 +20,7 @@ export default {
     ...mapGetters(["name"])
   },
   mounted() {
+    console.log(this.$router.options.routes)
     setTimeout(() => {
       var rules = localStorage.getItem("roleset");
       if (rules.search("4") != -1) {

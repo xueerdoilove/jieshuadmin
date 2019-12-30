@@ -30,8 +30,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-export const constantRoutes = [
-  {
+const constantRoutes = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -73,7 +72,7 @@ export const constantRoutes = [
           meta: {
             title: '图书详情'
           },
-          hidden:true
+          hidden: true
         }, {
           path: 'booklist',
           name: 'booklist',
@@ -86,6 +85,17 @@ export const constantRoutes = [
 
     ]
   },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
+]
+
+
+
+var luyou = [
   {
     path: '/coupon',
     name: 'coupon',
@@ -269,7 +279,7 @@ export const constantRoutes = [
       meta: {
         title: '管理员列表'
       }
-    },{
+    }, {
       path: 'permissions',
       name: 'permissions',
       component: () => import('@/views/user/permissions'),
@@ -280,28 +290,35 @@ export const constantRoutes = [
     }],
 
   },
-  // 404 page must be placed at the end !!!
-  {
-    path: '*',
-    redirect: '/404',
-    hidden: true
-  }
 ]
 
-const createRouter = () => new Router({
-  // mode: 'history', // require service support
-  scrollBehavior: () => ({
-    y: 0
-  }),
-  routes: constantRoutes
-})
 
-const router = createRouter()
+const createRouter = (a) => {
+  if (a) {
+    constantRoutes.forEach(item => {
+      a.push(item)
+    })
+  } else {
+    var a = constantRoutes
+  }
+  return new Router({
+    // mode: 'history', // require service support
+    scrollBehavior: () => ({
+      y: 0
+    }),
+    routes: a
+  })
+}
+
+var router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter()
+  const newRouter = createRouter(luyou)
   router.matcher = newRouter.matcher // reset router
 }
-
+setTimeout(() => {
+  router.addRoutes(luyou)
+  console.log('1121212')
+}, 1000)
 export default router
