@@ -1,9 +1,7 @@
 <template>
   <div class="login-container">
     <div class="bgimg">
-        <div class="bgimg-div">
-
-        </div>
+      <div class="bgimg-div"></div>
     </div>
     <el-form
       ref="loginForm"
@@ -52,19 +50,12 @@
         </span>
       </el-form-item>
 
-      <el-button
-        :loading="loading"
-        class="loginbtn"
-        @click.native.prevent="handleLogin"
-      >登陆</el-button>
+      <el-button :loading="loading" class="loginbtn" @click.native.prevent="handleLogin">登陆</el-button>
 
       <div class="tips">
         <span style="margin-right:20px;">忘记密码</span>
       </div>
-
-      
     </el-form>
-    
   </div>
 </template>
 
@@ -112,6 +103,14 @@ export default {
       immediate: true
     }
   },
+  mounted() {
+    this.$store.dispatch("GenerateRoutes", {
+      perms: [],
+      roles: "2"
+    }).then(() =>{
+      console.log(this.$store)
+    })
+  },
   methods: {
     showPwd() {
       if (this.passwordType === "password") {
@@ -134,7 +133,7 @@ export default {
           this.$store
             .dispatch("user/login", a)
             .then(() => {
-              localStorage.setItem('phone',this.loginForm.phone)
+              localStorage.setItem("phone", this.loginForm.phone);
               this.$router.push({ path: this.redirect || "/" });
               this.loading = false;
             })
@@ -202,14 +201,14 @@ $cursor: #fff;
 $bg: #fff;
 $dark_gray: #889aa4;
 $light_gray: #000;
-.bgimg{
+.bgimg {
   height: 10px;
   position: relative;
-  top:300px;
+  top: 300px;
 }
-.bgimg-div{
+.bgimg-div {
   height: 350px;
-  background-color: #1F7872;
+  background-color: #1f7872;
 }
 .login-container {
   min-height: 100%;
@@ -231,7 +230,7 @@ $light_gray: #000;
     font-size: 26px;
     background-color: #000;
     border-color: #000;
-    color:#fff;
+    color: #fff;
   }
   .tips {
     font-size: 14px;

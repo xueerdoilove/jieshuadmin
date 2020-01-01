@@ -30,7 +30,7 @@ import Layout from '@/layout'
  * a base page that does not have permission requirements
  * all roles can be accessed
  */
-const constantRoutes = [{
+export const constantRouters = [{
     path: '/login',
     component: () => import('@/views/login/index'),
     hidden: true
@@ -44,20 +44,59 @@ const constantRoutes = [{
     path: '/',
     component: Layout,
     name: 'index',
-    redirect: '/pachong',
     meta: {
-      title: '书库管理',
+      title: '',
       icon: 'dashboard'
     },
+    redirect: '/welcome',
     children: [{
-        path: 'pachong',
-        name: 'Pachong',
-        component: () => import('@/views/pachong/index'),
-        meta: {
-          title: '爬虫信息'
-        }
+      path: 'welcome',
+      name: 'welcome',
+      component: () => import('@/views/pachong/index'),
+      meta: {
+        title: '欢迎'
+      }
+    }]
+  },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/',
+    hidden: true
+  }
+]
+
+
+
+export const asyncRouters = [
+  {
+    path: '/pcbook',
+    component: Layout,
+    name: 'pachong',
+    redirect: 'pachong',
+    meta: {
+      title: '书库管理',
+      icon: 'form'
+    },
+    children: [{
+      path: 'pachong',
+      name: 'Pachong',
+      component: () => import('@/views/pachong/index'),
+      meta: {
+        title: '爬虫信息'
       },
-      {
+    }, ]
+  },
+  {
+    path: '/skbook',
+    component: Layout,
+    name: 'skbook',
+    redirect: 'bookLibrary',
+    meta: {
+      title: '书库管理',
+      icon: 'form'
+    },
+    children: [{
         path: 'bookLibrary',
         name: 'bookLibrary',
         redirect: 'booklist',
@@ -84,82 +123,6 @@ const constantRoutes = [{
       }
 
     ]
-  },
-  // 404 page must be placed at the end !!!
-  {
-    path: '*',
-    redirect: '/404',
-    hidden: true
-  }
-]
-
-
-
-var luyou = [
-  {
-    path: '/coupon',
-    name: 'coupon',
-    component: Layout,
-    redirect: 'list',
-    meta: {
-      title: '优惠券',
-      icon: 'form'
-    },
-    children: [{
-      path: 'list',
-      name: 'couponlist',
-      component: () => import('@/views/coupon/index'),
-      meta: {
-        title: '优惠券列表'
-      }
-    }],
-
-  },
-  {
-    path: '/vip',
-    name: 'vip',
-    component: Layout,
-    redirect: 'list',
-    meta: {
-      title: '会员设置',
-      icon: 'form'
-    },
-    children: [{
-      path: 'list',
-      name: 'viplist',
-      component: () => import('@/views/vip/index'),
-      meta: {
-        title: '会员类型列表'
-      }
-    }],
-
-  },
-  {
-    path: '/recommend',
-    name: 'recommend',
-    component: Layout,
-    redirect: 'list',
-    meta: {
-      title: '推荐书单',
-      icon: 'form'
-    },
-    children: [{
-      path: 'list',
-      name: 'recommendlist',
-      component: () => import('@/views/recommend/index'),
-      meta: {
-        title: '书单列表'
-      }
-    }, {
-      path: 'onerecommend',
-      name: 'onerecommend',
-      component: () => import('@/views/recommend/booklist'),
-      meta: {
-        title: '书籍列表'
-      },
-      hidden: true
-    }],
-
   },
   {
     path: '/bookstore',
@@ -188,25 +151,7 @@ var luyou = [
     }],
 
   },
-  {
-    path: '/incomestats',
-    name: 'incomestats',
-    component: Layout,
-    redirect: 'list',
-    meta: {
-      title: '账户管理',
-      icon: 'form'
-    },
-    children: [{
-      path: 'list',
-      name: 'incomestatslist',
-      component: () => import('@/views/incomestats/index'),
-      meta: {
-        title: '账户列表'
-      }
-    }],
-
-  },
+  //订单列表
   {
     path: '/order',
     name: 'order',
@@ -226,6 +171,47 @@ var luyou = [
     }],
 
   },
+  //账户管理
+  {
+    path: '/incomestats',
+    name: 'incomestats',
+    component: Layout,
+    redirect: 'list',
+    meta: {
+      title: '账户管理',
+      icon: 'form'
+    },
+    children: [{
+      path: 'list',
+      name: 'incomestatslist',
+      component: () => import('@/views/incomestats/index'),
+      meta: {
+        title: '账户列表'
+      }
+    }],
+
+  },
+  //优惠券
+  {
+    path: '/coupon',
+    name: 'coupon',
+    component: Layout,
+    redirect: 'list',
+    meta: {
+      title: '优惠券',
+      icon: 'form'
+    },
+    children: [{
+      path: 'list',
+      name: 'couponlist',
+      component: () => import('@/views/coupon/index'),
+      meta: {
+        title: '优惠券列表'
+      }
+    }],
+
+  },
+  // 用户反馈
   {
     path: '/feedback',
     name: 'feedback',
@@ -244,25 +230,55 @@ var luyou = [
       }
     }],
   },
+  //推荐书单
   {
-    path: '/system',
-    name: 'system',
+    path: '/recommend',
+    name: 'recommend',
     component: Layout,
     redirect: 'list',
     meta: {
-      title: '系统设置',
+      title: '推荐书单',
       icon: 'form'
     },
     children: [{
       path: 'list',
-      name: 'baseconfiglist',
-      component: () => import('@/views/system/index'),
+      name: 'recommendlist',
+      component: () => import('@/views/recommend/index'),
       meta: {
-        title: '基本配置列表'
+        title: '书单列表'
+      }
+    }, {
+      path: 'onerecommend',
+      name: 'onerecommend',
+      component: () => import('@/views/recommend/booklist'),
+      meta: {
+        title: '书籍列表'
+      },
+      hidden: true
+    }],
+
+  },
+  //会员设置
+  {
+    path: '/vip',
+    name: 'vip',
+    component: Layout,
+    redirect: 'list',
+    meta: {
+      title: '会员设置',
+      icon: 'form'
+    },
+    children: [{
+      path: 'list',
+      name: 'viplist',
+      component: () => import('@/views/vip/index'),
+      meta: {
+        title: '会员类型列表'
       }
     }],
 
   },
+  // 用户管理
   {
     path: '/usercontrol',
     name: 'usercontrol',
@@ -290,16 +306,38 @@ var luyou = [
     }],
 
   },
-]
+  //系统设置
+  {
+    path: '/system',
+    name: 'system',
+    component: Layout,
+    redirect: 'list',
+    meta: {
+      title: '系统设置',
+      icon: 'form'
+    },
+    children: [{
+      path: 'list',
+      name: 'baseconfiglist',
+      component: () => import('@/views/system/index'),
+      meta: {
+        title: '基本配置列表'
+      }
+    }],
 
+  },
+
+
+
+]
 
 const createRouter = (a) => {
   if (a) {
-    constantRoutes.forEach(item => {
+    constantRouters.forEach(item => {
       a.push(item)
     })
   } else {
-    var a = constantRoutes
+    var a = constantRouters
   }
   return new Router({
     // mode: 'history', // require service support
@@ -314,11 +352,8 @@ var router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-  const newRouter = createRouter(luyou)
+  const newRouter = createRouter()
   router.matcher = newRouter.matcher // reset router
 }
-setTimeout(() => {
-  router.addRoutes(luyou)
-  console.log('1121212')
-}, 1000)
+
 export default router

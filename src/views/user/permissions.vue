@@ -77,6 +77,7 @@ export default {
   named: "管理员权限列表",
   data() {
     return {
+      isStoredianyuan:false,
       bookStoreId: '',
       show_add: false,
       storelist: [],

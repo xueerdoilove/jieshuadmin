@@ -77,3 +77,12 @@ export function usermenu(params) {
     method: 'get',
   })
 }
+
+// 获取自己的权限列表 api/mymune
+ 
+export function mymune(params) {
+  return request({
+    url: '/mymenu',
+    method: 'get',
+  })
+}

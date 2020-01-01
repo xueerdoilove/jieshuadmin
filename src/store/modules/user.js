@@ -1,4 +1,4 @@
-import { login, logout, getInfo ,mybookstore} from '@/api/user'
+import { login, mymune, getInfo ,mybookstore} from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -27,7 +27,16 @@ const actions = {
         setToken(item.token)
         localStorage.setItem('roleset',item.roleSet.join(','))
         localStorage.setItem('username',item.name)
-        resolve()
+        if(item.roleSet.join(',').search('4')!=-1){// 如果是最高管理者 那就不去请求权限列表
+          resolve()
+        }else{
+          mymune({}).then(res =>{
+            localStorage.setItem('mymenu',JSON.stringify(res.items))
+            resolve()
+          })
+        }
+        
+        
       }).catch(error => {
         reject(error)
       })
