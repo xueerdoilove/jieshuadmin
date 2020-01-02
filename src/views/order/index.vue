@@ -2,7 +2,7 @@
   <div class="container" >
     <el-row class="tiaojian_item">
       <el-col :span="10" :offset="1">
-        <el-radio-group v-model="borrowType" @change="changetiaojian">
+        <el-radio-group :disabled="canborrowType" v-model="borrowType" @change="changetiaojian">
           <el-radio :label="-1">全部</el-radio>
           <el-radio :label="1">线上订单</el-radio>
           <el-radio :label="0">店铺订单</el-radio>
@@ -162,6 +162,8 @@ export default {
       kuaidilist:[],
 
       internalNoOfSearch:'',
+
+      canborrowType:false,
       borrowType: -1, //借阅类型(线下借阅(0),在线借阅(1)) 默认为-1查全部
       ordertype: 1, // 1 借阅 2 还书
       state: -1, //（待管理员确认(0),待支付(1),待发货(2),待确认收货(3),待归还(4),已完成(5),已取消(6),交易关闭(7)）默认为-1查全部
@@ -176,6 +178,12 @@ export default {
     };
   },
   mounted() {
+    if(localStorage.getItem('bookStoreId')){
+      this.borrowType = 0;
+      this.canborrowType = true;
+    }else{
+      his.canborrowType = true;
+    }
     this.getordersum();
     this.getkuaidilist()
   },

@@ -19,6 +19,10 @@
                 {{detail.name}}
                 <span @click="showputdetail" class="bianji">编辑</span>
               </div>
+              <div class="options " >
+                <span>实体店推广码:</span>
+                {{detail.shareCode || '未设置'}}<span v-show="detail.shareCode" @click="showErweima" class="bianji">编辑</span>
+              </div>
               <div class="options">
                 <span>地址:</span>
                 {{detail.address}}
@@ -156,6 +160,28 @@
         </div>
       </div>
     </el-dialog>
+
+
+    <el-dialog title="实体店推广码" :visible.sync="show_sharecode">
+      <div>
+        <div v-show="detail.shareCode">
+          {{detail.shareCode}}
+          <div id="qrcode"></div>
+        </div>
+        <div v-show="!detail.shareCode">
+          <div>实体店的分享码只能设置一次不支持修改,请确认好再提交</div>
+          <span>分享码</span>
+          <el-input
+            style="width:300px;margin-left:30px;"
+            placeholder="请填写二维码"
+            v-model="new_sharecode"
+          ></el-input>
+          <br />
+          <br />
+          <el-button @click="saveSharecode">保存</el-button>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -173,6 +199,7 @@ import {
 } from "@/api/store";
 import Storedetail from "./detail";
 import Bookbigitem from "../bookLibrary/bookbigitem";
+import QRCode from "qrcodejs2";
 export default {
   named: "书店详情",
   data() {
@@ -182,7 +209,9 @@ export default {
       show_detail: false,
       detail: {},
       bookCnt: 0, // 书店图书数量
-
+      show_sharecode: false, // 推广码 开关
+      new_sharecode:'',
+      
       imglist: [],
       show_imglist: false,
       imglist1: [],
@@ -296,6 +325,57 @@ export default {
         });
       });
     },
+    showErweima() {
+      
+      if (this.detail.sharecode) {
+        setTimeout(() => {
+          //httpsopen.weixin.qq.comsnsgetexpappinfoappid=wx8aacda7758e56069&path=pages%2Findex%2Findex%2Findex.html%3FshareCode%3D123457#wechat-redirect
+          document.getElementById("qrcode").innerHTML = "";
+          new QRCode("qrcode", {
+            text:
+              "https://open.weixin.qq.com/sns/getexpappinfo?appid=wx8aacda7758e56069&path=pages%2Findex%2Findex%2Findex.html%3FshareCode%3D" +
+              this.detail.sharecode +
+              "#wechat-redirect",
+            width: 512,
+            height: 512,
+            colorDark: "#000000",
+            colorLight: "#ffffff",
+            correctLevel: QRCode.CorrectLevel.H
+          });
+        }, 300);
+      }
+      this.show_sharecode = true;
+      this.new_sharecode = "";
+    },
+    saveSharecode() {
+      if (this.new_sharecode.length < 3) {
+        this.$message.error("请输入分享码");
+        return;
+      }
+      this.$confirm(
+        "确定设置此实体店的分享码吗?只能设置一次不支持修改哦",
+        "提示",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning"
+        }
+      ).then(() => {
+        var data = {
+          id: this.detail.id,
+          shareCode: this.new_sharecode
+        };
+
+        bindstoreSharecode(data)
+          .then(res => {
+            this.show_sharecode = false;
+            this.getstoreList();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      });
+    },
     getbookcipbystore() {
       // ?bookStoreId=2&page=1&pageSize=200
       getbookcipbystore({
@@ -323,6 +403,7 @@ export default {
     getstore() {
       getstorebyid({ id: this.shudanid }).then(res => {
         this.detail = res.item;
+        this.state = res.item.state;
       });
     },
     getbookcnt() {

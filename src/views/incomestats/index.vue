@@ -2,7 +2,13 @@
   <div class="container">
     <el-row>
       <el-col :span="50">
-        <el-select class="riqi" v-model="bookStoreId" @change="getincomestatslist" placeholder="请选择门店">
+        <el-select
+          class="riqi"
+          v-model="bookStoreId"
+          :disabled="ismendian"
+          @change="getincomestatslist"
+          placeholder="请选择门店"
+        >
           <el-option
             v-for="store in storelist"
             :key="store.id"
@@ -32,16 +38,16 @@
       </el-row>
       <el-row class="mx-body" v-for="item in incomestatslist" v-bind:key="item.id">
         <el-col :span="6">
-          <div >{{item.startDate}}</div>
+          <div>{{item.startDate}}</div>
         </el-col>
-        <el-col :span="6" >
-          <div >交易</div>
+        <el-col :span="6">
+          <div>交易</div>
         </el-col>
-        <el-col :span="6" >
+        <el-col :span="6">
           <div>{{item.totalAmount}}</div>
         </el-col>
-        <el-col :span="6" >
-          <div >明细</div>
+        <el-col :span="6">
+          <div>明细</div>
         </el-col>
       </el-row>
       <div style="margin-top:30px;text-align:center;">暂无明细</div>
@@ -60,20 +66,20 @@ export default {
   named: "优惠券",
   data() {
     return {
+      ismendian: false, // false 高级管理员 true 门店店员
       bookStoreId: 0,
       show_new: false,
       storelist: [],
       activeNum: 0,
       page: 1,
       pageSize: 100,
-      state: 0,//未处理(0),已处理(1)）默认为0
-      incomestatslist:[],
+      state: 0, //未处理(0),已处理(1)）默认为0
+      incomestatslist: [],
       // couponType: -1,
-      sk: "time",
+      sk: "time"
       // so: "desc"
     };
   },
-  mounted() {},
   components: {
     // NewCoupon
   },
@@ -89,18 +95,18 @@ export default {
       this.show_new = !this.show_new;
     },
     // 获取交易流水记录
-    getincomestatslist(){
-      if(this.bookStoreId==0){
-        return
+    getincomestatslist() {
+      if (this.bookStoreId == 0) {
+        return;
       }
       //incomestats?bookStoreId={bookStoreId}&state={state}&sk=xx&so=xx&page=1&pageSize=1
       getincomestatslist({
-        bookStoreId:this.bookStoreId,
-        state:this.state,
-        sk:this.sk,
-      }).then(res =>{
-        this.incomestatslist = res.items
-      })
+        bookStoreId: this.bookStoreId,
+        state: this.state,
+        sk: this.sk
+      }).then(res => {
+        this.incomestatslist = res.items;
+      });
     },
     getstorelist() {
       getstoreList({
@@ -114,6 +120,12 @@ export default {
             "storelist",
             JSON.stringify([{ name: "通用优惠券", id: 0 }, ...res.items])
           );
+          if (localStorage.getItem("bookStoreId")) {
+            this.bookStoreId = localStorage.getItem("bookStoreId") * 1;
+            this.ismendian = true;
+          } else {
+            this.ismendian = false;
+          }
         })
         .catch(error => {});
     }
@@ -138,7 +150,7 @@ export default {
 .xuanze {
   cursor: pointer;
 }
-.mx-body{
+.mx-body {
   height: 50px;
   border: 1px solid #eee;
   line-height: 50px;
