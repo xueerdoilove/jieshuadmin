@@ -105,7 +105,7 @@ function filterAsyncRouter(routes, perms) { //过滤没有权限的列表 循环
       case 7:
         // 权限管理
         routes.forEach(route => {
-          if (route.name == 'usercontrol') {
+          if (route.name == 'permission') {
             arr.push(route)
           }
         })
@@ -113,18 +113,14 @@ function filterAsyncRouter(routes, perms) { //过滤没有权限的列表 循环
       case 10:
         // 用户管理
         routes.forEach(route => {
-          if (route.name == 'usercontrol') {
+          if (route.name == 'user') {
             arr.push(route)
           }
         })
         break;
       case 11:
         // 授权管理
-        routes.forEach(route => {
-          if (route.name == 'usercontrol') {
-            arr.push(route)
-          }
-        })
+         
         break;
       case 9:
         // 系统设置

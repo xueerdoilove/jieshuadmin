@@ -288,14 +288,14 @@ export const asyncRouters = [
     }],
 
   },
-  // 用户管理
+  // 权限管理
   {
-    path: '/usercontrol',
-    name: 'usercontrol',
+    path: '/permission',
+    name: 'permission',
     component: Layout,
     redirect: 'userlist',
     meta: {
-      title: '用户管理',
+      title: '权限管理',
       icon: 'form'
     },
     children: [{
@@ -313,6 +313,26 @@ export const asyncRouters = [
         title: '管理员权限'
       },
       hidden: true
+    }],
+
+  },
+  // 用户管理
+  {
+    path: '/user',
+    name: 'user',
+    component: Layout,
+    redirect: 'userlist',
+    meta: {
+      title: '用户管理',
+      icon: 'form'
+    },
+    children: [{
+      path: 'userlist',
+      name: 'userlist',
+      component: () => import('@/views/user/users'),
+      meta: {
+        title: '用户列表'
+      }
     }],
 
   },
