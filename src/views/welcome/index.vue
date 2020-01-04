@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-container">
-    <div class="dashboard-text">还没有爬虫书目信息</div>
-    
+    <div class="dashboard-text">{{shenfen}}: {{ name }}</div>
+    <h2 class="huanying">欢迎</h2>
   </div>
 </template>
 

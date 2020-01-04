@@ -182,7 +182,7 @@ export default {
       this.borrowType = 0;
       this.canborrowType = true;
     }else{
-      his.canborrowType = true;
+      this.canborrowType = false;
     }
     this.getordersum();
     this.getkuaidilist()

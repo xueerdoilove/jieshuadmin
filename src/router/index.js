@@ -52,7 +52,7 @@ export const constantRouters = [{
     children: [{
       path: 'welcome',
       name: 'welcome',
-      component: () => import('@/views/pachong/index'),
+      component: () => import('@/views/welcome/index'),
       meta: {
         title: '欢迎'
       }
