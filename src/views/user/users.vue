@@ -134,7 +134,7 @@ export default {
       if (num == 0) {
         return "注册用户";
       } else if (num == 1) {
-        return "免费会员";
+        return "普通会员";
       } else {
         return "付费会员";
       }

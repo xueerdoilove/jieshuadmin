@@ -23,26 +23,20 @@ function hasPermission(perms, route) { //判断是否有权限
  */
 function filterAsyncRouter(routes, perms) { //过滤没有权限的列表 循环过滤 直到没有子路由
   var arr = []
+  var arr1 = {n1:false,n2:false}
   if(!perms){
     return []
   }
+  
   perms.forEach(item => {
     switch (item.seq) {
       case 1:
         // 爬虫
-        routes.forEach(route => {
-          if (route.name == 'pachong') {
-            arr.push(route)
-          }
-        })
+         arr1.n1=true
         break;
       case 2:
         // 书库信息
-        routes.forEach(route => {
-          if (route.name == 'skbook') {
-            arr.push(route)
-          }
-        })
+        arr1.n2=true
         break;
       case 3:
         // 门店管理
@@ -134,7 +128,7 @@ function filterAsyncRouter(routes, perms) { //过滤没有权限的列表 循环
 
     }
   })
-  return arr
+  return {routers:arr,shuku:arr1}
    
 }
 
@@ -144,9 +138,36 @@ const permission = {
     addRouters: []
   },
   mutations: {
-    SET_ROUTERS: (state, routers) => { //保存动态路由时 将静态路由和动态路由合并
-      state.addRouters = routers
-      state.routers = constantRouters.concat(routers)
+    SET_ROUTERS: (state, routerdata) => { //保存动态路由时 将静态路由和动态路由合并
+      if(routerdata.shuku.n1&&routerdata.shuku.n2){
+        state.routers.forEach(item =>{
+          if(item.name=='skbook'){
+            item.hidden = false;
+            item.children[0].hidden = false;
+            item.children[1].hidden = false;
+          }
+        })
+      }
+      if(routerdata.shuku.n1&&!routerdata.shuku.n2){
+        state.routers.forEach(item =>{
+          if(item.name=='skbook'){
+            item.hidden = false;
+            item.children[0].hidden = false;
+            item.children[1].hidden = true;
+          }
+        })
+      }
+      if(!routerdata.shuku.n1&&routerdata.shuku.n2){
+        state.routers.forEach(item =>{
+          if(item.name=='skbook'){
+            item.hidden = false;
+            item.children[0].hidden = true;
+            item.children[1].hidden = false;
+          }
+        })
+      }
+      state.addRouters = routerdata.routers
+      state.routers = constantRouters.concat(routerdata.routers)
     }
   },
   actions: {
@@ -159,7 +180,7 @@ const permission = {
         let accessedRouters
         if (roles) {
           if (roles && roles.search('4') != -1) { //如果是admin角色 加载所有动态路由
-            accessedRouters = asyncRouters
+            accessedRouters = {routers:asyncRouters,shuku:{n1:true,n2:true}}
           } else { //如果不是admin角色 则加载过滤后的动态路由
             accessedRouters = filterAsyncRouter(asyncRouters, perms)
           }

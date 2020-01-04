@@ -13,21 +13,12 @@
       </el-col>
       <el-col :span="15" :offset="1">
         <el-input
-          placeholder="请输入线上图书名称/作者/isbn"
+          placeholder="请输入图书名称/作者/isbn"
           v-model="searchvalue"
           v-show="searchtype==2"
           class="input-with-select"
         >
-          <el-select
-            v-model="state"
-            @change="searchbookbykeyword"
-            slot="prepend"
-            placeholder="请选择状态"
-            style="width:100px;"
-          >
-            <el-option label="已上架" :value="2"></el-option>
-            <el-option label="已下架" :value="0"></el-option>
-          </el-select>
+           
           <el-button slot="append" @click="searchbookbykeyword" icon="el-icon-search">搜索</el-button>
         </el-input>
 
@@ -42,12 +33,7 @@
         ></el-autocomplete>
 
         <el-form label-width="80px" v-show="searchtype==0">
-          <el-form-item label="状态:">
-            <el-radio-group v-model="state" @change="zhuangtai">
-              <el-radio :label="2">上架中</el-radio>
-              <el-radio :label="0">已下架</el-radio>
-            </el-radio-group>
-          </el-form-item>
+           
         </el-form>
 
         <el-form label-width="80px" v-show="searchtype==1 || searchtype==3">
@@ -58,9 +44,6 @@
             </el-radio-group>
           </el-form-item>
         </el-form>
-      </el-col>
-      <el-col :span="4" style="text-align:right">
-        <el-button type="primary" @click="shownew">+新增</el-button>
       </el-col>
     </el-row>
 
@@ -126,15 +109,13 @@ export default {
 
       searchtype: 0,
       searchtypelist: [
-        { id: 0, name: "全部书目" },
-        { id: 2, name: "全部书目 搜索" },
-        { id: 1, name: "线上书目" },
-        { id: 3, name: "线下书目" }
+        { id: 0, name: "全部爬虫书目" },
+        { id: 2, name: "爬虫书目 搜索" },
       ],
 
       checkedall: false,
       booklist: [],
-      state: 2, //下架(0),未上架(1),上架(2)）
+      state: 1, //下架(0),未上架(1),上架(2)）
       bookStorestate:1,// 1 上架中 0 下架中 书店的书目状态
       count: -1, // -1 无,
       page: 1,

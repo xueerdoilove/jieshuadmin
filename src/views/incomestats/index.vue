@@ -6,7 +6,7 @@
           class="riqi"
           v-model="bookStoreId"
           :disabled="ismendian"
-          @change="getincomestatslist"
+          @change="getincomelist"
           placeholder="请选择门店"
         >
           <el-option
@@ -20,50 +20,86 @@
     </el-row>
     <div v-show="bookStoreId>0" style="padding-top:20px;">
       <el-row>
-        <el-col :span="20">
+        <!-- <el-col :span="20">
           <div>账户余额</div>
           <div style="color:#C7000B;margin-top:20px;">12477.00元</div>
-        </el-col>
+        </el-col>-->
       </el-row>
       <el-row class="mx-head">
         <el-col :span="3" class="xuanze" :class="{'active':activeNum==0}">
           <div @click="checkxuanze(0)">最近交易记录</div>
         </el-col>
-        <el-col :span="3" class="xuanze" :class="{'active':activeNum==1}">
+        <!-- <el-col :span="3" class="xuanze" :class="{'active':activeNum==1}">
           <div @click="checkxuanze(1)">收入记录</div>
+        </el-col>-->
+      </el-row>
+      <el-row class="mx-body">
+        <el-col :span="2">
+          <div>订单类型</div>
         </el-col>
-        <el-col :span="3" class="xuanze" :class="{'active':activeNum==2}">
-          <div @click="checkxuanze(2)">退款记录</div>
+        <el-col :span="3">
+          <div>押金</div>
+        </el-col>
+        <el-col :span="3">
+          <div>借阅费</div>
+        </el-col>
+        <el-col :span="3">
+          <div>运费</div>
+        </el-col>
+        <el-col :span="3">
+          <div>会员费</div>
+        </el-col>
+        <el-col :span="3">
+          <div>总计</div>
         </el-col>
       </el-row>
-      <el-row class="mx-body" v-for="item in incomestatslist" v-bind:key="item.id">
-        <el-col :span="6">
-          <div>{{item.startDate}}</div>
+      <el-row class="mx-body" v-for="item in list" v-bind:key="item.id">
+        <el-col :span="2">
+          <div>{{item.orderType | orderType}}</div>
         </el-col>
-        <el-col :span="6">
-          <div>交易</div>
+        <el-col :span="3">
+          <div>{{item.depositAmount/100}}</div>
+          <div>押金</div>
         </el-col>
-        <el-col :span="6">
+        <el-col :span="3">
+          <div>{{item.borrowCostAmount}}</div>
+          <div>借阅费</div>
+        </el-col>
+        <el-col :span="3">
+          <div>{{item.freightAmount}}</div>
+          <div>运费</div>
+        </el-col>
+        <el-col :span="3">
+          <div>{{item.membershipAmount}}</div>
+          <div>会员费</div>
+        </el-col>
+        <el-col :span="3">
           <div>{{item.totalAmount}}</div>
+          <div>总计</div>
         </el-col>
-        <el-col :span="6">
-          <div>明细</div>
+      </el-row>
+      <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
+        <el-col :span="20" :offset="2" style="text-align:center;">
+          <el-pagination
+            background
+            :total="totalItems"
+            :page-size="pageSize"
+            :current-page="page"
+            @current-change="changepage"
+            layout="prev, pager, next"
+          ></el-pagination>
         </el-col>
       </el-row>
       <div style="margin-top:30px;text-align:center;">暂无明细</div>
     </div>
-
-    <el-dialog title="新增优惠券" :visible.sync="show_new"></el-dialog>
   </div>
 </template>
 
 <script>
-import { getincomestatslist } from "@/api/incomestats";
+import { getincomestatslist, getincomelist } from "@/api/incomestats";
 import { getstoreList } from "@/api/store";
-import NewCoupon from "./new";
-// import { mapGetters } from 'vuex'
 export default {
-  named: "优惠券",
+  named: "账户管理",
   data() {
     return {
       ismendian: false, // false 高级管理员 true 门店店员
@@ -72,18 +108,32 @@ export default {
       storelist: [],
       activeNum: 0,
       page: 1,
-      pageSize: 100,
-      state: 0, //未处理(0),已处理(1)）默认为0
-      incomestatslist: [],
-      // couponType: -1,
-      sk: "time"
-      // so: "desc"
+      pageSize: 10,
+      state: 0,
+      totalItems: 0,
+      list: [],
+      sk: "time",
+      so: "desc"
     };
   },
-  components: {
-    // NewCoupon
-  },
+  components: {},
   computed: {},
+  filters: {
+    orderType(num) {
+      // 订单类型，0: 借书总订单 ，1： 还书总订单 ，2： 会员总订单
+      switch (num) {
+        case 0:
+          return "借书总订单";
+          break;
+        case 1:
+          return "还书总订单";
+          break;
+        case 2:
+          return "会员总订单";
+          break;
+      }
+    }
+  },
   mounted() {
     this.getstorelist();
   },
@@ -94,18 +144,26 @@ export default {
     shownew() {
       this.show_new = !this.show_new;
     },
+    changepage(page) {
+      this.page = page;
+      this.getincomelist();
+    },
     // 获取交易流水记录
-    getincomestatslist() {
+    getincomelist() {
       if (this.bookStoreId == 0) {
         return;
       }
       //incomestats?bookStoreId={bookStoreId}&state={state}&sk=xx&so=xx&page=1&pageSize=1
-      getincomestatslist({
+      getincomelist({
         bookStoreId: this.bookStoreId,
         state: this.state,
-        sk: this.sk
+        sk: this.sk,
+        so: this.so,
+        page: this.page,
+        pageSize: this.pageSize
       }).then(res => {
-        this.incomestatslist = res.items;
+        this.list = res.items;
+        this.totalItems = res.totalItems;
       });
     },
     getstorelist() {
@@ -122,6 +180,7 @@ export default {
           );
           if (localStorage.getItem("bookStoreId")) {
             this.bookStoreId = localStorage.getItem("bookStoreId") * 1;
+            this.getincomelist();
             this.ismendian = true;
           } else {
             this.ismendian = false;

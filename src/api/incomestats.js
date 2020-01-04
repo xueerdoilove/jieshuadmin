@@ -9,5 +9,13 @@ export function getincomestatslist(params) {
   })
 }
 
+// getincomelist
+export function getincomelist(params) {
+  return request({
+    url: '/bookstore/'+params.bookStoreId+'/income',
+    method: 'get',
+    params
+  })
+}
 
 

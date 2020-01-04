@@ -1,8 +1,5 @@
 import router from './router'
 import store from './store'
-import {
-  Message
-} from 'element-ui'
 import NProgress from 'nprogress' // progress bar
 import 'nprogress/nprogress.css' // progress bar style
 import {
@@ -37,7 +34,6 @@ router.beforeEach(async (to, from, next) => {
       const hasGetUserInfo = store.getters.name
 
       if (hasGetUserInfo) {
-        console.log(1111, store.getters.permission_routers.length)
         if (store.getters.permission_routers.length == 4) { // 如果没有菜单列表
           store.dispatch('GenerateRoutes', {
             perms: JSON.parse(localStorage.getItem('mymenu')) || [],
@@ -53,7 +49,6 @@ router.beforeEach(async (to, from, next) => {
           next()
         }
       } else {
-        console.log(222, store.getters.permission_routers.length)
         try {
           // get user info
           await store.dispatch('user/getInfo')

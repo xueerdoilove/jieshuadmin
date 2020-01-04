@@ -1,60 +1,22 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">还没有爬虫书目信息</div>
-    
-  </div>
+  <transition name="fade-transform" mode="out-in">
+    <router-view :key="key" />
+  </transition>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-
 export default {
-  name: "pachong",
+  named: "书库信息",
   data() {
-    return {
-      shenfen: "",
-      user: { rules: "" }
-    };
+    return {};
   },
+
   computed: {
-    ...mapGetters(["name"])
+    key() {
+      return this.$route.path;
+    }
   },
-  mounted() {
-    setTimeout(() => {
-      var rules = localStorage.getItem("roleset");
-      if (rules.search("4") != -1) {
-        this.user.rules = "最高管理员";
-      } else if (rules.search("3") != -1) {
-        this.user.rules = "门店管理员";
-      } else if (rules.search("2") != -1) {
-        this.user.rules = "门店店员";
-      } else if (rules.search("1") != -1) {
-        this.user.rules = "普通用户";
-      }
-      if (localStorage.getItem("bookStoredata")) {
-        var a = JSON.parse(localStorage.getItem("bookStoredata"));
-        this.shenfen = a.name + "的" + this.user.rules;
-      } else {
-        this.shenfen = "最高管理者";
-      }
-    }, 1500);
-  }
+  mounted() {}
 };
 </script>
 
-<style lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
-}
-.huanying {
-  margin-top: 200px;
-  font-size: 30px;
-  text-align: center;
-}
-</style>

@@ -36,11 +36,6 @@ export const constantRouters = [{
     hidden: true
   },
   {
-    path: '/404',
-    component: () => import('@/views/404'),
-    hidden: true
-  },
-  {
     path: '/',
     component: Layout,
     name: 'index',
@@ -58,52 +53,52 @@ export const constantRouters = [{
       }
     }]
   },
-  // 404 page must be placed at the end !!!
-  {
-    path: '*',
-    redirect: '/',
-    hidden: true
-  }
-]
-
-
-
-export const asyncRouters = [
-  {
-    path: '/pcbook',
-    component: Layout,
-    name: 'pachong',
-    redirect: 'pachong',
-    meta: {
-      title: '书库管理',
-      icon: 'form'
-    },
-    children: [{
-      path: 'pachong',
-      name: 'Pachong',
-      component: () => import('@/views/pachong/index'),
-      meta: {
-        title: '爬虫信息'
-      },
-    }, ]
-  },
   // 书库管理
   {
     path: '/skbook',
     component: Layout,
     name: 'skbook',
-    redirect: 'bookLibrary',
     meta: {
       title: '书库管理',
       icon: 'form'
     },
-    children: [{
+    hidden: true,
+    children: [
+      // 爬虫
+      {
+        path: 'pachong',
+        name: 'pachong',
+        component: () => import('@/views/pachong/index'),
+        hidden: true,
+        meta: {
+          title: ''
+        },
+        children: [{
+          path: 'bookdetail',
+          name: 'bookdetail1',
+          component: () => import('@/views/pachong/bookdetail'),
+          meta: {
+            title: '图书详情'
+          },
+          hidden: true
+        }, {
+          path: 'booklist',
+          name: 'booklist1',
+          component: () => import('@/views/pachong/booklist'),
+          meta: {
+            title: '爬虫信息'
+          },
+        }]
+      },
+      // 书目管理
+      {
         path: 'bookLibrary',
         name: 'bookLibrary',
         redirect: 'booklist',
         component: () => import('@/views/bookLibrary/index'),
+        hidden: true,
         meta: {
-          title: '书库信息'
+          title: ''
         },
         children: [{
           path: 'bookdetail',
@@ -118,13 +113,22 @@ export const asyncRouters = [
           name: 'booklist',
           component: () => import('@/views/bookLibrary/booklist'),
           meta: {
-            title: '图书列表'
+            title: '书库信息'
           },
         }]
       }
-
     ]
   },
+  // 404 page must be placed at the end !!!
+  {
+    path: '*',
+    redirect: '/',
+    hidden: true
+  }
+]
+
+export const asyncRouters = [
+
   // 书店管理
   {
     path: '/bookstore',
@@ -150,7 +154,7 @@ export const asyncRouters = [
         title: '书店详情'
       },
       hidden: true
-    },{
+    }, {
       path: 'bookdetail',
       name: 'sbookdetail',
       component: () => import('@/views/bookstore/bookdetail'),
@@ -300,7 +304,7 @@ export const asyncRouters = [
     },
     children: [{
       path: 'userlist',
-      name: 'userlist',
+      name: 'userlist1',
       component: () => import('@/views/user/index'),
       meta: {
         title: '管理员列表'
