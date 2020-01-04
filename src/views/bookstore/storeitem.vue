@@ -19,7 +19,7 @@
     </div>
     <div style="text-align:right;padding-right:20px;clear:both;">
         <el-button @click="parentHandel">实体店详情</el-button>
-        <el-button @click="parentHandelerweima">实体店推广码<br>({{shitidianData.shareCode || '未设置'}})</el-button>
+        <el-button @click="parentHandelerweima">实体店推广码({{shitidianData.shareCode || '未设置'}})</el-button>
     </div>
 </div>
 </template>

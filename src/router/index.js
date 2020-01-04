@@ -87,6 +87,7 @@ export const asyncRouters = [
       },
     }, ]
   },
+  // 书库管理
   {
     path: '/skbook',
     component: Layout,
@@ -124,6 +125,7 @@ export const asyncRouters = [
 
     ]
   },
+  // 书店管理
   {
     path: '/bookstore',
     name: 'bookstore',
@@ -146,6 +148,14 @@ export const asyncRouters = [
       component: () => import('@/views/bookstore/storedetail'),
       meta: {
         title: '书店详情'
+      },
+      hidden: true
+    },{
+      path: 'bookdetail',
+      name: 'sbookdetail',
+      component: () => import('@/views/bookstore/bookdetail'),
+      meta: {
+        title: '图书详情'
       },
       hidden: true
     }],

@@ -87,9 +87,9 @@ export default {
   methods: {
     gotodetail(id,storeid){
       if(this.bookData.mendianshu){
-        this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid ,bookstateinstore:this.bookData.state} });
+        this.$router.push({ path: "./bookdetail", query: { bookid:id ,storeid:storeid ,bookstateinstore:this.bookData.state} });
       }else{
-        this.$router.push({ name: "bookdetail", query: { bookid:id ,storeid:storeid } });
+        this.$router.push({ path: "./bookdetail", query: { bookid:id ,storeid:storeid } });
       }
     },
     danxuanhandler(){

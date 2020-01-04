@@ -29,6 +29,18 @@
       </el-col>
     </el-row>
 
+    <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
+      <el-col :span="20" :offset="2" style="text-align:center;">
+        <el-pagination
+          background
+          :total="totalItems"
+          :page-size="pageSize"
+          :current-page="page"
+          @current-change="changepage"
+          layout="prev, pager, next"
+        ></el-pagination>
+      </el-col>
+    </el-row>
     <el-dialog title="新增实体店" :visible.sync="show_new">
       <newstore @hidenew="hidenew" />
     </el-dialog>
@@ -40,11 +52,11 @@
     <el-dialog title="实体店推广码" :visible.sync="show_sharecode">
       <div>
         <div v-show="store_sharecode">
-          {{store_sharecode}}
+          <div style="padding-bottom:20px;">推广码: {{store_sharecode}}</div>
           <div id="qrcode"></div>
         </div>
         <div v-show="!store_sharecode">
-          <div>实体店的分享码只能设置一次不支持修改,请确认好再提交</div>
+          <div style="padding-bottom:20px;color:red;">实体店的分享码只能设置一次不支持修改,请确认好再提交</div>
           <span>分享码</span>
           <el-input
             style="width:300px;margin-left:30px;"
@@ -91,7 +103,9 @@ export default {
       page: 1,
       sk: "time",
       so: "asc",
-      pageSize: 100
+      pageSize: 6,
+      totalItems:0,
+
     };
   },
   components: {
@@ -186,11 +200,16 @@ export default {
       })
         .then(res => {
           this.storelist = res.items;
+          this.totalItems = res.totalItems
         })
         .catch(error => {});
     },
     changetiaojian() {
       this.page = 1;
+      this.getstoreList();
+    },
+    changepage(page){
+      this.page = page
       this.getstoreList();
     },
     shownew() {
@@ -225,5 +244,8 @@ export default {
   margin-top: 20px;
   border-radius: 10px;
   background-color: #fff;
+}
+.tiaojian_item {
+  margin-top: 20px;
 }
 </style>

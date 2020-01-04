@@ -70,6 +70,7 @@ export function getbookqrcodelist(params) {
   return request({
     url: '/bookcip/'+params.bookid+'/bookstore/'+params.bookstoreid+'/book',
     method: 'get',
+    params
   })
 }
 // 修改书 putbookcip

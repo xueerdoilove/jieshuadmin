@@ -86,10 +86,7 @@
             </el-col>
           </el-row>
         </div>
-        <div
-          style="text-align:center;margin-top:20px;padding-bottom:50px;"
-          v-show="totalItems>=pageSize"
-        >
+        <div style="text-align:center;margin-top:20px;padding-bottom:50px;" v-show="totalItems>=pageSize">
           <el-pagination
             background
             :total="totalItems"
@@ -100,11 +97,7 @@
           ></el-pagination>
         </div>
       </div>
-
-      <!-- 修改书的详情 -->
-      <el-dialog title="修改书目详情" :visible.sync="show_edit">
-        <editbook v-if="show_edit" :bookData="bookData" @hideedit="hideedit" />
-      </el-dialog>
+  
     </div>
   </div>
 </template>
@@ -118,60 +111,62 @@ import {
   getbookstorekucun
 } from "@/api/book";
 
-import editbook from './editbook'
 export default {
   name: "bookdetail",
   data() {
     return {
-      canbianji:false,// 是否展示编辑图书按钮
+      canbianji: false, // 是否展示编辑图书按钮
       bookid: 0,
       bookData: {},
       loading: "",
       storeid: "",
-      bookstateinstore:-1,// -1 书店的书 没有状态 0 下架 1 上架
-      kucun:0,
-      bookqrcodelist: [] ,// 具体编号的书
+      bookstateinstore: -1, // -1 书店的书 没有状态 0 下架 1 上架
+      kucun: 0,
+      bookqrcodelist: [], // 具体编号的书
       page: 1,
       pageSize: 5,
       totalItems: 0,
-      show_edit:false,// 修改书详情
-
+      show_edit: false // 修改书详情
     };
   },
-  components:{
-    editbook
-  },
+  components: {},
   mounted() {
-    if(localStorage.getItem('roleset').search('3')!=-1||localStorage.getItem('roleset').search('4')!=-1){
-      this.canbianji  = true;
+    if (
+      localStorage.getItem("roleset").search("3") != -1 ||
+      localStorage.getItem("roleset").search("4") != -1
+    ) {
+      this.canbianji = true;
     }
     this.bookid = this.$route.query.bookid;
     this.storeid = this.$route.query.storeid;
-    this.bookstateinstore = this.$route.query.bookstateinstore==undefined?-1: this.$route.query.bookstateinstore
+    this.bookstateinstore =
+      this.$route.query.bookstateinstore == undefined
+        ? -1
+        : this.$route.query.bookstateinstore;
 
     if (!this.bookid) {
       this.$router.go(-1);
       return;
     }
     if (this.storeid != 0) {
-      this.getbookqrcodelist();// 查询本店的书的 状态列表
-      this.getbookstorekucun();// 查询本店的书的库存
+      this.getbookqrcodelist(); // 查询本店的书的 状态列表
+      this.getbookstorekucun(); // 查询本店的书的库存
     }
     this.getonebook();
   },
   filters: {
-    state(num,storeid) {
+    state(num, storeid) {
       //下架(0),未上架(1),上架(2))
-      var shudianz = ''
-      if(storeid!=0){
-        shudianz = '(书店中的状态)'
+      var shudianz = "";
+      if (storeid != 0) {
+        shudianz = "(书店中的状态)";
       }
       if (num == 0) {
-        return "下架中"+shudianz;
+        return "下架中" + shudianz;
       } else if (num == 1) {
-        return "待上架"+shudianz;
+        return "待上架" + shudianz;
       } else {
-        return "上架中"+shudianz;
+        return "上架中" + shudianz;
       }
     },
     shustate(num) {
@@ -198,11 +193,11 @@ export default {
         background: "rgba(0, 0, 0, 0.3)"
       });
       getonebook(this.bookid).then(res => {
-        if(this.storeid!=0){
-          if(this.bookstateinstore==0){
-            res.item.state = 0
-          }else{
-            res.item.state = 2
+        if (this.storeid != 0) {
+          if (this.bookstateinstore == 0) {
+            res.item.state = 0;
+          } else {
+            res.item.state = 2;
           }
         }
         this.bookData = res.item;
@@ -210,21 +205,21 @@ export default {
       });
     },
     // 获取库存
-    getbookstorekucun(){
+    getbookstorekucun() {
       getbookstorekucun({
-        bookstoreid:this.storeid,
-        bookid:this.bookid
-      }).then(res =>{
-        this.kucun = res.item.bookCnt
-      })
+        bookstoreid: this.storeid,
+        bookid: this.bookid
+      }).then(res => {
+        this.kucun = res.item.bookCnt;
+      });
     },
     // 显示修改书
-    bianjibook(){
+    bianjibook() {
       this.show_edit = true;
     },
-    hideedit(){
+    hideedit() {
       this.show_edit = false;
-      this.getonebook()
+      this.getonebook();
     },
     gotoimg(url) {
       window.open(url);

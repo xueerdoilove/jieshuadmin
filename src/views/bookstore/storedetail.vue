@@ -150,7 +150,7 @@
                   style="margin-left:20px;"
                   slot="tip"
                   class="el-upload__tip"
-                >只能上传jpg/png文件，且不超过500kb,</span>
+                >只能上传jpg/png文件，且不超过500kb,宽高比4:3</span>
               </el-upload>
             </el-col>
             <el-col :span="6" :offset="2">
@@ -222,7 +222,7 @@ export default {
       sk: "time",
       so: "asc",
       bookstate: 1,
-      pageSize: 10,
+      pageSize: 6,
       totalItems: 0
     };
   },
@@ -279,6 +279,7 @@ export default {
     },
     tijiaotupian() {
       if (this.picture == "") {
+        this.$message('请选择本地电脑上的一张图片')
         return;
       }
       var formData = new FormData();
