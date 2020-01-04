@@ -65,8 +65,37 @@
       </div>
       <!-- 介绍 -->
       <div class="jieshao">
-        <div class="js-title">内容简介</div>
+        <div class="js-title">
+          <span>内容简介</span>
+          <el-button @click="showfuwenben(1)" type="primery" style="float:right" v-if="canbianji">编辑</el-button>
+        </div>
         <div class="js-content" v-html="bookData.introduction"></div>
+      </div>
+      <!-- 作者简介 -->
+      <div class="jieshao">
+        <div class="js-title">
+          <span>作者简介</span>
+          <el-button
+            @click="showfuwenben(2)"
+            type="primery"
+            style="float:right"
+            v-if="canbianji"
+          >{{authorinfo.id?'编辑':'添加'}}</el-button>
+        </div>
+        <div class="js-content" v-html="authorinfo.introduction"></div>
+      </div>
+      <!-- 目录 -->
+      <div class="jieshao">
+        <div class="js-title">
+          <span>目录</span>
+          <el-button
+            @click="showfuwenben(3)"
+            type="primery"
+            style="float:right"
+            v-if="canbianji"
+          >{{contents.id?'编辑':'添加'}}</el-button>
+        </div>
+        <div class="js-content" v-html="contents.contents"></div>
       </div>
       <!-- 具体书的列表 -->
       <div class="jieshao" v-show="bookqrcodelist.length>0">
@@ -105,6 +134,53 @@
       <el-dialog title="修改书目详情" :visible.sync="show_edit">
         <editbook v-if="show_edit" :bookData="bookData" @hideedit="hideedit" />
       </el-dialog>
+
+      <!-- 富文本 -->
+      <el-dialog :title="tijiaotype | tijiaotype" :visible.sync="show_fuwenben">
+        <div v-if="show_fuwenben">
+          <div id="butGroup" class="editorhead">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="返回上一步"
+              placement="bottom"
+              :open-delay="1000"
+            >
+              <input onclick="editor.undo()" type="button" style="background-position:0 -168px;" />
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="返回下一步"
+              placement="bottom"
+              :open-delay="1000"
+            >
+              <input
+                onclick="editor.redo()"
+                type="button"
+                style="background-position:0 -198px;opacity: .3;"
+              />
+            </el-tooltip>
+            <el-tooltip
+              class="item"
+              effect="dark"
+              content="清除样式"
+              placement="bottom"
+              :open-delay="1000"
+            >
+              <input
+                onclick="editor.clearStyle()"
+                type="button"
+                style="background-position:0 -890px;"
+              />
+            </el-tooltip>
+          </div>
+          <iframe class="contenteditablebody" id="contenteditable"></iframe>
+          <div>
+            <el-button type="primary" @click="tijiaoxinxi">提交</el-button>
+          </div>
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -115,63 +191,94 @@ import {
   putbookonline,
   delbook,
   getbookqrcodelist,
-  getbookstorekucun
+  getbookstorekucun,
+  getinfo,
+  setinfo,
+  getauthorinfo,
+  setauthorinfo,
+  getcontents,
+  setcontents
 } from "@/api/book";
 
-import editbook from './editbook'
+import editbook from "./editbook";
 export default {
   name: "bookdetail",
   data() {
     return {
-      canbianji:false,// 是否展示编辑图书按钮
+      canbianji: false, // 是否展示编辑图书按钮
       bookid: 0,
       bookData: {},
+
+      info: {id:0},
+      contents: {id:0},
+      authorinfo: {id:0},
+
       loading: "",
       storeid: "",
-      bookstateinstore:-1,// -1 书店的书 没有状态 0 下架 1 上架
-      kucun:0,
-      bookqrcodelist: [] ,// 具体编号的书
+      bookstateinstore: -1, // -1 书店的书 没有状态 0 下架 1 上架
+      kucun: 0,
+      bookqrcodelist: [], // 具体编号的书
       page: 1,
       pageSize: 5,
       totalItems: 0,
-      show_edit:false,// 修改书详情
+      show_edit: false, // 修改书详情
 
+      show_fuwenben: false, // 显示富文本
+      tijiaotype: 0
     };
   },
-  components:{
+  components: {
     editbook
   },
   mounted() {
-    if(localStorage.getItem('roleset').search('3')!=-1||localStorage.getItem('roleset').search('4')!=-1){
-      this.canbianji  = true;
+    if (
+      localStorage.getItem("roleset").search("3") != -1 ||
+      localStorage.getItem("roleset").search("4") != -1
+    ) {
+      this.canbianji = true;
     }
     this.bookid = this.$route.query.bookid;
     this.storeid = this.$route.query.storeid;
-    this.bookstateinstore = this.$route.query.bookstateinstore==undefined?-1: this.$route.query.bookstateinstore
+    this.bookstateinstore =
+      this.$route.query.bookstateinstore == undefined
+        ? -1
+        : this.$route.query.bookstateinstore;
 
     if (!this.bookid) {
       this.$router.go(-1);
       return;
     }
     if (this.storeid != 0) {
-      this.getbookqrcodelist();// 查询本店的书的 状态列表
-      this.getbookstorekucun();// 查询本店的书的库存
+      this.getbookqrcodelist(); // 查询本店的书的 状态列表
+      this.getbookstorekucun(); // 查询本店的书的库存
     }
     this.getonebook();
   },
   filters: {
-    state(num,storeid) {
+    state(num, storeid) {
       //下架(0),未上架(1),上架(2))
-      var shudianz = ''
-      if(storeid!=0){
-        shudianz = '(书店中的状态)'
+      var shudianz = "";
+      if (storeid != 0) {
+        shudianz = "(书店中的状态)";
       }
       if (num == 0) {
-        return "下架中"+shudianz;
+        return "下架中" + shudianz;
       } else if (num == 1) {
-        return "待上架"+shudianz;
+        return "待上架" + shudianz;
       } else {
-        return "上架中"+shudianz;
+        return "上架中" + shudianz;
+      }
+    },
+    tijiaotype(num) {
+      if (num == 1) {
+        //书目简介
+        return '书目简介提交'
+      } else if (num == 2) {
+        // 作者简介
+        return '作者简介提交'
+      } else {
+        // 目录
+        return '目录提交'
       }
     },
     shustate(num) {
@@ -188,6 +295,106 @@ export default {
     }
   },
   methods: {
+    // 展示富文本编辑器
+    showfuwenben(num) {
+      this.show_fuwenben = true;
+      this.tijiaotype = num;
+      setTimeout(() => {
+        window.editor = new Weditor("contenteditable");
+        if (num == 1) {
+          //书目简介
+          window.editor.html(this.bookData.introduction);
+        } else if (num == 2) {
+          // 作者简介
+          window.editor.html(this.authorinfo.introduction);
+        } else {
+          // 目录
+          window.editor.html(this.contents.contents);
+        }
+      });
+    },
+    tijiaoxinxi() {
+      var num = this.tijiaotype;
+      if (num == 1) {
+        //书目简介
+        this.setinfo();
+      } else if (num == 2) {
+        // 作者简介
+        this.setauthorinfo()
+      } else {
+        // 目录
+        this.setcontents()
+      }
+    },
+    // 获取简介
+    getinfo() {
+      getinfo({ bookCipId: this.bookid }).then(res => {
+        if (res.item.id) {
+          this.info = res.item;
+          this.bookData.introduction = res.item.introduction;
+        }
+      });
+    },
+    setinfo() {
+      setinfo({
+        bookCipId: this.bookid,
+        introduction: window.editor.html(),
+        type: this.info.id ? "put" : "post"
+      }).then(res => {
+        this.show_fuwenben = false;
+        this.getinfo();
+        this.$message({
+          message: "提交成功",
+          type: "success"
+        });
+      });
+    },
+    // 获取目录
+    getcontents() {
+      getcontents({ bookCipId: this.bookid }).then(res => {
+        if (res.item.id) {
+          this.contents = res.item
+          this.bookData.contents = res.item.contents;
+        }
+      });
+    },
+    setcontents() {
+      setcontents({
+        bookCipId: this.bookid,
+        contents: window.editor.html(),
+        type: this.contents.id ? "put" : "post"
+      }).then(res => {
+        this.show_fuwenben = false;
+        this.getcontents();
+        this.$message({
+          message: "提交成功",
+          type: "success"
+        });
+      });
+    },
+    // 获取作者简介
+    getauthorinfo() {
+      getauthorinfo({ bookCipId: this.bookid }).then(res => {
+        if (res.item.id) {
+          this.authorinfo = res.item
+        }
+      });
+    },
+    setauthorinfo() {
+      console.log(this.authorinfo)
+      setauthorinfo({
+        bookCipId: this.bookid,
+        introduction: window.editor.html(),
+        type: this.authorinfo.id ? "put" : "post"
+      }).then(res => {
+        this.show_fuwenben = false;
+        this.getauthorinfo();
+        this.$message({
+          message: "提交成功",
+          type: "success"
+        });
+      });
+    },
     // 获取图书详情
     getonebook() {
       this.loading = this.$loading({
@@ -198,33 +405,36 @@ export default {
         background: "rgba(0, 0, 0, 0.3)"
       });
       getonebook(this.bookid).then(res => {
-        if(this.storeid!=0){
-          if(this.bookstateinstore==0){
-            res.item.state = 0
-          }else{
-            res.item.state = 2
+        if (this.storeid != 0) {
+          if (this.bookstateinstore == 0) {
+            res.item.state = 0;
+          } else {
+            res.item.state = 2;
           }
         }
         this.bookData = res.item;
         this.loading.close();
+        this.getinfo(); // 获取书目简介
+        this.getauthorinfo();
+        this.getcontents()
       });
     },
     // 获取库存
-    getbookstorekucun(){
+    getbookstorekucun() {
       getbookstorekucun({
-        bookstoreid:this.storeid,
-        bookid:this.bookid
-      }).then(res =>{
-        this.kucun = res.item.bookCnt
-      })
+        bookstoreid: this.storeid,
+        bookid: this.bookid
+      }).then(res => {
+        this.kucun = res.item.bookCnt;
+      });
     },
     // 显示修改书
-    bianjibook(){
+    bianjibook() {
       this.show_edit = true;
     },
-    hideedit(){
+    hideedit() {
       this.show_edit = false;
-      this.getonebook()
+      this.getonebook();
     },
     gotoimg(url) {
       window.open(url);
@@ -261,9 +471,9 @@ export default {
         });
       }
     },
-    changepage(page){
+    changepage(page) {
       this.page = page;
-      this.getbookqrcodelist()
+      this.getbookqrcodelist();
     },
     // 获取实体店的图书
     getbookqrcodelist() {
@@ -447,7 +657,7 @@ export default {
 }
 .js-title {
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
   color: #1f7872;
   font-size: 20px;
   padding-left: 20px;
@@ -456,10 +666,33 @@ export default {
   background-color: #fff;
   border-radius: 10px;
   padding: 20px;
+  clear: both;
 }
 .shulist {
   color: #595757;
   line-height: 30px;
   border-bottom: 1px solid #ccc;
+}
+.editorhead {
+  background-color: #eee;
+  padding: 5px 10px 3px 10px;
+}
+.editorhead input {
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  overflow: hidden;
+  background: url(../../assets/editor.png) no-repeat;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+.editorhead input:hover {
+  box-shadow: 0 0 1px #000;
+}
+.contenteditablebody {
+  width: 100%;
+  height: 400px;
 }
 </style>

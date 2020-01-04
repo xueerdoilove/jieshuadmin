@@ -25,7 +25,7 @@ export default {
       if (rules.search("4") != -1) {
         this.user.rules = "最高管理员";
       } else if (rules.search("3") != -1) {
-        this.user.rules = "门店管理员";
+        this.user.rules = "普通管理员";
       } else if (rules.search("2") != -1) {
         this.user.rules = "门店店员";
       } else if (rules.search("1") != -1) {
@@ -35,7 +35,7 @@ export default {
         var a = JSON.parse(localStorage.getItem("bookStoredata"));
         this.shenfen = a.name + "的" + this.user.rules;
       } else {
-        this.shenfen = "最高管理者";
+        this.shenfen = this.user.rules;
       }
     }, 1500);
   }

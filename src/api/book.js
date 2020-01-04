@@ -101,3 +101,53 @@ export function postbookcip(data) {
     data
   })
 }
+
+
+
+//获取简介
+export function getinfo(params) {
+  return request({
+    url: '/bookcip/'+params.bookCipId+'/info',
+    method: 'get',
+  })
+}
+// introduction:''
+export function setinfo(data) {
+  return request({
+    url: '/bookcip/'+data.bookCipId+'/info',
+    method: data.type,
+    data
+  })
+}
+
+//获取作者简介
+export function getauthorinfo(params) {
+  return request({
+    url: '/bookcip/'+params.bookCipId+'/authorinfo',
+    method: 'get',
+  })
+}
+// introduction:''
+export function setauthorinfo(data) {
+  return request({
+    url: '/bookcip/'+data.bookCipId+'/authorinfo',
+    method: data.type,
+    data
+  })
+}
+
+//获取目录简介
+export function getcontents(params) {
+  return request({
+    url: '/bookcip/'+params.bookCipId+'/contents',
+    method: 'get',
+  })
+}
+// introduction:''
+export function setcontents(data) {
+  return request({
+    url: '/bookcip/'+data.bookCipId+'/contents',
+    method: data.type,
+    data
+  })
+}
