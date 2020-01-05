@@ -76,7 +76,7 @@ export const constantRouters = [{
         children: [{
           path: 'bookdetail',
           name: 'bookdetail1',
-          component: () => import('@/views/pachong/bookdetail'),
+          component: () => import('@/views/bookLibrary/bookdetail'),
           meta: {
             title: '图书详情'
           },

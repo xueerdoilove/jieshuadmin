@@ -151,3 +151,11 @@ export function setcontents(data) {
     data
   })
 }
+
+// 获取书的分类列表 i/bookcip/{bookcipid}/cat
+export function getcatofbookcip(params) {
+  return request({
+    url: '/bookcip/'+params.bookCipId+'/cat',
+    method: 'get',
+  })
+}
