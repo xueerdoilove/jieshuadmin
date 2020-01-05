@@ -330,6 +330,7 @@ export default {
   float: left;
   position: relative;
   background-color: #aaa;
+  overflow: hidden;
 }
 .book-stars-s .image {
   width: 100%;

@@ -564,6 +564,7 @@ export default {
   position: relative;
   background-color: #aaa;
   top: -3px;
+  overflow: hidden;
 }
 .book-stars-s .image {
   width: 100%;
