@@ -24,13 +24,17 @@
       </el-form-item>
 
       <el-form-item label="出版社" prop="pressId">
-        <el-select v-model="new_one.pressId" placeholder="请选择出版社">
-          <el-option
-            v-for="item in presslist"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
+        <el-select
+          style="width:400px;"
+          v-model="new_one.pressId"
+          filterable
+          remote
+          @change="setpressname"
+          placeholder="请搜索一个出版社,并选择"
+          :remote-method="getpressListbyname"
+          :loading="false"
+        >
+          <el-option v-for="item in presslist" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
 
@@ -47,21 +51,44 @@
       </el-form-item>
 
       <el-form-item label="图书价格(元)" prop="price">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.price"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.price"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="押金(元)" prop="deposit">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.deposit"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.deposit"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="借阅费(元)" prop="borrowCost">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.borrowCost"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.borrowCost"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="豆瓣评分" prop="doubanScore">
         <el-input class="riqi" type="text" maxlength="3" v-model="new_one.doubanScore"></el-input>
       </el-form-item>
 
+      <el-form-item label="分类" prop="categoryIdList">
+        <el-select style="width:400px;" v-model="new_one.cat" multiple placeholder="请选择书目属于的分类,可多选" @change="setcatelist">
+          <el-option v-for="item in catlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="图书版式" prop="bookFormat">
         <el-switch
           style="display: block;margin-top:8px;color:#ccc"
@@ -94,7 +121,7 @@
           >只能上传jpg/png文件，且不超过500kb,宽200px,高280px</span>
         </el-upload>
         <input style="display:none;" type="text" v-model="new_one.portrait" />
-        <img style="width:200px;" :src="new_one.portrait" v-if="new_one.portrait.length<1000"  />
+        <img style="width:200px;" :src="new_one.portrait" v-if="new_one.portrait.length<1000" />
       </el-form-item>
 
       <el-form-item>
@@ -107,6 +134,8 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 import { postbookcip } from "@/api/book";
+import { getpressListbyname } from "@/api/press";
+import { getcatList } from "@/api/cat";
 
 export default {
   name: "newbook",
@@ -127,15 +156,17 @@ export default {
     };
     return {
       presslist: [], // 出版社的 列表
-
+      catlist: [],
+      categoryIdList:[],
       new_one: {
-        id:'',
+        categoryIdList: '',
+        id: "",
         name: "", //-> 书名
         author: "", //-> 著者
         publishDate: "", //-> 出版日期
         isbn: "", //-> 图书ISBN
-        pressId: 1, //-> 出版社id
-        press: "人民出版社", // -> 出版社
+        pressId: "", //-> 出版社id
+        press: "", // -> 出版社
         translator: "", //-> 译者
         introduction: "", // -> 简介
         portrait: " ", // -> 图书封面图片
@@ -147,11 +178,16 @@ export default {
         bookFormat: 0
       },
       rules: {
+        categoryIdList:[
+          { required: true, message: "请至少选择一个所属分类", trigger: "blur" }
+        ],
         name: [
           { required: true, message: "请输入书目名称", trigger: "blur" },
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
-
+        pressId: [
+          { required: true, message: "请选择一个出版社", trigger: "blur" }
+        ],
         author: [
           { required: true, message: "请输入书目作者", trigger: "blur" },
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
@@ -173,7 +209,7 @@ export default {
 
         pageCount: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -181,7 +217,7 @@ export default {
 
         price: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -189,7 +225,7 @@ export default {
 
         deposit: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -197,7 +233,7 @@ export default {
 
         borrowCost: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -205,7 +241,7 @@ export default {
 
         doubanScore: [
           {
-            validator:phonepipei,
+            validator: phonepipei,
             required: true,
             trigger: "blur"
           }
@@ -213,14 +249,49 @@ export default {
       }
     };
   },
-  props: {
-    
-  },
+  props: {},
   computed: {},
   mounted() {
-    
+    this.getcatList();
   },
   methods: {
+    setcatelist(e){
+      this.new_one.categoryIdList = e.join(',')
+      console.log(this.new_one.categoryIdList )
+    },
+    getcatList() {
+      getcatList({
+        parentId: -1,
+        state: 2,
+        page: 1,
+        pageSize: 30
+      }).then(res => {
+        var arr = [];
+        res.items.forEach(item => {
+          item.categoryList.forEach(cat => {
+            arr.push(cat);
+          });
+        });
+        this.catlist = arr;
+      });
+    },
+    getpressListbyname(name) {
+      getpressListbyname({
+        state: 1,
+        name: name,
+        page: 1,
+        pageSize: 10
+      }).then(res => {
+        this.presslist = res.items;
+      });
+    },
+    setpressname(pressid) {
+      this.presslist.forEach(item => {
+        if (item.id == pressid) {
+          this.new_one.press = item.name;
+        }
+      });
+    },
     handleRemove(file, fileList) {
       this.new_one.portrait = "";
     },
@@ -259,16 +330,22 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in this.new_one) {
-            if (key == "portrait" || key == "price" || key == "deposit" || key == "borrowCost" || key == "bookFormat") {
+            if (
+              key == "portrait" ||
+              key == "price" ||
+              key == "deposit" ||
+              key == "borrowCost" ||
+              key == "bookFormat" 
+            ) {
               continue;
             }
             formData.append(key, this.new_one[key]);
           }
-          formData.append("price", this.new_one["price"] );
-          formData.append("deposit", this.new_one["deposit"] );
-          formData.append("bookFormat", this.new_one["bookFormat"]?1:0);
-          formData.append("borrowCost", this.new_one["borrowCost"] );
-          if(this.new_one["portrait"].length>1000){
+          formData.append("price", this.new_one["price"]);
+          formData.append("deposit", this.new_one["deposit"]);
+          formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
+          formData.append("borrowCost", this.new_one["borrowCost"]);
+          if (this.new_one["portrait"].length > 1000) {
             formData.append(
               "portrait",
               convertBase64UrlToBlob(this.new_one["portrait"]),
@@ -290,9 +367,9 @@ export default {
           }
           postbookcip(formData).then(res => {
             this.$message({
-            message: '添加成功',
-            type: 'success'
-          });
+              message: "添加成功",
+              type: "success"
+            });
             this.$emit("hidenew");
           });
         } else {

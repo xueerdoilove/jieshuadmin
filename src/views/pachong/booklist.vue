@@ -2,7 +2,12 @@
   <div class="container">
     <el-row class="tianjian_tou">
       <el-col :span="4">
-        <el-select class="riqi" style="margin-bottom:20px;" v-model="searchtype" @change="changepage(1)">
+        <el-select
+          class="riqi"
+          style="margin-bottom:20px;"
+          v-model="searchtype"
+          @change="changepage(1)"
+        >
           <el-option
             v-for="searchdtype in searchtypelist"
             :key="searchdtype.id"
@@ -18,32 +23,11 @@
           v-show="searchtype==2"
           class="input-with-select"
         >
-           
           <el-button slot="append" @click="searchbookbykeyword" icon="el-icon-search">搜索</el-button>
-        </el-input>
-
-        <el-autocomplete
-          class="input-with-select"
-          v-show="searchtype==3"
-          v-model="storeitem"
-          :fetch-suggestions="querySearchAsync"
-          placeholder="请输入门店名"
-          @select="searchbookbystore"
-          value-key="name"
-        ></el-autocomplete>
-
-        <el-form label-width="80px" v-show="searchtype==0">
-           
-        </el-form>
-
-        <el-form label-width="80px" v-show="searchtype==1 || searchtype==3">
-          <el-form-item label="状态:">
-            <el-radio-group v-model="bookStorestate" @change="zhuangtai">
-              <el-radio :label="1">上架中</el-radio>
-              <el-radio :label="0">已下架</el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-form>
+        </el-input>&nbsp;
+      </el-col>
+      <el-col :span="4" style="text-align:right">
+        <el-button type="primary" @click="shownew">+新增</el-button>
       </el-col>
     </el-row>
 
@@ -78,11 +62,10 @@
       <el-col :span="20" :offset="2" style="text-align:center;">没有书籍</el-col>
     </el-row>
 
-
     <!-- 新增书目 -->
-      <el-dialog title="新增书目" :visible.sync="show_new">
-        <newbook     @hidenew='hidenew'/>
-      </el-dialog>
+    <el-dialog title="新增书目" :visible.sync="show_new">
+      <newbook @hidenew="hidenew" />
+    </el-dialog>
   </div>
 </template>
 
@@ -92,38 +75,37 @@ import {
   bookcipsearch,
   bookcipbystore,
   putbookonline,
-  postbookcip,
-  
+  postbookcip
 } from "@/api/book";
 import Bookbigitem from "./bookbigitem";
 import newbook from "./newbook";
-import { getstoreList , getrepositorystore} from "@/api/store";
+import { getstoreList, getrepositorystore } from "@/api/store";
 
 export default {
   named: "书库信息",
   data() {
     return {
-      show_new:false,
+      show_new: false,
 
       loading: "",
 
       searchtype: 0,
       searchtypelist: [
         { id: 0, name: "全部爬虫书目" },
-        { id: 2, name: "爬虫书目 搜索" },
+        { id: 2, name: "爬虫书目 搜索" }
       ],
 
       checkedall: false,
       booklist: [],
       state: 1, //下架(0),未上架(1),上架(2)）
-      bookStorestate:1,// 1 上架中 0 下架中 书店的书目状态
+      bookStorestate: 1, // 1 上架中 0 下架中 书店的书目状态
       count: -1, // -1 无,
       page: 1,
       pageSize: 10,
 
       searchvalue: "", // 搜索书的关键字
 
-      onlinestoreid:1,// 线上仓库id
+      onlinestoreid: 1, // 线上仓库id
       storeid: 0,
       storelist: [],
       storeitem: "",
@@ -148,14 +130,14 @@ export default {
   },
   mounted() {
     this.changepage();
-    this.getrepositorystore()
+    this.getrepositorystore();
   },
   methods: {
     // 查询线上仓库id
-    getrepositorystore(){
-      getrepositorystore().then(res =>{
-        this.onlinestoreid = res.item.id
-      })
+    getrepositorystore() {
+      getrepositorystore().then(res => {
+        this.onlinestoreid = res.item.id;
+      });
     },
     //批量上架
     piliangshangjia() {
@@ -221,8 +203,8 @@ export default {
         name: this.searchvalue,
         page: this.page,
         pageSize: this.pageSize,
-        sk:'time',
-        so:'desc',
+        sk: "time",
+        so: "desc"
       })
         .then(res => {
           this.booklist = this.tianjiazhuangt(res.items);
@@ -275,15 +257,17 @@ export default {
       this.storeid = item.id;
       this.getbookbystore();
     },
-    
+
     // 根据书店id查询书列表
     getbookbystore() {
-      if (this.storeid == 0 ) {// 如果是根据门店查询并且 storeid ==0 那就返回空
+      if (this.storeid == 0) {
+        // 如果是根据门店查询并且 storeid ==0 那就返回空
         this.booklist = [];
         this.totalItems = 0;
         return;
       }
-      if(this.storeid == this.onlinestoreid&& this.searchtype==3){// 
+      if (this.storeid == this.onlinestoreid && this.searchtype == 3) {
+        //
         this.booklist = [];
         this.totalItems = 0;
         return;
@@ -300,12 +284,11 @@ export default {
         state: this.bookStorestate,
         page: this.page,
         pageSize: this.pageSize,
-        sk:'time',
-        so:'desc',
+        sk: "time",
+        so: "desc"
       })
         .then(res => {
-
-          this.booklist = this.tianjiazhuangt(res.items,this.bookStorestate);
+          this.booklist = this.tianjiazhuangt(res.items, this.bookStorestate);
           this.totalItems = res.totalItems;
           this.loading.close();
         })
@@ -313,22 +296,21 @@ export default {
           this.loading.close();
         });
     },
-    tianjiazhuangt(arr,bookStorestate) {
-      if(bookStorestate == undefined){
+    tianjiazhuangt(arr, bookStorestate) {
+      if (bookStorestate == undefined) {
         arr.forEach(book => {
           book.selected = false;
-          book.storeid = this.storeid
+          book.storeid = this.storeid;
         });
-      }else{
+      } else {
         arr.forEach(book => {
           book.selected = false;
-          book.storeid = this.storeid
-          book.state = bookStorestate
-          book.mendianshu = true
+          book.storeid = this.storeid;
+          book.state = bookStorestate;
+          book.mendianshu = true;
         });
       }
 
-      
       return arr;
     },
     // 根据状态 查询书列表
@@ -344,8 +326,8 @@ export default {
         state: this.state,
         page: this.page,
         pageSize: this.pageSize,
-        sk:'time',
-        so:'desc',
+        sk: "time",
+        so: "desc"
       })
         .then(res => {
           this.booklist = this.tianjiazhuangt(res.items);
@@ -359,27 +341,31 @@ export default {
     zhuangtai(e) {
       this.changepage(1);
     },
-    shownew(){
-      this.show_new = true
+    shownew() {
+      this.show_new = true;
     },
-    hidenew(){
-      this.state = 1
-      this.searchtype = 0
+    hidenew() {
+      this.state = 1;
+      this.searchtype = 0;
       this.show_new = false;
-      this.changepage(1)
+      this.changepage(1);
     },
     changepage(e) {
       this.page = e;
-      if (this.searchtype == 0) {// 全部数目
-        this.storeid = 0
+      if (this.searchtype == 0) {
+        // 全部数目
+        this.storeid = 0;
         this.getbooklist();
-      } else if (this.searchtype == 1) {// 线上数目
-        this.storeid =  this.onlinestoreid
+      } else if (this.searchtype == 1) {
+        // 线上数目
+        this.storeid = this.onlinestoreid;
         this.getbookbystore();
-      } else if (this.searchtype == 3) {// 线下数目
+      } else if (this.searchtype == 3) {
+        // 线下数目
         this.getbookbystore();
-      } else {// 全部数目搜索
-        this.storeid = 0
+      } else {
+        // 全部数目搜索
+        this.storeid = 0;
         this.searchbookbykeyword();
       }
     }

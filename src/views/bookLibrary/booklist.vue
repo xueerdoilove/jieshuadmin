@@ -50,7 +50,7 @@
           </el-form-item>
         </el-form>
 
-        <el-form label-width="80px" v-show="searchtype==1 || searchtype==3">
+        <el-form label-width="80px" style="width:300px;float:left;" v-show="searchtype==1 || searchtype==3">
           <el-form-item label="状态:">
             <el-radio-group v-model="bookStorestate" @change="zhuangtai">
               <el-radio :label="1">上架中</el-radio>
@@ -60,7 +60,7 @@
         </el-form>
       </el-col>
       <el-col :span="4" style="text-align:right">
-        <el-button type="primary" @click="shownew">+新增</el-button>
+        <!-- <el-button type="primary" @click="shownew">+新增</el-button> -->
       </el-col>
     </el-row>
 
