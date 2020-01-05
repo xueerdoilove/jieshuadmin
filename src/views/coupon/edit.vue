@@ -20,6 +20,7 @@
 
       <el-form-item v-if="newcoupon.ruleType==0" label="有效日长" prop="validDays">
         <el-input class="riqi" type="number" v-model="newcoupon.validDays"></el-input>
+        <br>(自用户领取后{{newcoupon.validDays || 0}}天内有效)
       </el-form-item>
 
 
