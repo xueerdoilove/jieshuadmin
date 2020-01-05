@@ -166,6 +166,15 @@ const permission = {
           }
         })
       }
+      if(!routerdata.shuku.n1&&!routerdata.shuku.n2){
+        state.routers.forEach(item =>{
+          if(item.name=='skbook'){
+            item.hidden = true;
+            item.children[0].hidden = true;
+            item.children[1].hidden = true;
+          }
+        })
+      }
       state.addRouters = routerdata.routers
       state.routers = constantRouters.concat(routerdata.routers)
     }
@@ -182,7 +191,11 @@ const permission = {
           if (roles && roles.search('4') != -1) { //如果是admin角色 加载所有动态路由
             accessedRouters = {routers:asyncRouters,shuku:{n1:true,n2:true}}
           } else { //如果不是admin角色 则加载过滤后的动态路由
-            accessedRouters = filterAsyncRouter(asyncRouters, perms)
+            if(perms.length>0){
+              accessedRouters = filterAsyncRouter(asyncRouters, perms)
+            }else{
+              accessedRouters = {routers:[],shuku:{n1:false,n2:false}}
+            }
           }
 
           commit('SET_ROUTERS', accessedRouters) //保存路由

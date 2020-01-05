@@ -134,7 +134,8 @@ export default {
             .dispatch("user/login", a)
             .then(() => {
               localStorage.setItem("phone", this.loginForm.phone);
-              this.$router.push({ path: this.redirect || "/" });
+              // this.$router.push({ path: this.redirect || "/" });
+              this.$router.push({ path: "/" });
               this.loading = false;
             })
             .catch(() => {
