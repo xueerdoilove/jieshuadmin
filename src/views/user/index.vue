@@ -9,7 +9,7 @@
         &nbsp;
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="shownew">+新增管理员</el-button>
+        <el-button type="primary" @click="shownew" v-show="show_caozuo">+新增管理员</el-button>
       </el-col>
     </el-row>
     <el-row class="coupon_item">
@@ -26,7 +26,7 @@
         <span>级别</span>
       </el-col>
       <el-col :span="6">
-        <span>操作</span>
+        <span v-show="show_caozuo">操作</span>
       </el-col>
     </el-row>
     <el-row class="coupon_item" v-for="item in userlist" v-bind:key="item.id">
@@ -43,7 +43,7 @@
         <span>{{item.bookStoreName | bookStoreName}}</span>
       </el-col>
       <el-col :span="6" style="padding-top:20px;">
-        <el-button @click="gotoquanxian(item.id,item.name,item.bookStoreId,item.bookStoreName)">权限管理</el-button>
+        <el-button @click="gotoquanxian(item.id,item.name,item.bookStoreId,item.bookStoreName)" v-show="show_caozuo">权限管理</el-button>
       </el-col>
     </el-row>
     <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
@@ -73,6 +73,7 @@ export default {
   named: "优惠券",
   data() {
     return {
+      show_caozuo:false,
       show_edit: false,
       show_new: false,
       userlist: [],
@@ -86,6 +87,9 @@ export default {
     };
   },
   mounted() {
+    if(localStorage.getItem('roleset').search('4')!=-1){
+      this.show_caozuo = true;
+    }
     this.getuserlist();
   },
   components: { Newuser },
