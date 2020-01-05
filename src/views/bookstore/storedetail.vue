@@ -93,6 +93,7 @@
               <el-radio :label="1">上架中</el-radio>
               <el-radio :label="0">已下架</el-radio>
             </el-radio-group>
+            <span style="float:right">(上架书库里面的书请到管理员小程序中扫码上架)</span>
           </el-form-item>
         </el-form>
       </div>

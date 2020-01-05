@@ -43,4 +43,11 @@ export function sendbook(data) {
     data
   })
 }
-
+// 物流 ordersum/117/tracktrace?id=117&sk=time&so=desc
+export function gettracktrace(params) {
+  return request({
+    url: '/ordersum/'+params.id+'/tracktrace',
+    method: 'get',
+    params
+  })
+}

@@ -68,8 +68,8 @@
         <div class="js-title">
           <span>所属分类</span>
         </div>
-        <div class="js-content">
-          <div class="catitem" v-for="cat in catlist" :key="cat.id">{{cat.name}}</div>
+        <div class="js-content" style="overflow:hidden;">
+          <div class="catitem" v-for="cat in catlist" :key="cat.id">{{cat.categoryName}}</div>
         </div>
       </div>
       <!-- 介绍 -->
@@ -715,10 +715,11 @@ export default {
   height: 400px;
 }
 .catitem {
-  padding: 10px;
+  padding:5px 10px;
   border-radius: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
   border: 1px solid #aaa;
+  float: left;
 }
 </style>
