@@ -27,14 +27,14 @@
     </el-row>
     <el-row class="tiaojian_item">
       <el-col :span="6" :offset="1">
-        <el-radio-group v-model="ordertype">
+        <el-radio-group v-model="ordertype" @change="changetiaojian">
           <el-radio :label="1">借阅订单</el-radio>
           <el-radio :label="2">还书订单</el-radio>
         </el-radio-group>
       </el-col>
     </el-row>
     <el-row class="tiaojian_item">
-      <el-col :span="22" :offset="1">
+      <el-col :span="22" :offset="1" v-show="ordertype==1">
         <el-radio-group v-model="state" @change="changetiaojian">
           <el-radio :label="-1">全部</el-radio>
           <el-radio :label="0">待管理员确认</el-radio>
@@ -44,6 +44,16 @@
           <el-radio :label="5">已完成</el-radio>
           <el-radio :label="6">已取消</el-radio>
           <el-radio :label="7">交易关闭</el-radio>
+        </el-radio-group>
+      </el-col>
+      <!-- 状态：0待确认,1待退款,2完成,3取消,4关闭    -->
+      <el-col :span="22" :offset="1" v-show="ordertype==2">
+        <el-radio-group v-model="returnstate" @change="changetiaojian">
+          <el-radio :label="0">待确认</el-radio>
+          <el-radio :label="1">待退款</el-radio>
+          <el-radio :label="2">完成</el-radio>
+          <el-radio :label="3">取消</el-radio>
+          <el-radio :label="4">关闭</el-radio>
         </el-radio-group>
       </el-col>
     </el-row>
@@ -58,9 +68,14 @@
         </div>
         <div class="order-block-foot">
           <div
+            v-if="ordertype==1"
             class="order-block-foot-total"
           >共{{item.bookCount}}本书 合计：¥{{item.totalCost/100}}（含运费¥{{item.freight/100}}）</div>
-          <div class="order-block-foot-btns">
+          <div
+            v-if="ordertype==2"
+            class="order-block-foot-total"
+          >共{{item.bookCount}}本书 押金：¥{{item.deposit/100}}元</div>
+          <div v-if="ordertype==1" class="order-block-foot-btns">
             <div
               v-if="item.state==0"
               class="btn"
@@ -93,6 +108,41 @@
               class="btn"
               style="border:none;background-color:#f9f9f9;"
             >订单已取消</div>
+          </div>
+          <!-- 状态：0待确认,1待退款,2完成,3取消,4关闭    -->
+          <div v-if="ordertype==2" class="order-block-foot-btns">
+            <div
+              v-if="item.state==0"
+              class="btn"
+              bindtap="dianyuanqueren"
+              style="border:none;background-color:#f9f9f9;"
+            >待确认</div>
+            <div
+              v-if="item.state==0"
+              class="btn"
+              @click="queren(item.internalNo)"
+              style="border:none;background-color:none;"
+            >确认还书</div>
+            <div
+              v-if="item.state==1"
+              class="btn"
+              style="border:none;background-color:#f9f9f9;"
+              bindtap="prepay"
+            >待退款</div>
+            <div
+              v-if="item.state==1"
+              class="btn"
+              @click="tuikuan(item.internalNo)"
+              style="border:none;background-color:none;"
+            >退款</div>
+            <div v-if="item.state==2" class="btn" @click="wuliuxinxi(item.id)">已完成</div>
+            <div v-if="item.state==3" class="btn" style="border:none;background-color:#f9f9f9;">已取消</div>
+            <div
+              v-if="item.state==4"
+              class="btn"
+              bindtap="gotoguihuan"
+              style="border:none;background-color:#f9f9f9;"
+            >已关闭</div>
           </div>
         </div>
       </div>
@@ -187,9 +237,7 @@
           <div class="mingxi">{{item.trackText}}</div>
           <div class="time">{{item.trackTime}}</div>
         </div>
-        <div v-show="wuliulist.length==0">
-          没有物流信息
-        </div>
+        <div v-show="wuliulist.length==0">没有物流信息</div>
       </div>
     </el-dialog>
   </div>
@@ -202,7 +250,10 @@ import {
   getordersumByid,
   bindbookorderarcode,
   sendbook,
-  gettracktrace
+  gettracktrace,
+  getreturnordersum,
+  returnorderapprove,
+  returnorderapprovebyinter
 } from "@/api/order";
 import { getstoreList } from "@/api/store";
 import { getkuaidilist } from "@/api/express";
@@ -227,7 +278,7 @@ export default {
       kuaidilist: [],
 
       internalNoOfSearch: "",
-
+      returnstate: 0, //还书订单 状态：0待确认,1待退款,2完成,3取消,4关闭
       borrowType: -1, //借阅类型(线下借阅(0),在线借阅(1)) 默认为-1查全部
       ordertype: 1, // 1 借阅 2 还书
       state: -1, //（待管理员确认(0),待支付(1),待发货(2),待确认收货(3),待归还(4),已完成(5),已取消(6),交易关闭(7)）默认为-1查全部
@@ -248,6 +299,26 @@ export default {
   components: { BookItem },
   computed: {},
   methods: {
+    // 确认收到书了
+    queren(internalNo) {
+      this.$confirm("确定已经收到书了吗?确定后会把押金退还给用户", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        returnorderapprove({
+          internalNo: internalNo
+        }).then(res => {
+          this.$message({
+            message: "确认还书成功!",
+            type: "success"
+          });
+          this.getorderlist();
+        });
+      });
+    },
+    // 退款确认
+    tuikuan(internalNo) {},
     // 物流信息
     wuliuxinxi(id) {
       //ordersum/117/tracktrace?id=117&sk=time&so=desc
@@ -257,7 +328,7 @@ export default {
         so: "desc"
       }).then(res => {
         this.wuliulist = res.items;
-        
+
         this.show_wuliu = true;
       });
     },
@@ -279,7 +350,7 @@ export default {
           } else {
             this.ismendian = false;
           }
-          this.getordersum();
+          this.getorderlist();
         })
         .catch(error => {});
     },
@@ -366,13 +437,33 @@ export default {
     },
     // 根据 订单号查询 订单
     getordersumapprove() {
-      getordersumapprove({
-        internalNo: this.internalNoOfSearch
-      }).then(res => {
-        this.orderlist = [res.item];
-        this.totalItems = 1;
-        this.internalNoOfSearch = "";
-      });
+      if (this.ordertype == 1) {
+        getordersumapprove({
+          internalNo: this.internalNoOfSearch
+        }).then(res => {
+          this.orderlist = [res.item];
+          this.totalItems = 1;
+          this.internalNoOfSearch = "";
+        });
+      } else {
+        //api/returnorderapprove?internalNo={internalNo}
+        returnorderapprovebyinter({
+          internalNo: this.internalNoOfSearch
+        }).then(res => {
+          this.orderlist = [res.item];
+          this.totalItems = 1;
+          this.internalNoOfSearch = "";
+        });
+      }
+    },
+    getorderlist() {
+      if (this.ordertype == 1) {
+        // 借书订单
+        this.getordersum();
+      } else if (this.ordertype == 2) {
+        // 还书订单
+        this.getreturnordersum();
+      }
     },
     // 查询订单列表
     getordersum() {
@@ -401,15 +492,41 @@ export default {
         loading.close();
       }, 2000);
     },
+    // 查询还书订单列表
+    getreturnordersum() {
+      //api/bookstore/id/returnordersum
+      const loading = this.$loading({
+        lock: false,
+        target: document.querySelector(".app-main"),
+        text: "加载中...",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.3)"
+      });
+      getreturnordersum({
+        bookStoreId: this.bookStoreId,
+        page: this.page,
+        pageSize: this.pageSize,
+        state: this.returnstate,
+        sk: this.sk,
+        so: this.so
+      }).then(res => {
+        loading.close();
+        this.orderlist = res.items;
+        this.totalItems = res.totalItems;
+      });
+      setTimeout(() => {
+        loading.close();
+      }, 2000);
+    },
     // 页码切换
     changepage(e) {
       this.page = e;
-      this.getordersum();
+      this.getorderlist();
       document.body.scrollTop = document.documentElement.scrollTop = 0;
     },
     changetiaojian() {
       this.page = 1;
-      this.getordersum();
+      this.getorderlist();
     }
   }
 };
@@ -506,18 +623,16 @@ export default {
   cursor: pointer;
 }
 
-.wuliuitem{
-  padding:10px 35px;
+.wuliuitem {
+  padding: 10px 35px;
   border-bottom: 1rpx solid #eee;
-
 }
-.mingxi{
-  color:#333;
+.mingxi {
+  color: #333;
   font-size: 18px;
-
 }
-.time{
-  color:#888;
+.time {
+  color: #888;
   font-size: 16px;
   margin-top: 6px;
 }
