@@ -36,7 +36,7 @@
 
 
       <el-form-item label="领取规则">
-        <el-select class="riqi" v-model="newcoupon.obtainType" placeholder="请选择优惠券类型">
+        <el-select class="riqi" v-model="newcoupon.obtainType" :disabled="true" placeholder="请选择优惠券类型">
           <el-option label="发放制" value="0"></el-option>
           <el-option label="领取制" value="1"></el-option>
         </el-select>
@@ -125,7 +125,7 @@ export default {
         couponCnt: "1",
         couponType: "0",
         ruleType:'0',//0: 有效日期，1：限时间段
-        obtainType :'0',// 0:发放， 1：领取
+        obtainType :'1',// 0:发放， 1：领取
         picture:'',
       },
       rules: {

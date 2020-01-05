@@ -37,7 +37,7 @@
       <el-col :span="22" :offset="1" v-show="ordertype==1">
         <el-radio-group v-model="state" @change="changetiaojian">
           <el-radio :label="-1">全部</el-radio>
-          <el-radio :label="0">待管理员确认</el-radio>
+          <el-radio :label="0">待店员确认</el-radio>
           <el-radio :label="2">待发货</el-radio>
           <el-radio :label="3">待确认收货</el-radio>
           <el-radio :label="4">待归还</el-radio>
@@ -49,11 +49,10 @@
       <!-- 状态：0待确认,1待退款,2完成,3取消,4关闭    -->
       <el-col :span="22" :offset="1" v-show="ordertype==2">
         <el-radio-group v-model="returnstate" @change="changetiaojian">
-          <el-radio :label="0">待确认</el-radio>
+          <el-radio :label="0">待确认是否归还</el-radio>
           <el-radio :label="1">待退款</el-radio>
           <el-radio :label="2">完成</el-radio>
           <el-radio :label="3">取消</el-radio>
-          <el-radio :label="4">关闭</el-radio>
         </el-radio-group>
       </el-col>
     </el-row>
@@ -75,27 +74,27 @@
             v-if="ordertype==2"
             class="order-block-foot-total"
           >共{{item.bookCount}}本书 押金：¥{{item.deposit/100}}元</div>
+
           <div v-if="ordertype==1" class="order-block-foot-btns">
             <div
               v-if="item.state==0"
               class="btn"
               bindtap="dianyuanqueren"
               style="border:none;background-color:#f9f9f9;"
-            >待确认</div>
+            >待店员确认</div>
             <div
               v-if="item.state==1"
               class="btn"
               style="border:none;background-color:#f9f9f9;"
               bindtap="prepay"
             >待支付订单</div>
-            <div v-if="item.state==2" class="btn" style="border:none;background-color:#f9f9f9;">待出库</div>
             <div
               v-if="item.state==2"
               class="btn"
               @click="showchuku(item.internalNo)"
-              style="border:none;background-color:none;"
+              style="border:none;background-color:#1f7872;color:#fff;"
             >出库</div>
-            <div v-if="item.state==3" class="btn" @click="wuliuxinxi(item.id)">查看物流</div>
+            <div v-if="item.state==3" class="btn"  style="border:none;background-color:#1f7872;color:#fff;" @click="wuliuxinxi(item.id)">查看物流</div>
             <div v-if="item.state==3" class="btn" style="border:none;background-color:#f9f9f9;">已出库</div>
             <div
               v-if="item.state==4"
@@ -114,28 +113,16 @@
             <div
               v-if="item.state==0"
               class="btn"
-              bindtap="dianyuanqueren"
-              style="border:none;background-color:#f9f9f9;"
-            >待确认</div>
-            <div
-              v-if="item.state==0"
-              class="btn"
               @click="queren(item.internalNo)"
-              style="border:none;background-color:none;"
+              style="border:none;background-color:#1f7872;color:#fff;"
             >确认还书</div>
             <div
               v-if="item.state==1"
               class="btn"
-              style="border:none;background-color:#f9f9f9;"
-              bindtap="prepay"
-            >待退款</div>
-            <div
-              v-if="item.state==1"
-              class="btn"
               @click="tuikuan(item.internalNo)"
-              style="border:none;background-color:none;"
+              style="border:none;background-color:#1f7872;color:#fff;"
             >退款</div>
-            <div v-if="item.state==2" class="btn" @click="wuliuxinxi(item.id)">已完成</div>
+            <div v-if="item.state==2" class="btn" >已完成</div>
             <div v-if="item.state==3" class="btn" style="border:none;background-color:#f9f9f9;">已取消</div>
             <div
               v-if="item.state==4"
@@ -539,6 +526,7 @@ export default {
 .tiaojian_item {
   height: 40px;
   line-height: 40px;
+  clear: both;
 }
 .order_item {
   padding: 0;

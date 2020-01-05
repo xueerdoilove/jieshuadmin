@@ -23,6 +23,14 @@ export function delbook(id) {
     method: 'delete',
   })
 }
+
+// 下架图书全线
+export function delallbook(id) {
+  return request({
+    url: '/bookcip/'+id,
+    method: 'delete',
+  })
+}
 // 批量上架 bookciponline  bookCipIdList:[1,2,3,4,5,6]              -> 书目信息id列表
 export function putbookonline(data) {
   return request({

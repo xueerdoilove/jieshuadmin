@@ -170,7 +170,7 @@
           <div id="qrcode"></div>
         </div>
         <div v-show="!detail.shareCode">
-          <div>实体店的分享码只能设置一次不支持修改,请确认好再提交</div>
+          <div>实体店的分享码只能设置一次不支持修改,请确认好再提交,分享码6位数字从100000递增,不可重复</div>
           <span>分享码</span>
           <el-input
             style="width:300px;margin-left:30px;"

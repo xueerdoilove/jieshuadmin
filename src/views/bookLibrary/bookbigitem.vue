@@ -3,12 +3,36 @@
     <div class="caozuo">
       <div class="c_flex">
         <div class="c_yuandian">
-          <el-checkbox v-show="bookData.state!=2&&!bookData.bookCipStoreId" v-model="bookData.selected" @change="danxuanhandler">选择</el-checkbox>
-          <el-button v-show="bookData.state==2&&bookData.bookCipStoreId || bookData.state==1&&bookData.bookCipStoreId" @click="xiajia(bookData.bookCipStoreId)">下架</el-button>
-          <el-button v-show="bookData.state==0&&bookData.bookCipStoreId" @click="shangjia(bookData.bookCipStoreId)">上架</el-button>
+          <el-checkbox
+            v-show="bookData.state!=2&&!bookData.bookCipStoreId"
+            v-model="bookData.selected"
+            @change="danxuanhandler"
+          >选择</el-checkbox>
+          <el-button
+            class="btn"
+            v-show="bookData.state==2&&bookData.bookCipStoreId || bookData.state==1&&bookData.bookCipStoreId"
+            @click="xiajia(bookData.bookCipStoreId)"
+          >下架店铺书目</el-button>
+          <el-button
+            class="btn"
+            v-show="bookData.state==2&&!bookData.bookCipStoreId || bookData.state==1&&!bookData.bookCipStoreId"
+            @click="xiajiashumu(bookData.id)"
+          >下架书目</el-button>
+          <el-button
+            v-show="bookData.state==0&&bookData.bookCipStoreId"
+            @click="shangjia(bookData.bookCipStoreId)"
+          >上架</el-button>
         </div>
-        <div v-if="!bookData.mendianshu" class="state" :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}" >{{bookData.state | state}}</div>
-        <div v-if="bookData.mendianshu" class="state" :class="{'color0':+bookData.state==0,'color2':+bookData.state==1}" >{{bookData.state | state1}}</div>
+        <div
+          v-if="!bookData.mendianshu"
+          class="state"
+          :class="{'color0':+bookData.state==0,'color1':+bookData.state==1,'color2':+bookData.state==2}"
+        >{{bookData.state | state}}</div>
+        <div
+          v-if="bookData.mendianshu"
+          class="state"
+          :class="{'color0':+bookData.state==0,'color2':+bookData.state==1}"
+        >{{bookData.state | state1}}</div>
       </div>
       <div class="x_kucun">
         数量:
@@ -22,7 +46,7 @@
     <div class="book-img" @click="gotodetail(bookData.id,bookData.storeid)">
       <img class="image" :src="bookData.portrait" />
     </div>
-    <div class="book-right-c" >
+    <div class="book-right-c">
       <div class="book-name">{{bookData.name || bookData.bookCipName}}</div>
       <div class="book-right-left">
         <div class="book-stars">
@@ -50,7 +74,7 @@
 </template>
 
 <script>
-import { delbook , putbookcipstore} from "@/api/book";
+import { delbook, putbookcipstore , delallbook} from "@/api/book";
 
 export default {
   name: "bookbigitem",
@@ -81,51 +105,75 @@ export default {
       } else if (num == 1) {
         return "上架中";
       }
-    },
+    }
   },
   computed: {},
   methods: {
-    gotodetail(id,storeid){
-      if(this.bookData.mendianshu){
-        this.$router.push({ path: "./bookdetail", query: { bookid:id ,storeid:storeid ,bookstateinstore:this.bookData.state} });
-      }else{
-        this.$router.push({ path: "./bookdetail", query: { bookid:id ,storeid:storeid } });
+    gotodetail(id, storeid) {
+      if (this.bookData.mendianshu) {
+        this.$router.push({
+          path: "./bookdetail",
+          query: {
+            bookid: id,
+            storeid: storeid,
+            bookstateinstore: this.bookData.state
+          }
+        });
+      } else {
+        this.$router.push({
+          path: "./bookdetail",
+          query: { bookid: id, storeid: storeid }
+        });
       }
     },
-    danxuanhandler(){
-      this.$emit('danxuan')
+    danxuanhandler() {
+      this.$emit("danxuan");
     },
-    shangjia(id){
+    shangjia(id) {
       this.$confirm("确定上架此本书吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() =>{
+      }).then(() => {
         // 上架书店的书
-        putbookcipstore(id).then(res =>{
+        putbookcipstore(id).then(res => {
           this.$message({
-              message: "上架成功",
-              type: "success"
-            });
-            this.$emit('getbooklist')
-        })
-      })
+            message: "上架成功",
+            type: "success"
+          });
+          this.$emit("getbooklist");
+        });
+      });
     },
-    xiajia(id){
-      this.$confirm("确定下架此本书吗?", "提示", {
+    xiajia(id) {
+      this.$confirm("确定从本书店下架此本书吗?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
-      }).then(() =>{
-        delbook(id).then(res =>{
+      }).then(() => {
+        delbook(id).then(res => {
           this.$message({
-            message: '下架成功',
-            type: 'success'
+            message: "下架成功",
+            type: "success"
           });
-          this.$emit('getbooklist')
-        })
-      })
-      
+          this.$emit("getbooklist");
+        });
+      });
+    },
+    xiajiashumu(id) {
+      this.$confirm("确定全线下架此本书吗?下架后同时会下架所有书店的此本书", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      }).then(() => {
+        delallbook(id).then(res => {
+          this.$message({
+            message: "下架成功",
+            type: "success"
+          });
+          this.$emit("getbooklist");
+        });
+      });
     }
   }
 };
@@ -137,6 +185,9 @@ export default {
   padding: 15px 0;
   border-bottom: 1px solid #eee;
   overflow: hidden;
+}
+.btn {
+  margin-right: 20px;
 }
 .caozuo {
   position: relative;
@@ -173,13 +224,13 @@ export default {
   text-align: center;
   padding: 2px 0;
 }
-.color0{
-  background-color: #D13F31;
+.color0 {
+  background-color: #d13f31;
 }
-.color1{
-  background-color: #E6A050;
+.color1 {
+  background-color: #e6a050;
 }
-.color2{
+.color2 {
   background-color: #1f7872;
 }
 .c_shudian {
