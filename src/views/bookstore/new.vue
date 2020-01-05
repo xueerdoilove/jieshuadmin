@@ -7,6 +7,13 @@
 
       <el-form-item label="书店经度" prop="longitude">
         <el-input class="riqi" type="number" v-model="new_one.longitude"></el-input>
+        <br>(经纬度的填写,请去 <a style="color:red;" href='http://api.map.baidu.com/lbsapi/getpoint/index.html?qq-pf-to=pcqq.group' target="_blank">坐标拾取</a> 页面自己找寻) <el-button type="text" style="margin-left:30px;" @click="showjieshi=!showjieshi">{{showjieshi?'收起':'详细教程'}}</el-button>
+        <div v-show="showjieshi">
+          1,点击红色文字跳转到坐标拾取页面并输入地点名字
+          <br>2,寻找正确的地点位置并点击红色的坐标<img :src="step2" style="width:30px;" alt="">
+          <br>3,弹出<img :src="step3" style="width:300px;" alt="">
+        </div>
+        
       </el-form-item>
 
       <el-form-item label="书店维度" prop="latitude">
@@ -66,11 +73,15 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 import { poststore ,getprovcity } from '@/api/store'
-
+import step2 from '@/assets/step2.png'
+import step3 from '@/assets/step3.png'
 export default {
   name: "newstore",
   data() {
     return {
+      showjieshi:false,
+      step2:step2,
+      step3:step3,
       shenglist:[],
       shilist:[],
       qulist:[],

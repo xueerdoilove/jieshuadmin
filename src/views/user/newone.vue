@@ -19,6 +19,7 @@
 
       <el-form-item label="电话" prop="phone">
         <el-input class="riqi" type="text" maxlength="11" v-model="newone.phone"></el-input>
+        <br>(登录时的登录账号)
       </el-form-item>
 
       <el-form-item label="登录密码" prop="pass">
