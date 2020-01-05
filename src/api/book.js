@@ -159,3 +159,12 @@ export function getcatofbookcip(params) {
     method: 'get',
   })
 }
+
+// /bookcip/{bookcipid}/deliverycycle 发货规则
+export function putdeliverycycle( data ) {
+  return request({
+    url: '/bookcip/'+data.bookcipid +'/deliverycycle',
+    method: 'put',
+    data
+  })
+}

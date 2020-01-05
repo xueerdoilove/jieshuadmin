@@ -37,8 +37,28 @@
             <div class="book-auth"></div>
           </div>
         </div>
-        <div class="book-right-caozuo">
-          <el-button type="primary" v-if="canbianji" @click="bianjibook">编辑</el-button>
+        <div class="book-right-caozuo"  v-if="canbianji">
+          <el-button type="primary" @click="bianjibook">编辑书目</el-button>
+          <br />
+          <br />
+          <br />
+          <el-switch
+            v-model="bookData.deliveryCycle"
+            active-value="1"
+            inactive-value="0"
+            active-color="#13ce66"
+            inactive-color="#aaa"
+            @change="fahuoguize"
+          ></el-switch>
+          {{bookData.deliveryCycle==1?'延时发货':'及时发货'}}
+          <br />
+          <br />
+          <span style="font-size:13px;" v-show="bookData.deliveryCycle==0">
+            及时发货: 仓库必须有这本书用户才可下单
+          </span>
+          <span style="font-size:13px;" v-show="bookData.deliveryCycle==1">
+            延时发货: 用户可以先下单购买,仓库进货后再邮寄给用户
+          </span>
         </div>
       </div>
       <!-- 书价格&操作 -->
@@ -207,7 +227,8 @@ import {
   setauthorinfo,
   getcontents,
   setcontents,
-  getcatofbookcip
+  getcatofbookcip,
+  putdeliverycycle
 } from "@/api/book";
 
 import editbook from "./editbook";
@@ -307,6 +328,15 @@ export default {
     }
   },
   methods: {
+    // 发货规则
+    fahuoguize(num){
+      putdeliverycycle({
+        bookcipid:this.bookid,
+        deliveryCycle:num
+      }).then(res =>{
+        console.log(res)
+      })
+    },
     // 获取书目的所以分类
     getcatofbookcip() {
       getcatofbookcip({ bookCipId: this.bookid }).then(res => {
@@ -430,6 +460,7 @@ export default {
             res.item.state = 2;
           }
         }
+        res.item.deliveryCycle = res.item.deliveryCycle+''
         this.bookData = res.item;
         this.loading.close();
         this.getinfo(); // 获取书目简介
@@ -517,7 +548,7 @@ export default {
 }
 .bookdetail {
   padding-top: 20px;
-  width: 1000px;
+  width: 1100px;
   margin: 0 auto;
 }
 
@@ -715,7 +746,7 @@ export default {
   height: 400px;
 }
 .catitem {
-  padding:5px 10px;
+  padding: 5px 10px;
   border-radius: 10px;
   margin-right: 10px;
   margin-bottom: 10px;
