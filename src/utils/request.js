@@ -81,11 +81,7 @@ service.interceptors.response.use(
         duration: 5 * 1000
       })
     }else if((''+error).search('409')!='-1'){
-      Message({
-        message: '手机号码已经被注册，请更换手机号',
-        type: 'error',
-        duration: 5 * 1000
-      })
+      console.log(409)
     }else{
       Message({
         message: '操作失败!,请检查数据是否跟现有的数据重复',
