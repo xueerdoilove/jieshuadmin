@@ -115,7 +115,7 @@
       </div>
     </div>
     <el-dialog title="实体店详情" :visible.sync="show_detail">
-      <storedetail v-if="show_detail" :state="state" :new_one="detail" @hidedetail="hidedetail" />
+      <storedetail v-if="show_detail" :state="state" :new_oned="detail" @hidedetail="hidedetail" />
     </el-dialog>
 
     <el-dialog title="实体店图片列表" :visible.sync="show_imglist">

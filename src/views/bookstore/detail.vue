@@ -86,6 +86,7 @@ export default {
       shenglist:[],
       shilist:[],
       qulist:[],
+      new_one:{},
       rules: {
         name: [
           { required: true, message: "请输入书店名称", trigger: "blur" },
@@ -114,7 +115,7 @@ export default {
     };
   },
   props: {
-    new_one: {
+    new_oned: {
       type: Object
     },
     state:{
@@ -122,6 +123,7 @@ export default {
   },
   computed: {},
   mounted(){
+    this.new_one = JSON.parse(JSON.stringify(this.new_oned))
     this.getsheng()
     setTimeout(() =>{
       this.getshi(this.new_one.province)
