@@ -100,7 +100,7 @@ export default {
       state: 1, //下架(0),未上架(1),上架(2)）
       bookStorestate: 1, // 1 上架中 0 下架中 书店的书目状态
       count: -1, // -1 无,
-      page: 1,
+      page: localStorage.getItem('pachong_page')*1 || 1,
       pageSize: 10,
 
       searchvalue: "", // 搜索书的关键字
@@ -129,8 +129,7 @@ export default {
     }
   },
   mounted() {
-    this.page = localStorage.getItem('pachong_page') || 1
-    this.changepage();
+    this.changepage(this.page);
     this.getrepositorystore();
   },
   methods: {
