@@ -1,6 +1,5 @@
 import axios from 'axios'
 import {
-  MessageBox,
   Message
 } from 'element-ui'
 import store from '@/store'
@@ -37,7 +36,6 @@ service.interceptors.request.use(
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
     return Promise.reject(error)
   }
 )
@@ -70,8 +68,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log(error) // for debug
-    console.log(typeof error)
     if((''+error).search('403')!='-1'){
       Message({
         message: '无权操作,请切换账号',
@@ -84,9 +80,15 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
+    }else if((''+error).search('409')!='-1'){
+      Message({
+        message: '手机号码已经被注册，请更换手机号',
+        type: 'error',
+        duration: 5 * 1000
+      })
     }else{
       Message({
-        message: '请求超时,请刷新页面',
+        message: '操作失败!,请检查数据是否跟现有的数据重复',
         type: 'error',
         duration: 5 * 1000
       })
