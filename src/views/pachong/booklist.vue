@@ -129,6 +129,7 @@ export default {
     }
   },
   mounted() {
+    this.page = localStorage.getItem('pachong_page') || 1
     this.changepage();
     this.getrepositorystore();
   },
@@ -254,6 +255,7 @@ export default {
     },
     searchbookbystore(item) {
       this.page = 1;
+      localStorage.setItem('pachong_page',1)
       this.storeid = item.id;
       this.getbookbystore();
     },
@@ -352,6 +354,7 @@ export default {
     },
     changepage(e) {
       this.page = e;
+      localStorage.setItem('pachong_page',e)
       if (this.searchtype == 0) {
         // 全部数目
         this.storeid = 0;
