@@ -90,7 +90,7 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入书店名称", trigger: "blur" },
-          { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { min: 2, max: 30, message: "长度在 2 到 30 个字符", trigger: "blur" }
         ],
         introduction: [
           { required: true, message: "请选输入书店介绍", trigger: "change" }
