@@ -58,24 +58,19 @@
           <div>{{item.orderType | orderType}}</div>
         </el-col>
         <el-col :span="3">
-          <div>{{item.depositAmount/100}}</div>
-          <div>押金</div>
+          <div>{{item.depositAmount/100}}元</div>
         </el-col>
         <el-col :span="3">
-          <div>{{item.borrowCostAmount}}</div>
-          <div>借阅费</div>
+          <div>{{item.borrowCostAmount/100}}元</div>
         </el-col>
         <el-col :span="3">
-          <div>{{item.freightAmount}}</div>
-          <div>运费</div>
+          <div>{{item.freightAmount/100}}元</div>
         </el-col>
         <el-col :span="3">
-          <div>{{item.membershipAmount}}</div>
-          <div>会员费</div>
+          <div>{{item.membershipAmount/100}}元</div>
         </el-col>
         <el-col :span="3">
-          <div>{{item.totalAmount}}</div>
-          <div>总计</div>
+          <div>{{item.totalAmount/100}}元</div>
         </el-col>
       </el-row>
       <el-row class="tiaojian_item" v-show="totalItems>=pageSize">
@@ -90,7 +85,7 @@
           ></el-pagination>
         </el-col>
       </el-row>
-      <div style="margin-top:30px;text-align:center;">暂无明细</div>
+      <div v-show="totalItems==0" style="margin-top:30px;text-align:center;">暂无明细</div>
     </div>
   </div>
 </template>
