@@ -140,7 +140,7 @@ export default {
       ).then(() => {
         var data = {
           id: this.sharecode_storeid,
-          shareCode: this.new_sharecode
+          shareCode: 's'+this.new_sharecode
         };
 
         bindstoreSharecode(data)
