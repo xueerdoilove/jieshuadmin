@@ -205,6 +205,26 @@ export const asyncRouters = [
     }],
 
   },
+  //分类管理
+  {
+    path: '/classification',
+    name: 'classification',
+    component: Layout,
+    redirect: 'class',
+    meta: {
+      title: '书籍分类',
+      icon: 'form'
+    },
+    children: [{
+      path: 'class',
+      name: 'class',
+      component: () => import('@/views/classification/index'),
+      meta: {
+        title: '书籍分类列表'
+      }
+    }],
+
+  },
   //优惠券
   {
     path: '/coupon',
@@ -360,8 +380,7 @@ export const asyncRouters = [
     }],
 
   },
-
-
+  
 
 ]
 
