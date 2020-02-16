@@ -23,17 +23,6 @@
         <el-input class="riqi" type="number" v-model="new_one.isbn"></el-input>
       </el-form-item>
 
-      <el-form-item label="出版社" prop="pressId">
-        <el-select v-model="new_one.pressId" placeholder="请选择出版社">
-          <el-option
-            v-for="item in presslist"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value"
-          ></el-option>
-        </el-select>
-      </el-form-item>
-
       <el-form-item label="翻译者" prop="translator">
         <el-input class="riqi" maxlength="15" type="text" v-model="new_one.translator"></el-input>
       </el-form-item>
@@ -47,19 +36,49 @@
       </el-form-item>
 
       <el-form-item label="图书价格(元)" prop="price">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.price"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.price"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="押金(元)" prop="deposit">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.deposit"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.deposit"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="借阅费(元)" prop="borrowCost">
-        <el-input class="riqi" type="text" maxlength="5" placeholder="最小价格到分 0.01" v-model="new_one.borrowCost"></el-input>
+        <el-input
+          class="riqi"
+          type="text"
+          maxlength="5"
+          placeholder="最小价格到分 0.01"
+          v-model="new_one.borrowCost"
+        ></el-input>
       </el-form-item>
 
       <el-form-item label="豆瓣评分" prop="doubanScore">
         <el-input class="riqi" type="text" maxlength="3" v-model="new_one.doubanScore"></el-input>
+      </el-form-item>
+
+      <el-form-item label="分类" prop="categoryIdList">
+        <el-select
+          style="width:400px;"
+          v-model="cat"
+          multiple
+          placeholder="请选择书目属于的分类,可多选"
+          @change="setcatelist"
+        >
+          <el-option v-for="item in catlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
 
       <el-form-item label="图书版式" prop="bookFormat">
@@ -94,7 +113,7 @@
           >只能上传jpg/png文件，且不超过500kb,宽200px,高280px</span>
         </el-upload>
         <input style="display:none;" type="text" v-model="new_one.portrait" />
-        <img style="width:200px;" :src="new_one.portrait" v-if="new_one.portrait.length<1000"  />
+        <img style="width:200px;" :src="new_one.portrait" v-if="new_one.portrait.length<1000" />
       </el-form-item>
 
       <el-form-item>
@@ -107,17 +126,18 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 import { putbookcip } from "@/api/book";
+import { getcatList } from "@/api/cat";
 
 export default {
   name: "putbook",
   data() {
     const phonepipei = (rule, value, callback) => {
-      if (/^[0-9](.[0-9]{1})?$/.test(value) ) {
+      if (/^[0-9](.[0-9]{1})?$/.test(value)) {
         callback();
       } else {
         callback(new Error("请输入10以内的数字,例如9.1"));
       }
-    }; 
+    };
     const numberd = (rule, value, callback) => {
       if (/^[0-9]+(.[0-9]{1})?$/.test(value)) {
         callback();
@@ -127,9 +147,12 @@ export default {
     };
     return {
       presslist: [], // 出版社的 列表
+      catlist: [],
+      cat: [],
 
       new_one: {
-        id:'',
+        categoryIdList: "",
+        id: "",
         name: "", //-> 书名
         author: "", //-> 著者
         publishDate: "2014-5-0", //-> 出版日期
@@ -144,12 +167,17 @@ export default {
         deposit: 59.7, //-> 押金
         borrowCost: 5.97, // -> 借阅费
         doubanScore: 9.6, // -> 图书豆瓣评分
-        bookFormat: 0
+        bookFormat: 0,
+        cat: ""
       },
       rules: {
         name: [
           { required: true, message: "请输入书目名称", trigger: "blur" },
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+        ],
+
+        categoryIdList: [
+          { required: true, message: "请至少选择一个所属分类", trigger: "blur" }
         ],
 
         author: [
@@ -173,7 +201,7 @@ export default {
 
         pageCount: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -181,7 +209,7 @@ export default {
 
         price: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -189,7 +217,7 @@ export default {
 
         deposit: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -197,7 +225,7 @@ export default {
 
         borrowCost: [
           {
-            validator:numberd,
+            validator: numberd,
             required: true,
             trigger: "blur"
           }
@@ -205,7 +233,7 @@ export default {
 
         doubanScore: [
           {
-            validator:phonepipei,
+            validator: phonepipei,
             required: true,
             trigger: "blur"
           }
@@ -220,6 +248,7 @@ export default {
   },
   computed: {},
   mounted() {
+    this.getcatList();
     var a = JSON.parse(JSON.stringify(this.bookData));
     if (a.bookFormat == 0) {
       a.bookFormat = false;
@@ -233,6 +262,26 @@ export default {
     this.new_one = a;
   },
   methods: {
+    setcatelist(e) {
+      this.new_one.categoryIdList = e.join(",");
+      console.log(this.new_one.categoryIdList);
+    },
+    getcatList() {
+      getcatList({
+        parentId: -1,
+        state: 2,
+        page: 1,
+        pageSize: 3000
+      }).then(res => {
+        var arr = [];
+        res.items.forEach(item => {
+          item.categoryList.forEach(cat => {
+            arr.push(cat);
+          });
+        });
+        this.catlist = arr;
+      });
+    },
     handleRemove(file, fileList) {
       this.new_one.portrait = "";
     },
@@ -271,16 +320,22 @@ export default {
         if (valid) {
           var formData = new FormData();
           for (var key in this.new_one) {
-            if (key == "portrait" || key == "price" || key == "deposit" || key == "borrowCost" || key == "bookFormat") {
+            if (
+              key == "portrait" ||
+              key == "price" ||
+              key == "deposit" ||
+              key == "borrowCost" ||
+              key == "bookFormat"
+            ) {
               continue;
             }
             formData.append(key, this.new_one[key]);
           }
-          formData.append("price", this.new_one["price"] );
-          formData.append("deposit", this.new_one["deposit"] );
-          formData.append("bookFormat", this.new_one["bookFormat"]?1:0);
-          formData.append("borrowCost", this.new_one["borrowCost"] );
-          if(this.new_one["portrait"].length>1000){
+          formData.append("price", this.new_one["price"]);
+          formData.append("deposit", this.new_one["deposit"]);
+          formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
+          formData.append("borrowCost", this.new_one["borrowCost"]);
+          if (this.new_one["portrait"].length > 1000) {
             formData.append(
               "portrait",
               convertBase64UrlToBlob(this.new_one["portrait"]),
@@ -300,11 +355,11 @@ export default {
               type: "image/jpg"
             });
           }
-          putbookcip(this.new_one.id,formData).then(res => {
+          putbookcip(this.new_one.id, formData).then(res => {
             this.$message({
-            message: '修改成功',
-            type: 'success'
-          });
+              message: "修改成功",
+              type: "success"
+            });
             this.$emit("hideedit");
           });
         } else {

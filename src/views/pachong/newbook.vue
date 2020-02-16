@@ -91,7 +91,13 @@
       </el-form-item>
 
       <el-form-item label="分类" prop="categoryIdList">
-        <el-select style="width:400px;" v-model="new_one.cat" multiple placeholder="请选择书目属于的分类,可多选" @change="setcatelist">
+        <el-select
+          style="width:400px;"
+          v-model="new_one.cat"
+          multiple
+          placeholder="请选择书目属于的分类,可多选"
+          @change="setcatelist"
+        >
           <el-option v-for="item in catlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -135,21 +141,30 @@
       </el-form-item>
     </el-form>
 
-    <el-form ref="form2" :model="newpachong" :rules="rules2" label-width="120px" v-show="addtype==1">
+    <el-form
+      ref="form2"
+      :model="newpachong"
+      :rules="rules2"
+      label-width="120px"
+      v-show="addtype==1"
+    >
       <el-form-item label="豆瓣链接" prop="url">
-        <el-input class="riqi" v-model="newpachong.url" placeholder="如: https://book.douban.com/subject/34926621/?icn=index-latestbook-subject"></el-input>
+        <el-input
+          class="riqi"
+          v-model="newpachong.url"
+          placeholder="如: https://book.douban.com/subject/34926621/?icn=index-latestbook-subject"
+        ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmitpachong('form2')">创建</el-button>
+        <el-button type="primary" @click="onSubmitpachong('form2')" :loading="isloading">创建</el-button>
       </el-form-item>
     </el-form>
-
   </div>
 </template>
 
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
-import { postbookcip ,postdoubanbook} from "@/api/book";
+import { postbookcip, postdoubanbook } from "@/api/book";
 import { getpressListbyname } from "@/api/press";
 import { getcatList } from "@/api/cat";
 
@@ -171,15 +186,16 @@ export default {
       }
     };
     return {
-      addtype:1,
+      isloading: false,
+      addtype: 1,
       presslist: [], // 出版社的 列表
       catlist: [],
-      categoryIdList:[],
-      newpachong:{
-        url:''
+      categoryIdList: [],
+      newpachong: {
+        url: ""
       },
       new_one: {
-        categoryIdList: '',
+        categoryIdList: "",
         id: "",
         name: "", //-> 书名
         author: "", //-> 著者
@@ -197,13 +213,13 @@ export default {
         doubanScore: 0, // -> 图书豆瓣评分
         bookFormat: 0
       },
-      rules2:{
+      rules2: {
         url: [
-          { required: true, message: "请输入豆瓣书籍链接", trigger: "blur" },
-        ],
+          { required: true, message: "请输入豆瓣书籍链接", trigger: "blur" }
+        ]
       },
       rules: {
-        categoryIdList:[
+        categoryIdList: [
           { required: true, message: "请至少选择一个所属分类", trigger: "blur" }
         ],
         name: [
@@ -280,16 +296,16 @@ export default {
     this.getcatList();
   },
   methods: {
-    setcatelist(e){
-      this.new_one.categoryIdList = e.join(',')
-      console.log(this.new_one.categoryIdList )
+    setcatelist(e) {
+      this.new_one.categoryIdList = e.join(",");
+      console.log(this.new_one.categoryIdList);
     },
     getcatList() {
       getcatList({
         parentId: -1,
         state: 2,
         page: 1,
-        pageSize: 30
+        pageSize: 3000
       }).then(res => {
         var arr = [];
         res.items.forEach(item => {
@@ -350,24 +366,41 @@ export default {
         self.new_one.portrait = base64;
       };
     },
-    onSubmitpachong(formName){
+    onSubmitpachong(formName) {
+      if (this.isloading) {
+        return;
+      }
       this.$refs[formName].validate(valid => {
         if (valid) {
-          if(this.newpachong.url.search('https://book.douban.com/subject/')!=0){
+          if (
+            this.newpachong.url.search("https://book.douban.com/subject/") != 0
+          ) {
             this.$message({
               message: "请输入正确的链接"
             });
-            return
+            return;
           }
-          postdoubanbook(this.newpachong).then(res =>{
+          this.isloading = true;
+          postdoubanbook(this.newpachong).then(res => {
+            this.newpachong.url = "";
+            this.isloading = false;
+
             this.$message({
               message: "添加成功",
               type: "success"
             });
-            this.$emit("hidenew");
-          })
+            // this.$emit("hidenew");
+            //http://localhost:9527/#/skbook/pachong/bookdetail?bookid=26638&storeid=0
+            this.$router.push({
+              path: "./bookdetail",
+              query: {
+                bookid: res.item.id,
+                storeid: 0,
+              }
+            });
+          });
         }
-      })
+      });
     },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
@@ -379,7 +412,7 @@ export default {
               key == "price" ||
               key == "deposit" ||
               key == "borrowCost" ||
-              key == "bookFormat" 
+              key == "bookFormat"
             ) {
               continue;
             }

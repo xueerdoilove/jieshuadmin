@@ -480,6 +480,8 @@ export default {
     // 显示修改书
     bianjibook() {
       this.show_edit = true;
+      
+      //categoryId
     },
     hideedit() {
       this.show_edit = false;
