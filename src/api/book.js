@@ -176,3 +176,12 @@ export function putdeliverycycle( data ) {
     data
   })
 }
+
+//https://book.douban.com/subject/34896913/?icn=index-latestbook-subject
+export function postdoubanbook( data ) {
+  return request({
+    url: '/doubanbook',
+    method: 'post',
+    data
+  })
+}

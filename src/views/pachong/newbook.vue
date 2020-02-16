@@ -1,6 +1,12 @@
 <template>
   <div>
-    <el-form ref="form" :rules="rules" :model="new_one" label-width="120px">
+    <div style="padding-bottom:20px;">
+      <el-radio-group v-model="addtype">
+        <el-radio-button label="1">爬豆瓣链接添加</el-radio-button>
+        <el-radio-button label="2">手动录入添加</el-radio-button>
+      </el-radio-group>
+    </div>
+    <el-form ref="form" :rules="rules" :model="new_one" label-width="120px" v-show="addtype==2">
       <el-form-item label="书店名称" prop="name">
         <el-input class="riqi" v-model="new_one.name"></el-input>
       </el-form-item>
@@ -128,12 +134,22 @@
         <el-button type="primary" @click="onSubmit('form')">创建</el-button>
       </el-form-item>
     </el-form>
+
+    <el-form ref="form2" :model="newpachong" :rules="rules2" label-width="120px" v-show="addtype==1">
+      <el-form-item label="豆瓣链接" prop="url">
+        <el-input class="riqi" v-model="newpachong.url" placeholder="如: https://book.douban.com/subject/34926621/?icn=index-latestbook-subject"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="onSubmitpachong('form2')">创建</el-button>
+      </el-form-item>
+    </el-form>
+
   </div>
 </template>
 
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
-import { postbookcip } from "@/api/book";
+import { postbookcip ,postdoubanbook} from "@/api/book";
 import { getpressListbyname } from "@/api/press";
 import { getcatList } from "@/api/cat";
 
@@ -155,9 +171,13 @@ export default {
       }
     };
     return {
+      addtype:1,
       presslist: [], // 出版社的 列表
       catlist: [],
       categoryIdList:[],
+      newpachong:{
+        url:''
+      },
       new_one: {
         categoryIdList: '',
         id: "",
@@ -176,6 +196,11 @@ export default {
         borrowCost: 0, // -> 借阅费
         doubanScore: 0, // -> 图书豆瓣评分
         bookFormat: 0
+      },
+      rules2:{
+        url: [
+          { required: true, message: "请输入豆瓣书籍链接", trigger: "blur" },
+        ],
       },
       rules: {
         categoryIdList:[
@@ -324,6 +349,25 @@ export default {
         var base64 = canvas.toDataURL("image/png", quality);
         self.new_one.portrait = base64;
       };
+    },
+    onSubmitpachong(formName){
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          if(this.newpachong.url.search('https://book.douban.com/subject/')!=0){
+            this.$message({
+              message: "请输入正确的链接"
+            });
+            return
+          }
+          postdoubanbook(this.newpachong).then(res =>{
+            this.$message({
+              message: "添加成功",
+              type: "success"
+            });
+            this.$emit("hidenew");
+          })
+        }
+      })
     },
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
