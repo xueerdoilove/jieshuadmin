@@ -381,24 +381,38 @@ export default {
             return;
           }
           this.isloading = true;
-          postdoubanbook(this.newpachong).then(res => {
-            this.newpachong.url = "";
-            this.isloading = false;
+          postdoubanbook(this.newpachong)
+            .then(res => {
+              this.newpachong.url = "";
+              this.isloading = false;
 
-            this.$message({
-              message: "添加成功",
-              type: "success"
-            });
-            // this.$emit("hidenew");
-            //http://localhost:9527/#/skbook/pachong/bookdetail?bookid=26638&storeid=0
-            this.$router.push({
-              path: "./bookdetail",
-              query: {
-                bookid: res.item.id,
-                storeid: 0,
+              this.$message({
+                message: "添加成功",
+                type: "success"
+              });
+              // this.$emit("hidenew");
+              //http://localhost:9527/#/skbook/pachong/bookdetail?bookid=26638&storeid=0
+              this.$router.push({
+                path: "./bookdetail",
+                query: {
+                  bookid: res.item.id,
+                  storeid: 0
+                }
+              });
+            })
+            .catch(error => {
+              if (("" + error).search("409") != "-1") {
+                this.$message({
+                  message: "创建的内容已经存在",
+                });
+              }else{
+                this.$message({
+                  message: "数据源格式不匹配,无法添加",
+                });
               }
+              this.isloading = false;
+
             });
-          });
         }
       });
     },
