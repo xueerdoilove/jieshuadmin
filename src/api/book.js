@@ -185,3 +185,12 @@ export function postdoubanbook( data ) {
     data
   })
 }
+
+//bookcip/{id}/category
+export function postbookcipcategory( data ) {
+  return request({
+    url: '/bookcip/'+data.id+'/category',
+    method: 'post',
+    data
+  })
+}

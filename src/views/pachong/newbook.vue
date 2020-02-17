@@ -224,7 +224,7 @@ export default {
         ],
         name: [
           { required: true, message: "请输入书目名称", trigger: "blur" },
-          { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { min: 2, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
         pressId: [
           { required: true, message: "请选择一个出版社", trigger: "blur" }

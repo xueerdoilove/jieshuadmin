@@ -69,17 +69,7 @@
         <el-input class="riqi" type="text" maxlength="3" v-model="new_one.doubanScore"></el-input>
       </el-form-item>
 
-      <el-form-item label="分类" prop="categoryIdList">
-        <el-select
-          style="width:400px;"
-          v-model="cat"
-          multiple
-          placeholder="请选择书目属于的分类,可多选"
-          @change="setcatelist"
-        >
-          <el-option v-for="item in catlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
+      
 
       <el-form-item label="图书版式" prop="bookFormat">
         <el-switch
@@ -126,7 +116,6 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 import { putbookcip } from "@/api/book";
-import { getcatList } from "@/api/cat";
 
 export default {
   name: "putbook",
@@ -147,11 +136,8 @@ export default {
     };
     return {
       presslist: [], // 出版社的 列表
-      catlist: [],
-      cat: [],
 
       new_one: {
-        categoryIdList: "",
         id: "",
         name: "", //-> 书名
         author: "", //-> 著者
@@ -168,7 +154,6 @@ export default {
         borrowCost: 5.97, // -> 借阅费
         doubanScore: 9.6, // -> 图书豆瓣评分
         bookFormat: 0,
-        cat: ""
       },
       rules: {
         name: [
@@ -176,13 +161,9 @@ export default {
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
 
-        categoryIdList: [
-          { required: true, message: "请至少选择一个所属分类", trigger: "blur" }
-        ],
-
         author: [
           { required: true, message: "请输入书目作者", trigger: "blur" },
-          { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { min: 2, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
 
         isbn: [
@@ -248,7 +229,6 @@ export default {
   },
   computed: {},
   mounted() {
-    this.getcatList();
     var a = JSON.parse(JSON.stringify(this.bookData));
     if (a.bookFormat == 0) {
       a.bookFormat = false;
@@ -262,26 +242,8 @@ export default {
     this.new_one = a;
   },
   methods: {
-    setcatelist(e) {
-      this.new_one.categoryIdList = e.join(",");
-      console.log(this.new_one.categoryIdList);
-    },
-    getcatList() {
-      getcatList({
-        parentId: -1,
-        state: 2,
-        page: 1,
-        pageSize: 3000
-      }).then(res => {
-        var arr = [];
-        res.items.forEach(item => {
-          item.categoryList.forEach(cat => {
-            arr.push(cat);
-          });
-        });
-        this.catlist = arr;
-      });
-    },
+   
+    
     handleRemove(file, fileList) {
       this.new_one.portrait = "";
     },

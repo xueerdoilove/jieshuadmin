@@ -37,7 +37,7 @@
             <div class="book-auth"></div>
           </div>
         </div>
-        <div class="book-right-caozuo"  v-if="canbianji">
+        <div class="book-right-caozuo" v-if="canbianji">
           <el-button type="primary" @click="bianjibook">编辑书目</el-button>
           <br />
           <br />
@@ -53,12 +53,11 @@
           {{bookData.deliveryCycle==1?'延时发货':'及时发货'}}
           <br />
           <br />
-          <span style="font-size:13px;" v-show="bookData.deliveryCycle==0">
-            及时发货: 仓库必须有这本书用户才可下单
-          </span>
-          <span style="font-size:13px;" v-show="bookData.deliveryCycle==1">
-            延时发货: 用户可以先下单购买,仓库进货后再邮寄给用户
-          </span>
+          <span style="font-size:13px;" v-show="bookData.deliveryCycle==0">及时发货: 仓库必须有这本书用户才可下单</span>
+          <span
+            style="font-size:13px;"
+            v-show="bookData.deliveryCycle==1"
+          >延时发货: 用户可以先下单购买,仓库进货后再邮寄给用户</span>
         </div>
       </div>
       <!-- 书价格&操作 -->
@@ -87,6 +86,12 @@
       <div class="jieshao">
         <div class="js-title">
           <span>所属分类</span>
+          <el-button
+            @click="showfenleibianji()"
+            type="primery"
+            style="float:right"
+            v-if="canbianji"
+          >{{contents.id?'编辑':'添加'}}</el-button>
         </div>
         <div class="js-content" style="overflow:hidden;">
           <div class="catitem" v-for="cat in catlist" :key="cat.id">{{cat.categoryName}}</div>
@@ -210,6 +215,26 @@
           </div>
         </div>
       </el-dialog>
+
+      <!-- 编辑标签 -->
+      <el-dialog title="所属分类修改" :visible.sync="show_biaoqian">
+        <div v-if="show_biaoqian">
+          <el-select v-model="selectcatlist" style="width:500px;" multiple placeholder="请选择">
+            <el-option-group v-for="group in allcatlist" :key="group.id" :label="group.name">
+              <el-option
+                v-for="item in group.categoryList"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-option-group>
+          </el-select>
+          <div style="margin-top:30px;">
+            <el-button type="primary" @click="tijiaofenlei">提交修改</el-button>
+          </div>
+
+        </div>
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -228,8 +253,10 @@ import {
   getcontents,
   setcontents,
   getcatofbookcip,
-  putdeliverycycle
+  putdeliverycycle,
+  postbookcipcategory
 } from "@/api/book";
+import { getcatlist  } from "@/api/classification";
 
 import editbook from "./editbook";
 export default {
@@ -244,7 +271,7 @@ export default {
       contents: { id: 0 },
       authorinfo: { id: 0 },
       catlist: [], // 书目的所以分类
-
+      allcatlist: [], // 所以分类
       loading: "",
       storeid: "",
       bookstateinstore: -1, // -1 书店的书 没有状态 0 下架 1 上架
@@ -256,7 +283,10 @@ export default {
       show_edit: false, // 修改书详情
 
       show_fuwenben: false, // 显示富文本
-      tijiaotype: 0
+      tijiaotype: 0,
+
+      show_biaoqian: false,
+      selectcatlist:[],
     };
   },
   components: {
@@ -328,14 +358,46 @@ export default {
     }
   },
   methods: {
-    // 发货规则
-    fahuoguize(num){
-      putdeliverycycle({
-        bookcipid:this.bookid,
-        deliveryCycle:num
-      }).then(res =>{
-        console.log(res)
+    tijiaofenlei(){
+      postbookcipcategory({id:this.bookid,categoryIdList:this.selectcatlist}).then(res =>{
+        
+        this.$message({
+          message: "提交成功",
+          type: "success"
+        });
+        this.getcatofbookcip()
+        this.show_biaoqian = false;
       })
+    },
+    // 分类编辑展示
+    showfenleibianji() {
+      if (this.allcatlist.length == 0) {
+        getcatlist({
+          parentId: -1,
+          state: 2,
+          page: 1,
+          pageSize: 1000
+        }).then(res => {
+          this.allcatlist = res.items;
+          this.show_biaoqian = true;
+        });
+      } else {
+        this.show_biaoqian = true;
+      }
+
+      this.selectcatlist =[]
+      for(var i=0 ;i<this.catlist.length;i++){
+        this.selectcatlist.push(this.catlist[i].categoryId)
+      }
+    },
+    // 发货规则
+    fahuoguize(num) {
+      putdeliverycycle({
+        bookcipid: this.bookid,
+        deliveryCycle: num
+      }).then(res => {
+        console.log(res);
+      });
     },
     // 获取书目的所以分类
     getcatofbookcip() {
@@ -460,7 +522,7 @@ export default {
             res.item.state = 2;
           }
         }
-        res.item.deliveryCycle = res.item.deliveryCycle+''
+        res.item.deliveryCycle = res.item.deliveryCycle + "";
         this.bookData = res.item;
         this.loading.close();
         this.getinfo(); // 获取书目简介
@@ -480,7 +542,7 @@ export default {
     // 显示修改书
     bianjibook() {
       this.show_edit = true;
-      
+
       //categoryId
     },
     hideedit() {
