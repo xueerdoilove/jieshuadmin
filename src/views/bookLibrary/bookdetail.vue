@@ -91,7 +91,7 @@
             type="primery"
             style="float:right"
             v-if="canbianji"
-          >{{contents.id?'编辑':'添加'}}</el-button>
+          >编辑</el-button>
         </div>
         <div class="js-content" style="overflow:hidden;">
           <div class="catitem" v-for="cat in catlist" :key="cat.id">{{cat.categoryName}}</div>
