@@ -84,7 +84,7 @@ service.interceptors.response.use(
       console.log(409)
     }else{
       Message({
-        message: '操作失败!,请检查数据是否跟现有的数据重复',
+        message: '操作失败!',
         type: 'error',
         duration: 5 * 1000
       })
