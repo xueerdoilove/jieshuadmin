@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="form" :rules="rules"  :model="newvip" label-width="120px">
-      <el-form-item label="优惠券名字" prop="name">
+      <el-form-item label="会员名字" prop="name">
         <el-input class="riqi"  v-model="newvip.name"></el-input>
       </el-form-item>
 

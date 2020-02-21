@@ -62,7 +62,7 @@ import { getvipList } from "@/api/vip";
 import EditVip from "./edit";
 // import { mapGetters } from 'vuex'
 export default {
-  named: "优惠券",
+  named: "会员购买",
   data() {
     return {
       show_edit: false,

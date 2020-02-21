@@ -32,7 +32,7 @@ export default {
   name: "newcoupon",
   data() {
     return {
-      storelist:[{name:'通用优惠券',id:0}],
+      storelist:[{name:'',id:0}],
       newcoupon: {
         name: "",
         bookStoreId: 0,

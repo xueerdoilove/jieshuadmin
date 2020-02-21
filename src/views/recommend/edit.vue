@@ -50,7 +50,8 @@ export default {
           { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
         ],
         introduction: [
-          { required: true, message: "请选输入书单简介", trigger: "change" }
+          { required: true, message: "请选输入书单简介", trigger: "change" },
+          { min: 3, max: 1024, message: "长度在 3 到 1024 个字符", trigger: "blur" }
         ],
         timeRange: [
           {
