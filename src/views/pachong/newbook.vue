@@ -401,15 +401,6 @@ export default {
               });
             })
             .catch(error => {
-              if (("" + error).search("409") != "-1") {
-                this.$message({
-                  message: "创建的内容已经存在",
-                });
-              }else{
-                this.$message({
-                  message: "数据源格式不匹配,无法添加",
-                });
-              }
               this.isloading = false;
 
             });

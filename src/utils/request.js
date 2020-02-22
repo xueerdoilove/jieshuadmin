@@ -30,8 +30,8 @@ service.interceptors.request.use(
     if (config.method == 'get') {
       config.headers['content-type'] = 'application/x-www-form-urlencoded'
       config.data = true
-    } 
-    
+    }
+
     return config
   },
   error => {
@@ -54,7 +54,7 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-    var code = response.status+''
+    var code = response.status + ''
     // if the custom code is not 20000, it is judged as an error.
     if (code[0] != 2) {
       Message({
@@ -68,23 +68,18 @@ service.interceptors.response.use(
     }
   },
   error => {
-    if((''+error).search('403')!='-1'){
-      Message({
-        message: '无权操作,请切换账号',
-        type: 'error',
-        duration: 5 * 1000
-      })
-    }else if((''+error).search('401')!='-1'){
+    if (('' + error).search('401') != '-1') {
       Message({
         message: '登陆过期,请重新登录',
         type: 'error',
         duration: 5 * 1000
       })
-    }else if((''+error).search('409')!='-1'){
-      console.log(409)
-    }else{
+      aapp.$store.dispatch("user/logout");
+      aapp.$router.push(`/login`);
+    } else {
+      var data = JSON.parse(JSON.stringify(error)).response.data
       Message({
-        message: '操作失败!',
+        message: data.errorMessage,
         type: 'error',
         duration: 5 * 1000
       })
