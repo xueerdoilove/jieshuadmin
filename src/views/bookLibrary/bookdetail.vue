@@ -59,6 +59,9 @@
             v-show="bookData.deliveryCycle==1"
           >延时发货: 用户可以先下单购买,仓库进货后再邮寄给用户</span>
         </div>
+        <div style="clear:both;padding-left:20px;">
+          <el-button @click="showfengm" type="primery">修改封面图</el-button>
+        </div>
       </div>
       <!-- 书价格&操作 -->
       <div class="priceandcaozuo">
@@ -232,7 +235,39 @@
           <div style="margin-top:30px;">
             <el-button type="primary" @click="tijiaofenlei">提交修改</el-button>
           </div>
+        </div>
+      </el-dialog>
 
+      <!-- 编辑标签 -->
+      <el-dialog title="修改封面图" :visible.sync="show_fm">
+        <div v-if="show_fm">
+          <el-row>
+            <el-col :span="16">
+              <el-upload
+                id="picturediv1212"
+                class="upload-demo"
+                ref="upload"
+                action
+                :on-remove="handleRemove"
+                :on-change="handleChange"
+                :file-list="imglist1"
+                :multiple="false"
+                :limit="1"
+                list-type="picture"
+                :auto-upload="false"
+              >
+                <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                <span
+                  style="margin-left:20px;"
+                  slot="tip"
+                  class="el-upload__tip"
+                >只能上传jpg/png文件，且不超过500kb,宽高比7:10</span>
+              </el-upload>
+            </el-col>
+            <el-col :span="6" :offset="2">
+              <el-button @click="tijiaotupian">提交图片</el-button>
+            </el-col>
+          </el-row>
         </div>
       </el-dialog>
     </div>
@@ -254,9 +289,10 @@ import {
   setcontents,
   getcatofbookcip,
   putdeliverycycle,
-  postbookcipcategory
+  postbookcipcategory,
+  putbookcipcover
 } from "@/api/book";
-import { getcatlist  } from "@/api/classification";
+import { getcatlist } from "@/api/classification";
 
 import editbook from "./editbook";
 export default {
@@ -286,7 +322,11 @@ export default {
       tijiaotype: 0,
 
       show_biaoqian: false,
-      selectcatlist:[],
+      selectcatlist: [],
+
+      show_fm: false,
+      imglist1:[],
+      picture:'',
     };
   },
   components: {
@@ -358,16 +398,89 @@ export default {
     }
   },
   methods: {
-    tijiaofenlei(){
-      postbookcipcategory({id:this.bookid,categoryIdList:this.selectcatlist}).then(res =>{
-        
+    handleRemove(file, fileList) {
+      this.picture = "";
+    },
+    handleChange(file, fileList) {
+      console.log(file);
+      //生成canvas
+      var self = this;
+      var imgurl = file.url;
+      var img = document.createElement("img");
+      img.src = imgurl;
+
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      var quality = 1; // 默认图片质量为0.7
+      var imgobj;
+      img.onload = function() {
+        var that = this;
+        // 默认按比例压缩
+        var w = 600,
+          h = (600 / that.width) * that.height;
+
+        imgobj = { width: w, height: h };
+        // 创建属性节点
+        var anw = document.createAttribute("width");
+        anw.nodeValue = w;
+        var anh = document.createAttribute("height");
+        anh.nodeValue = h;
+        canvas.setAttributeNode(anw);
+        canvas.setAttributeNode(anh);
+        ctx.drawImage(that, 0, 0, w, h);
+        var base64 = canvas.toDataURL("image/png", quality);
+        self.picture = base64;
+      };
+    },
+    tijiaotupian() {
+      if (this.picture == "") {
+        this.$message('请选择本地电脑上的一张图片')
+        return;
+      }
+      var formData = new FormData();
+      formData.append("path", convertBase64UrlToBlob(this.picture), "fmt.jpg");
+
+      //图片格式转化
+      function convertBase64UrlToBlob(urlData) {
+        var bytes = window.atob(urlData.split(",")[1]); //去掉url的头，并转换为byte
+        //处理异常,将ascii码小于0的转换为大于0
+        var ab = new ArrayBuffer(bytes.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < bytes.length; i++) {
+          ia[i] = bytes.charCodeAt(i);
+        }
+        return new Blob([ab], {
+          type: "image/jpg"
+        });
+      }
+      putbookcipcover(this.bookid, formData).then(res => {
+        this.picture = "";
+        this.imglist1 = [];
+        this.show_fm = false;
+        this.getonebook();
+        this.$message({
+          message: "修改成功!",
+          type: "success"
+        });
+
+      });
+    },
+    showfengm() {
+      this.show_fm = true;
+    },
+
+    tijiaofenlei() {
+      postbookcipcategory({
+        id: this.bookid,
+        categoryIdList: this.selectcatlist
+      }).then(res => {
         this.$message({
           message: "提交成功",
           type: "success"
         });
-        this.getcatofbookcip()
+        this.getcatofbookcip();
         this.show_biaoqian = false;
-      })
+      });
     },
     // 分类编辑展示
     showfenleibianji() {
@@ -385,9 +498,9 @@ export default {
         this.show_biaoqian = true;
       }
 
-      this.selectcatlist =[]
-      for(var i=0 ;i<this.catlist.length;i++){
-        this.selectcatlist.push(this.catlist[i].categoryId)
+      this.selectcatlist = [];
+      for (var i = 0; i < this.catlist.length; i++) {
+        this.selectcatlist.push(this.catlist[i].categoryId);
       }
     },
     // 发货规则

@@ -194,3 +194,17 @@ export function postbookcipcategory( data ) {
     data
   })
 }
+
+//api/bookcip/{id}/cover  path : 文件
+export function putbookcipcover(id,data) {
+  return request({
+    url: '/bookcip/'+id+'/cover',
+    method: 'put',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}

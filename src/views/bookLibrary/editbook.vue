@@ -71,7 +71,7 @@
 
       
 
-      <el-form-item label="图书版式" prop="bookFormat">
+      <!-- <el-form-item label="图书版式" prop="bookFormat">
         <el-switch
           style="display: block;margin-top:8px;color:#ccc"
           v-model="new_one.bookFormat"
@@ -80,7 +80,7 @@
           active-text="精装"
           inactive-text="平装"
         ></el-switch>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="封面图" prop="picture">
         <el-upload
@@ -153,7 +153,7 @@ export default {
         deposit: 59.7, //-> 押金
         borrowCost: 5.97, // -> 借阅费
         doubanScore: 9.6, // -> 图书豆瓣评分
-        bookFormat: 0,
+        // bookFormat: 0,
       },
       rules: {
         name: [
@@ -230,11 +230,11 @@ export default {
   computed: {},
   mounted() {
     var a = JSON.parse(JSON.stringify(this.bookData));
-    if (a.bookFormat == 0) {
-      a.bookFormat = false;
-    } else {
-      a.bookFormat = true;
-    }
+    // if (a.bookFormat == 0) {
+    //   a.bookFormat = false;
+    // } else {
+    //   a.bookFormat = true;
+    // }
     a.price = a.price / 100;
     a.deposit = a.deposit / 100;
     a.borrowCost = a.borrowCost / 100;
@@ -295,7 +295,7 @@ export default {
           }
           formData.append("price", this.new_one["price"]);
           formData.append("deposit", this.new_one["deposit"]);
-          formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
+          // formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
           formData.append("borrowCost", this.new_one["borrowCost"]);
           if (this.new_one["portrait"].length > 1000) {
             formData.append(

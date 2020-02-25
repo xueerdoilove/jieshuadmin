@@ -101,7 +101,7 @@
           <el-option v-for="item in catlist" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="图书版式" prop="bookFormat">
+      <!-- <el-form-item label="图书版式" prop="bookFormat">
         <el-switch
           style="display: block;margin-top:8px;color:#ccc"
           v-model="new_one.bookFormat"
@@ -110,7 +110,7 @@
           active-text="精装"
           inactive-text="平装"
         ></el-switch>
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item label="封面图" prop="picture">
         <el-upload
@@ -211,7 +211,7 @@ export default {
         deposit: 0, //-> 押金
         borrowCost: 0, // -> 借阅费
         doubanScore: 0, // -> 图书豆瓣评分
-        bookFormat: 0
+        // bookFormat: 0
       },
       rules2: {
         url: [
@@ -425,7 +425,7 @@ export default {
           }
           formData.append("price", this.new_one["price"]);
           formData.append("deposit", this.new_one["deposit"]);
-          formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
+          // formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
           formData.append("borrowCost", this.new_one["borrowCost"]);
           if (this.new_one["portrait"].length > 1000) {
             formData.append(
