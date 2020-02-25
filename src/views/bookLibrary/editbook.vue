@@ -176,7 +176,7 @@ export default {
         ],
 
         introduction: [
-          { min: 3, message: "最少3个字符", trigger: "blur" },
+          { min: 3, max : 64 ,message: "长度在 3 到 64 个字符", trigger: "blur" },
           { required: true, message: "请输入书目简介", trigger: "blur" }
         ],
 
