@@ -325,8 +325,8 @@ export default {
       selectcatlist: [],
 
       show_fm: false,
-      imglist1:[],
-      picture:'',
+      imglist1: [],
+      picture: ""
     };
   },
   components: {
@@ -434,7 +434,7 @@ export default {
     },
     tijiaotupian() {
       if (this.picture == "") {
-        this.$message('请选择本地电脑上的一张图片')
+        this.$message("请选择本地电脑上的一张图片");
         return;
       }
       var formData = new FormData();
@@ -454,15 +454,22 @@ export default {
         });
       }
       putbookcipcover(this.bookid, formData).then(res => {
-        this.picture = "";
-        this.imglist1 = [];
-        this.show_fm = false;
-        this.getonebook();
-        this.$message({
-          message: "修改成功!",
-          type: "success"
-        });
-
+        if (res) {
+          this.$message({
+            message: "操作失败!请重新登录"
+          });
+          aapp.$store.dispatch("user/logout");
+          aapp.$router.push(`/login`);
+        } else {
+          this.picture = "";
+          this.imglist1 = [];
+          this.show_fm = false;
+          this.getonebook();
+          this.$message({
+            message: "修改成功!",
+            type: "success"
+          });
+        }
       });
     },
     showfengm() {
