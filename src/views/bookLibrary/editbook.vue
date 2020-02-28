@@ -126,7 +126,7 @@ export default {
       }
     };
     const numberd = (rule, value, callback) => {
-      if (/^[0-9]+(.[0-9]{1})?$/.test(value)) {
+      if (/^[0-9]+(.[0-9]{1,2})?$/.test(value)) {
         callback();
       } else {
         callback(new Error("请输入数字"));
