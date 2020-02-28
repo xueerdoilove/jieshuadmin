@@ -69,8 +69,6 @@
         <el-input class="riqi" type="text" maxlength="3" v-model="new_one.doubanScore"></el-input>
       </el-form-item>
 
-      
-
       <!-- <el-form-item label="图书版式" prop="bookFormat">
         <el-switch
           style="display: block;margin-top:8px;color:#ccc"
@@ -80,7 +78,7 @@
           active-text="精装"
           inactive-text="平装"
         ></el-switch>
-      </el-form-item> -->
+      </el-form-item>-->
 
       <el-form-item label="封面图" prop="picture">
         <el-upload
@@ -152,7 +150,7 @@ export default {
         price: "", //-> 图书价格
         deposit: 59.7, //-> 押金
         borrowCost: 5.97, // -> 借阅费
-        doubanScore: 9.6, // -> 图书豆瓣评分
+        doubanScore: 9.6 // -> 图书豆瓣评分
         // bookFormat: 0,
       },
       rules: {
@@ -176,7 +174,12 @@ export default {
         ],
 
         introduction: [
-          { min: 3, max : 64 ,message: "长度在 3 到 64 个字符", trigger: "blur" },
+          {
+            min: 3,
+            max: 64,
+            message: "长度在 3 到 64 个字符",
+            trigger: "blur"
+          },
           { required: true, message: "请输入书目简介", trigger: "blur" }
         ],
 
@@ -242,8 +245,6 @@ export default {
     this.new_one = a;
   },
   methods: {
-   
-    
     handleRemove(file, fileList) {
       this.new_one.portrait = "";
     },
@@ -318,11 +319,19 @@ export default {
             });
           }
           putbookcip(this.new_one.id, formData).then(res => {
-            this.$message({
-              message: "修改成功",
-              type: "success"
-            });
-            this.$emit("hideedit");
+            if (res) {
+              this.$message({
+                message: "操作失败!请重新登录"
+              });
+              aapp.$store.dispatch("user/logout");
+              aapp.$router.push(`/login`);
+            } else {
+              this.$message({
+                message: "修改成功",
+                type: "success"
+              });
+              this.$emit("hideedit");
+            }
           });
         } else {
           console.log("error submit!!");

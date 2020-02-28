@@ -106,7 +106,7 @@
           <span>内容简介</span>
           <el-button @click="showfuwenben(1)" type="primery" style="float:right" v-if="canbianji">编辑</el-button>
         </div>
-        <div class="js-content" v-html="bookData.introduction"></div>
+        <div class="js-content" v-html="introduction"></div>
       </div>
       <!-- 作者简介 -->
       <div class="jieshao">
@@ -533,7 +533,7 @@ export default {
         window.editor = new Weditor("contenteditable");
         if (num == 1) {
           //书目简介
-          window.editor.html(this.bookData.introduction);
+          window.editor.html(this.introduction);
         } else if (num == 2) {
           // 作者简介
           window.editor.html(this.authorinfo.introduction);
@@ -561,7 +561,7 @@ export default {
       getinfo({ bookCipId: this.bookid }).then(res => {
         if (res.item.id) {
           this.info = res.item;
-          this.bookData.introduction = res.item.introduction;
+          this.introduction = res.item.introduction;
         }
       });
     },
@@ -572,7 +572,7 @@ export default {
         type: this.info.id ? "put" : "post"
       }).then(res => {
         this.show_fuwenben = false;
-        this.getinfo();
+        this.getonebook()
         this.$message({
           message: "提交成功",
           type: "success"
