@@ -420,7 +420,11 @@ export default {
         internalNo: this.internalNo_chuku
       }).then(res => {
         this.chuku_orderdetail = res.item;
-      });
+      }).catch(err =>{
+        this.$message({
+          message: "请使用门店管理员,进行出库操作",
+        });
+      })
     },
     // 根据 订单号查询 订单
     getordersumapprove() {

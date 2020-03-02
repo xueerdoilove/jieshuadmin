@@ -76,6 +76,12 @@ service.interceptors.response.use(
       })
       aapp.$store.dispatch("user/logout");
       aapp.$router.push(`/login`);
+    } else if(('' + error).search('403') != '-1'){
+      Message({
+        message: '次账号无权操作,请切换其他身份的管理员账号',
+        type: 'error',
+        duration: 5 * 1000
+      })
     } else {
       var data = JSON.parse(JSON.stringify(error)).response.data
       Message({
