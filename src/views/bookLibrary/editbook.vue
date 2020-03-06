@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-form ref="form" :rules="rules" :model="new_one" label-width="120px">
-      <el-form-item label="书店名称" prop="name">
+      <el-form-item label="书籍名称" prop="name">
         <el-input class="riqi" v-model="new_one.name"></el-input>
       </el-form-item>
 
@@ -156,12 +156,12 @@ export default {
       rules: {
         name: [
           { required: true, message: "请输入书目名称", trigger: "blur" },
-          { min: 3, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
 
         author: [
           { required: true, message: "请输入书目作者", trigger: "blur" },
-          { min: 2, max: 30, message: "长度在 3 到 30 个字符", trigger: "blur" }
+          { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
 
         isbn: [
@@ -186,7 +186,7 @@ export default {
         pageCount: [
           {
             validator: numberd,
-            required: true,
+            required: false,
             trigger: "blur"
           }
         ],
