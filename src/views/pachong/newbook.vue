@@ -52,7 +52,7 @@
         <el-input class="riqi" type="textarea" v-model="new_one.introduction"></el-input>
       </el-form-item>
 
-      <el-form-item label="图书页数" prop="pageCount">
+      <el-form-item label="图书页数" >
         <el-input class="riqi" type="text" maxlength="6" v-model="new_one.pageCount"></el-input>
       </el-form-item>
 
@@ -417,16 +417,19 @@ export default {
               key == "price" ||
               key == "deposit" ||
               key == "borrowCost" ||
-              key == "bookFormat"
+              key == "bookFormat" ||
+              key == "pageCount"
             ) {
               continue;
             }
             formData.append(key, this.new_one[key]);
           }
+          formData.append("pageCount", this.new_one["pageCount"]?this.new_one["pageCount"]:0);
           formData.append("price", this.new_one["price"]);
           formData.append("deposit", this.new_one["deposit"]);
           // formData.append("bookFormat", this.new_one["bookFormat"] ? 1 : 0);
           formData.append("borrowCost", this.new_one["borrowCost"]);
+
           if (this.new_one["portrait"].length > 1000) {
             formData.append(
               "portrait",
