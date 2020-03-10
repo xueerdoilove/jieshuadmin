@@ -303,6 +303,8 @@ export default {
       bookid: 0,
       bookData: {},
 
+      introduction:'',
+      
       info: { id: 0 },
       contents: { id: 0 },
       authorinfo: { id: 0 },

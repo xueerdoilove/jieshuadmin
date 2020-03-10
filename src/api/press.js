@@ -7,3 +7,9 @@ export function getpressListbyname(params) {
     params
   })
 }
+export function getpressbyid(data) {
+  return request({
+    url: '/press/'+data.id,
+    method: 'get',
+  })
+}
