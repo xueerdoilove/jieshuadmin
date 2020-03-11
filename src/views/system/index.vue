@@ -90,13 +90,17 @@ export default {
   filters: {
     zhanshi(value, seq) {
       if (seq == 1) {
-        return value/100+'元'
+        return value / 100 + "元";
       } else if (seq == 2) {
-        return value+'%'
+        return value + "%";
       } else if (seq == 3) {
-        return value+'分钟'
+        return value + "分钟";
       } else if (seq == 4) {
-        return value+'天'
+        return value + "天";
+      } else if (seq == 5) {
+        return value + "天";
+      } else if (seq == 6) {
+        return value ;
       }
     }
   },

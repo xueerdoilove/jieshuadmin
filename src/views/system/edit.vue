@@ -13,7 +13,7 @@
       </el-form-item>
 
       <el-form-item label="配置值" prop="configValue">
-        <el-input class="riqi" style="width:100px;margin-right:10px;" type="number" v-model="newone.configValue"></el-input>{{danwei}}
+        <el-input class="riqi" style="margin-right:10px;"  v-model="newone.configValue"></el-input>{{danwei}}
       </el-form-item>
 
       <el-form-item>
@@ -66,6 +66,10 @@ export default {
       this.danwei = '分钟'
     }else if(this.newone.seq ==4){
       this.danwei = '天'
+    }else if(this.newone.seq ==5){
+      this.danwei = '天'
+    }else if(this.newone.seq ==6){
+      this.danwei = ''
     }
   },
   computed: {},
