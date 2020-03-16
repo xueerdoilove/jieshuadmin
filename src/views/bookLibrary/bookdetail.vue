@@ -293,6 +293,7 @@ import {
   putbookcipcover
 } from "@/api/book";
 import { getcatlist } from "@/api/classification";
+import { getbaseconfiglist } from "@/api/baseconfig";
 
 import editbook from "./editbook";
 export default {
@@ -328,13 +329,14 @@ export default {
 
       show_fm: false,
       imglist1: [],
-      picture: ""
+      picture: "",
     };
   },
   components: {
     editbook
   },
   mounted() {
+    this.mgetbaseconfiglist()
     if (
       localStorage.getItem("roleset").search("3") != -1 ||
       localStorage.getItem("roleset").search("4") != -1
@@ -400,6 +402,15 @@ export default {
     }
   },
   methods: {
+    mgetbaseconfiglist() {
+      getbaseconfiglist({ state: this.state }).then(res => {
+        res.items.forEach(element => {
+          if(element.seq==2){
+            localStorage.setItem('baseconfigbili',element.value)
+          }
+        });
+      });
+    },
     handleRemove(file, fileList) {
       this.picture = "";
     },

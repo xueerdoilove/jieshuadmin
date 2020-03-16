@@ -407,7 +407,12 @@ export default {
             this.getordersumdetailByInternalNo();
           });
         })
-        .catch(() => {});
+        .catch(() => {
+          
+          this.$message({
+            message: "请确定本书店已扫码上架编号为" + qrcode +'的图书'
+          });
+        });
     },
     // 展示订单详情 准备出库
     showchuku(internalNo) {
