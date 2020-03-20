@@ -360,6 +360,26 @@ export const asyncRouters = [
     }],
 
   },
+  // 联系我们
+  {
+    path: '/contact',
+    name: 'contact',
+    component: Layout,
+    redirect: 'contactpage',
+    meta: {
+      title: '联系我们',
+      icon: 'form'
+    },
+    children: [{
+      path: 'contactpage',
+      name: 'contactpage',
+      component: () => import('@/views/contact/index'),
+      meta: {
+        title: '联系我们配置'
+      }
+    }],
+
+  },
   //系统设置
   {
     path: '/system',

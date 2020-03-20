@@ -54,3 +54,26 @@ export function delmenuall(data) {
     method: 'delete',
   })
 }
+
+// 获取联系信息配置
+export function getcontactcfg(params) {
+  return request({
+    url: '/contactcfg/1',
+    method: 'get',
+    params
+  })
+}
+
+export function putcontactcfg(data) {
+  return request({
+    url: '/contactcfg/1' ,
+    method: 'put',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
+
