@@ -77,3 +77,19 @@ export function putcontactcfg(data) {
   })
 }
 
+// 帮助
+export function gethelpcfg(params) {
+  return request({
+    url: '/helpcfg/1',
+    method: 'get',
+    params
+  })
+}
+
+export function puthelpcfg(data) {
+  return request({
+    url: '/helpcfg/1',
+    method: 'put',
+    data
+  })
+}

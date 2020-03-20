@@ -6,6 +6,7 @@
     </div>
     <div class="caozuo">
       <el-form ref="form" label-width="120px">
+        <div style="margin-left:60px">图片宽度最好为750px,长度不固定</div>
         <el-form-item label="配置图">
           <el-upload
             id="picturediv"
@@ -45,7 +46,7 @@
 <script>
 import { getcontactcfg, putcontactcfg } from "@/api/baseconfig";
 export default {
-  named: "优惠券",
+  named: "联系我们",
   data() {
     return {
       portrait: "",

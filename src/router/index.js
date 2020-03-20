@@ -380,6 +380,26 @@ export const asyncRouters = [
     }],
 
   },
+  // 帮助设置
+  {
+    path: '/help',
+    name: 'help',
+    component: Layout,
+    redirect: 'helppage',
+    meta: {
+      title: '帮助',
+      icon: 'form'
+    },
+    children: [{
+      path: 'helppage',
+      name: 'helppage',
+      component: () => import('@/views/help/index'),
+      meta: {
+        title: '帮助设置'
+      }
+    }],
+
+  },
   //系统设置
   {
     path: '/system',
