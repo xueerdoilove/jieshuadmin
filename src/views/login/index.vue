@@ -12,7 +12,7 @@
       label-position="left"
     >
       <div class="title-container">
-        <h2 class="title">阅读派后台管理系统</h2>
+        <h2 class="title">荟读传书后台管理系统</h2>
       </div>
 
       <el-form-item prop="username">

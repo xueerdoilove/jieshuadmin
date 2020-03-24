@@ -400,6 +400,26 @@ export const asyncRouters = [
     }],
 
   },
+  // 首页banner
+  {
+    path: '/banner',
+    name: 'banner',
+    component: Layout,
+    redirect: 'bannerpage',
+    meta: {
+      title: '首页轮播图',
+      icon: 'form'
+    },
+    children: [{
+      path: 'bannerpage',
+      name: 'bannerpage',
+      component: () => import('@/views/banner/index'),
+      meta: {
+        title: '首页轮播图设置'
+      }
+    }],
+
+  },
   //系统设置
   {
     path: '/system',

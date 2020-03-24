@@ -93,3 +93,50 @@ export function puthelpcfg(data) {
     data
   })
 }
+
+
+//管理员查询banner api/admin/ads?adsType=0&state=2&sk=x&so=x&page=1&pageSize
+
+export function getbannerlist(params) {
+  return request({
+    url: '/admin/ads',
+    method: 'get',
+    params
+  })
+}
+
+export function postbannerlist(data) {
+  return request({
+    url: '/admin/ads',
+    method: 'post',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
+
+export function putbannerimg(id,data) {
+  console.log(id)
+  return request({
+    url: '/admin/ads/'+id+'/picture',
+    method: 'put',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
+    data
+  })
+}
+
+//api/admin/ads/{id}/state
+export function putadsstate(id,data) {
+  return request({
+    url: '/admin/ads/'+id+'/state',
+    method: 'put',
+    data
+  })
+}
