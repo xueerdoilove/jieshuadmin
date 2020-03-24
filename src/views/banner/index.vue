@@ -64,6 +64,7 @@
       </el-col>
       <el-col :span="6" style="padding-top:20px;">
         <el-button @click="putimg(item)">修改图片</el-button>
+        <el-button @click="editbanner(item)">修改</el-button>
         <el-button v-show="state==2" @click="xiajia(item.id)">下架</el-button>
         <el-button v-show="state==1" @click="shangjia(item.id)">上架</el-button>
       </el-col>
@@ -89,12 +90,17 @@
     <el-dialog title="修改封面图" :visible.sync="show_editimg">
       <newBannerimg v-if="show_editimg" @hidenew="hidenew" />
     </el-dialog>
+
+    <el-dialog title="编辑轮播图" :visible.sync="show_edit">
+      <editOne v-if="show_edit" @hidenew="hidenew" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { getbannerlist, putadsstate, deladsstate } from "@/api/baseconfig";
 import NewBanner from "./new";
+import EditOne from "./edit";
 import NewBannerimg from "./editimg";
 export default {
   named: "banner",
@@ -116,7 +122,9 @@ export default {
 
       show_new: false,
 
-      show_editimg: false
+      show_editimg: false,
+
+      show_edit:false,
     };
   },
   mounted() {
@@ -124,7 +132,8 @@ export default {
   },
   components: {
     NewBanner,
-    NewBannerimg
+    NewBannerimg,
+    EditOne
   },
   filters: {
     adsType(num) {
@@ -167,6 +176,10 @@ export default {
       localStorage.setItem("banneritem", JSON.stringify(item));
       this.show_editimg = true;
     },
+    editbanner(item) {
+      localStorage.setItem("banneritem", JSON.stringify(item));
+      this.show_edit = true;
+    },
     getbannerlist() {
       getbannerlist({
         page: this.page,
@@ -190,6 +203,7 @@ export default {
     hidenew() {
       this.show_editimg = false;
       this.show_new = false;
+      this.show_edit = false;
       this.changepage(1);
     }
   }

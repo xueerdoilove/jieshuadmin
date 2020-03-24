@@ -117,6 +117,13 @@ export function postbannerlist(data) {
     data
   })
 }
+export function putbanner(data) {
+  return request({
+    url: '/admin/ads/'+data.id,
+    method: 'put',
+    data
+  })
+}
 
 export function putbannerimg(id,data) {
   console.log(id)
