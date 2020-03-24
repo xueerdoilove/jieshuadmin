@@ -23,19 +23,8 @@
         <el-input class="riqi" type="number" v-model="new_one.isbn"></el-input>
       </el-form-item>
 
-      <el-form-item label="出版社" prop="pressId">
-        <el-select
-          style="width:400px;"
-          v-model="new_one.pressId"
-          filterable
-          remote
-          @change="setpressname"
-          placeholder="请搜索一个出版社,并选择"
-          :remote-method="getpressListbyname"
-          :loading="false"
-        >
-          <el-option v-for="item in presslist" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
+      <el-form-item label="出版社" prop="press">
+        <el-input class="riqi" type="text" v-model="new_one.press" placeholder="请手动输入出版社的名字"></el-input>
       </el-form-item>
 
       <el-form-item label="翻译者" prop="translator">
@@ -149,7 +138,6 @@ export default {
       }
     };
     return {
-      presslist: [], // 出版社的 列表
 
       new_one: {
         id: "",
@@ -157,7 +145,6 @@ export default {
         author: "", //-> 著者
         publishDate: "2014-5-0", //-> 出版日期
         isbn: "", //-> 图书ISBN
-        pressId: 0, //-> 出版社id
         press: "", // -> 出版社
         translator: "", //-> 译者
         introduction: "", // -> 简介
@@ -258,7 +245,7 @@ export default {
     a.borrowCost = a.borrowCost / 100;
 
     this.new_one = a;
-    this.getpressbyid(a.pressId)
+ 
   },
   methods: {
     handleRemove(file, fileList) {
@@ -294,30 +281,7 @@ export default {
         self.new_one.portrait = base64;
       };
     },
-    setpressname(pressid) {
-      this.presslist.forEach(item => {
-        if (item.id == pressid) {
-          this.new_one.press = item.name;
-        }
-      });
-    },
-    getpressbyid(id){
-      getpressbyid({
-        id: id,
-      }).then(res => {
-        this.presslist = [res.item];
-      });
-    },
-    getpressListbyname(name) {
-      getpressListbyname({
-        state: 1,
-        name: name,
-        page: 1,
-        pageSize: 100
-      }).then(res => {
-        this.presslist = res.items;
-      });
-    },
+    
     onSubmit(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {

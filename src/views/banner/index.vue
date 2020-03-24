@@ -93,7 +93,7 @@
 </template>
 
 <script>
-import { getbannerlist, putadsstate } from "@/api/baseconfig";
+import { getbannerlist, putadsstate, deladsstate } from "@/api/baseconfig";
 import NewBanner from "./new";
 import NewBannerimg from "./editimg";
 export default {
@@ -157,7 +157,7 @@ export default {
         type: "warning"
       })
         .then(() => {
-          putadsstate(id, { state: 0 }).then(res => {
+          deladsstate(id, { state: 0 }).then(res => {
             this.getbannerlist();
           });
         })

@@ -140,3 +140,11 @@ export function putadsstate(id,data) {
     data
   })
 }
+
+export function deladsstate(id,data) {
+  return request({
+    url: '/admin/ads/'+id,
+    method: 'delete',
+    data
+  })
+}

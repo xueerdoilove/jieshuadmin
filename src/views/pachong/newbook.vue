@@ -29,19 +29,8 @@
         <el-input class="riqi" type="number" v-model="new_one.isbn"></el-input>
       </el-form-item>
 
-      <el-form-item label="出版社" prop="pressId">
-        <el-select
-          style="width:400px;"
-          v-model="new_one.pressId"
-          filterable
-          remote
-          @change="setpressname"
-          placeholder="请搜索一个出版社,并选择"
-          :remote-method="getpressListbyname"
-          :loading="false"
-        >
-          <el-option v-for="item in presslist" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
+      <el-form-item label="出版社" prop="press">
+        <el-input class="riqi" type="text" v-model="new_one.press" placeholder="请手动输入出版社的名字"></el-input>
       </el-form-item>
 
       <el-form-item label="翻译者" prop="translator">
@@ -165,7 +154,6 @@
 <script>
 // doc: https://panjiachen.github.io/vue-element-admin-site/feature/component/svg-icon.html#usage
 import { postbookcip, postdoubanbook } from "@/api/book";
-import { getpressListbyname } from "@/api/press";
 import { getcatList } from "@/api/cat";
 
 export default {
@@ -188,7 +176,6 @@ export default {
     return {
       isloading: false,
       addtype: 1,
-      presslist: [], // 出版社的 列表
       catlist: [],
       categoryIdList: [],
       newpachong: {
@@ -201,7 +188,6 @@ export default {
         author: "", //-> 著者
         publishDate: "", //-> 出版日期
         isbn: "", //-> 图书ISBN
-        pressId: "", //-> 出版社id
         press: "", // -> 出版社
         translator: "", //-> 译者
         introduction: "", // -> 简介
@@ -226,8 +212,8 @@ export default {
           { required: true, message: "请输入书目名称", trigger: "blur" },
           { min: 1, max: 30, message: "长度在 1 到 30 个字符", trigger: "blur" }
         ],
-        pressId: [
-          { required: true, message: "请选择一个出版社", trigger: "blur" }
+        press: [
+          { required: true, message: "请输入出版社", trigger: "blur" }
         ],
         author: [
           { required: true, message: "请输入书目作者", trigger: "blur" },
@@ -314,23 +300,6 @@ export default {
           });
         });
         this.catlist = arr;
-      });
-    },
-    getpressListbyname(name) {
-      getpressListbyname({
-        state: 1,
-        name: name,
-        page: 1,
-        pageSize: 10
-      }).then(res => {
-        this.presslist = res.items;
-      });
-    },
-    setpressname(pressid) {
-      this.presslist.forEach(item => {
-        if (item.id == pressid) {
-          this.new_one.press = item.name;
-        }
       });
     },
     handleRemove(file, fileList) {
