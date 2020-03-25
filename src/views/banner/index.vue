@@ -22,6 +22,7 @@
             <el-radio-group v-model="state" @change="changepage(1)">
               <el-radio :label="2">使用中</el-radio>
               <el-radio :label="1">待上架</el-radio>
+              <el-radio :label="0">已下架</el-radio>
             </el-radio-group>
           </el-form-item>
         </el-form>
@@ -60,13 +61,13 @@
         <span>{{item.description}}</span>
       </el-col>
       <el-col :span="4">
-        <span>{{item.adsType | adsType}}</span>
+        <span v-if="item.adsType!=2">{{item.adsType | adsType}}</span>
+        <span v-if="item.adsType==2"><img style="height:80px;cursor: pointer;" :src="item.linkId" @click="chakanimmg(item.linkId)" /></span>
       </el-col>
       <el-col :span="6" style="padding-top:20px;">
-        <el-button @click="putimg(item)">修改图片</el-button>
         <el-button @click="editbanner(item)">修改</el-button>
         <el-button v-show="state==2" @click="xiajia(item.id)">下架</el-button>
-        <el-button v-show="state==1" @click="shangjia(item.id)">上架</el-button>
+        <el-button v-show="state!=2" @click="shangjia(item.id)">上架</el-button>
       </el-col>
     </el-row>
 
@@ -87,9 +88,6 @@
       <newBanner v-if="show_new" @hidenew="hidenew" />
     </el-dialog>
 
-    <el-dialog title="修改封面图" :visible.sync="show_editimg">
-      <newBannerimg v-if="show_editimg" @hidenew="hidenew" />
-    </el-dialog>
 
     <el-dialog title="编辑轮播图" :visible.sync="show_edit">
       <editOne v-if="show_edit" @hidenew="hidenew" />
@@ -101,7 +99,6 @@
 import { getbannerlist, putadsstate, deladsstate } from "@/api/baseconfig";
 import NewBanner from "./new";
 import EditOne from "./edit";
-import NewBannerimg from "./editimg";
 export default {
   named: "banner",
   data() {
@@ -110,7 +107,8 @@ export default {
       adsType: 0,
       searchtypelist: [
         { id: 0, name: "跳转到书目类型" },
-        { id: 1, name: "跳转到书单类型" }
+        { id: 1, name: "跳转到书单类型" },
+        { id: 2, name: "跳转到广告页" },
       ],
       state: 2, //0
       sk: "time",
@@ -122,7 +120,6 @@ export default {
 
       show_new: false,
 
-      show_editimg: false,
 
       show_edit:false,
     };
@@ -132,20 +129,24 @@ export default {
   },
   components: {
     NewBanner,
-    NewBannerimg,
     EditOne
   },
   filters: {
     adsType(num) {
       if (num == 0) {
         return "跳转到书目类型";
-      } else {
+      } else if(num ==1){
         return "跳转到书单类型";
+      }else {
+        return '跳转到广告页'
       }
     }
   },
   computed: {},
   methods: {
+    chakanimmg(url){
+      window.open(url)
+    },
     shangjia(id) {
       this.$confirm("确定上架架这个banner吗?", "提示", {
         confirmButtonText: "确定",
@@ -201,7 +202,6 @@ export default {
       this.show_new = true;
     },
     hidenew() {
-      this.show_editimg = false;
       this.show_new = false;
       this.show_edit = false;
       this.changepage(1);

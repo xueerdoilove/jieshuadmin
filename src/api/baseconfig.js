@@ -117,10 +117,15 @@ export function postbannerlist(data) {
     data
   })
 }
-export function putbanner(data) {
+export function putbanner(id,data) {
   return request({
-    url: '/admin/ads/'+data.id,
+    url: '/admin/ads/'+id,
     method: 'put',
+    async: false,  
+    cache: false,  
+    contentType: false,  
+    processData: false, 
+    headers:{'Content-Type':'multipart/form-data'},
     data
   })
 }

@@ -5,6 +5,7 @@
         <el-select class="riqi" v-model="newcoupon.adsType" placeholder="请选择轮播图跳转类型">
           <el-option label="跳转到书目类型" value="0"></el-option>
           <el-option label="跳转到书单类型" value="1"></el-option>
+          <el-option label="跳转到广告页" value="2"></el-option>
         </el-select>
       </el-form-item>
 
@@ -42,7 +43,31 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item label="图片" prop="picture">
+      <el-form-item v-if="newcoupon.adsType==2" label="广告页图片" prop="linkId1">
+        <el-upload
+          id="picturediv1"
+          class="upload-demo"
+          ref="upload"
+          action
+          :on-remove="handleRemove1"
+          :on-change="handleChange1"
+          :file-list="imglist1"
+          :multiple="false"
+          :limit="1"
+          list-type="picture"
+          :auto-upload="false"
+        >
+          <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+          <span
+            style="margin-left:20px;"
+            slot="tip"
+            class="el-upload__tip"
+          >只能上传jpg/png文件，且不超过500kb,宽700px,高度不限制</span>
+        </el-upload>
+        <input style="display:none;" type="text" v-model="newcoupon.linkId" />
+      </el-form-item>
+
+      <el-form-item  label="轮播图片" prop="picture">
         <el-upload
           id="picturediv"
           class="upload-demo"
@@ -65,7 +90,7 @@
         </el-upload>
         <input style="display:none;" type="text" v-model="newcoupon.path" />
       </el-form-item>
-
+      
       <el-form-item>
         <el-button type="primary" @click="onSubmit('form')">立即创建</el-button>
       </el-form-item>
@@ -106,7 +131,10 @@ export default {
         linkId: [
           { required: true, message: "请选择书籍/书单", trigger: "change" }
         ],
-        path: [{ required: true, message: "请选择一个图片", trigger: "change" }]
+        path: [{ required: true, message: "请选择一个图片", trigger: "change" }],
+        linkId1:[
+          { required: true, message: "请选择图片", trigger: "change" }
+        ],
       },
       imglist: [],
 
@@ -187,6 +215,40 @@ export default {
         self.newcoupon.path = base64;
       };
     },
+
+    handleRemove1(file, fileList) {
+      this.newcoupon.linkId1 = "";
+    },
+    handleChange1(file, fileList) {
+      //生成canvas
+      var self = this;
+      var imgurl = file.url;
+      var img = document.createElement("img");
+      img.src = imgurl;
+
+      var canvas = document.createElement("canvas");
+      var ctx = canvas.getContext("2d");
+      var quality = 1; // 默认图片质量为0.7
+      var imgobj;
+      img.onload = function() {
+        var that = this;
+        // 默认按比例压缩
+        var w = 600,
+          h = (600 / that.width) * that.height;
+
+        imgobj = { width: w, height: h };
+        // 创建属性节点
+        var anw = document.createAttribute("width");
+        anw.nodeValue = w;
+        var anh = document.createAttribute("height");
+        anh.nodeValue = h;
+        canvas.setAttributeNode(anw);
+        canvas.setAttributeNode(anh);
+        ctx.drawImage(that, 0, 0, w, h);
+        var base64 = canvas.toDataURL("image/png", quality);
+        self.newcoupon.linkId1 = base64;
+      };
+    },
     changeruleType(e) {
       if (e == 0) {
         this.newcoupon.startDate = "";
@@ -225,6 +287,14 @@ export default {
             return new Blob([ab], {
               type: "image/jpg"
             });
+          }
+          if(this.newcoupon.adsType==2){
+            formData.delete('linkId')
+            formData.append(
+              "linkId",
+              convertBase64UrlToBlob(this.newcoupon["linkId1"]),
+              "fmt.jpg"
+            );
           }
           postbannerlist(formData).then(res => {
             this.$emit("hidenew");
