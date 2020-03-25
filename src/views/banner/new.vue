@@ -62,7 +62,7 @@
             style="margin-left:20px;"
             slot="tip"
             class="el-upload__tip"
-          >只能上传jpg/png文件，且不超过500kb,宽700px,高度不限制</span>
+          >只能上传jpg/png文件，且不超过500kb,宽750px,高度不限制</span>
         </el-upload>
         <input style="display:none;" type="text" v-model="newcoupon.linkId" />
       </el-form-item>
@@ -86,7 +86,7 @@
             style="margin-left:20px;"
             slot="tip"
             class="el-upload__tip"
-          >只能上传jpg/png文件，且不超过500kb,宽700px,高130px</span>
+          >只能上传jpg/png文件，且不超过500kb,宽700px,高200px</span>
         </el-upload>
         <input style="display:none;" type="text" v-model="newcoupon.path" />
       </el-form-item>
